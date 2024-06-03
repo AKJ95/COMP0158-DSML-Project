@@ -1,4 +1,4 @@
-from collections import defaultdict
+from collections import Counter, defaultdict
 import csv
 import math
 import time
@@ -98,7 +98,8 @@ if __name__ == "__main__":
         for i in range(len(toy_string_padded) - 3):
             if toy_string_padded[i:i+3] in dict_by_length[length].keys():
                 common_strings.extend(dict_by_length[length][toy_string_padded[i:i+3]])
-        most_occurrences = max(set(common_strings), key=common_strings.count)
+        string_counter = Counter(common_strings)
+        most_occurrences = string_counter.most_common(1)[0][1]
         if most_occurrences >= rho:
             matched_flag = True
             break
