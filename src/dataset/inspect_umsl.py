@@ -64,7 +64,7 @@ if __name__ == "__main__":
         s_padded = s.center(len(s) + 4, '#')
         s_length = len(s)
         for i in range(len(s_padded)-3):
-            dict_by_length[s_length-1][f"{s_padded[i:i+3]}"].add(s_padded)
+            dict_by_length[s_length-1][f"{s_padded[i:i+3]}"].add(s)
         # Report Progress
         count += 1
         if count == len(umls_strings) or count % 50000 == 0:
@@ -85,6 +85,7 @@ if __name__ == "__main__":
     # Toy QuickUMLS
     print("Toy QuickUMLS")
     # Pseudomonas aeruginosa (Pa) infection
+    start = time.time()
     toy_string = "Pseudomonas aeruginosa"
     threshold = 0.7
     toy_string_padded = toy_string.center(len(toy_string)+4, '#')
@@ -95,6 +96,7 @@ if __name__ == "__main__":
         for length in range(min_length, max_length+1):
             if toy_string_padded[i:i+3] in dict_by_length[length].keys():
                 common_strings.extend(dict_by_length[length][toy_string_padded[i:i+3]])
+    end = time.time()
+    duration = end - start
+    print(f"Elapsed time: {duration:.3f} seconds")
     print(f"Length of common strings: {len(common_strings)}")
-    print(common_strings)
-
