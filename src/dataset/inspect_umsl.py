@@ -56,14 +56,14 @@ if __name__ == "__main__":
     toy_dict = defaultdict(list)
     dict_by_length = []
     for _ in range(max_string_length):
-        dict_by_length.append(defaultdict(list))
+        dict_by_length.append(defaultdict(set))
 
     count = 0
     for s in umls_strings:
         s_padded = s.center(len(s) + 4, '#')
         s_length = len(s)
         for i in range(len(s_padded)-3):
-            dict_by_length[s_length-1][f"{s_padded[i:i+3]}"].append(s_padded)
+            dict_by_length[s_length-1][f"{s_padded[i:i+3]}"].add(s_padded)
         # Report Progress
         count += 1
         if count == len(umls_strings) or count % 50000 == 0:
