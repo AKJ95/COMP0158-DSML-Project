@@ -56,7 +56,7 @@ if __name__ == "__main__":
     start = time.time()
     toy_dict = defaultdict(list)
     dict_by_length = []
-    for _ in range(max_string_length):
+    for _ in range(max_string_length + 3):
         dict_by_length.append(defaultdict(set))
 
     count = 0
@@ -64,7 +64,7 @@ if __name__ == "__main__":
         s_padded = s.center(len(s) + 4, '#')
         s_length = len(s)
         for i in range(len(s_padded)-3):
-            dict_by_length[s_length-1][f"{s_padded[i:i+3]}"].add(s)
+            dict_by_length[s_length+2][f"{s_padded[i:i+3]}"].add(s)
         # Report Progress
         count += 1
         if count == len(umls_strings) or count % 50000 == 0:
@@ -88,15 +88,24 @@ if __name__ == "__main__":
     start = time.time()
     toy_string = "Pseudomonas aeruginosa"
     threshold = 0.7
-    toy_string_padded = toy_string.center(len(toy_string)+4, '#')
-    min_length = math.ceil(len(toy_string_padded) * threshold) - 4
-    max_length = math.floor(len(toy_string_padded) / threshold) - 4
-    common_strings = []
-    for i in range(len(toy_string_padded) - 3):
-        for length in range(min_length, max_length+1):
+    toy_string_padded = toy_string.center(len(toy_string) + 4, '#')
+    min_length = math.ceil((len(toy_string)+2) * threshold)
+    max_length = math.floor((len(toy_string)+2) / threshold)
+    matched_flag = False
+    for length in range(min_length, max_length+1):
+        common_strings = []
+        rho = threshold * (length + len(toy_string) + 2) / (1 + threshold)
+        for i in range(len(toy_string_padded) - 3):
             if toy_string_padded[i:i+3] in dict_by_length[length].keys():
                 common_strings.extend(dict_by_length[length][toy_string_padded[i:i+3]])
+        most_occurrences = max(set(common_strings), key=common_strings.count)
+        if most_occurrences >= rho:
+            matched_flag = True
+            break
+
     end = time.time()
     duration = end - start
     print(f"Elapsed time: {duration:.3f} seconds")
-    print(f"Length of common strings: {len(common_strings)}")
+    print(f"Match result: {matched_flag}")
+    print(f"Min length: {min_length}")
+    print(f"Max length: {max_length}")
