@@ -75,7 +75,7 @@ if __name__ == "__main__":
     count_features = 0
     for toy_dict in dict_by_length:
         count_features += len(toy_dict.keys())
-        # for feature in toy_dict.keys():
-        #     total_count += len(toy_dict[feature])
+        for feature in toy_dict.keys():
+            total_count += len(toy_dict[feature])
     print(f"Average features in one dictionary: {count_features/len(dict_by_length):.2f}")
-    # print(f"Average length in each feature: {total_count / count_features:.2f}")
+    print(f"Average length in each feature: {total_count / count_features:.2f}")
