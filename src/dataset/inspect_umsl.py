@@ -87,13 +87,13 @@ if __name__ == "__main__":
     # Pseudomonas aeruginosa (Pa) infection
     start = time.time()
     toy_string = "Pseudomonas aeruginosa (Pa) infection"
-    threshold = 0.7
+    threshold = 0.98
     toy_string_padded = toy_string.center(len(toy_string) + 4, '#')
     min_length = math.ceil((len(toy_string)+2) * threshold)
     max_length = math.floor((len(toy_string)+2) / threshold)
     matched_flag = False
-    common_strings = []
     for length in range(min_length, max_length+1):
+        common_strings = []
         rho = threshold * (length + len(toy_string) + 2) / (1 + threshold)
         for i in range(len(toy_string_padded) - 3):
             if toy_string_padded[i:i+3] in dict_by_length[length].keys():
