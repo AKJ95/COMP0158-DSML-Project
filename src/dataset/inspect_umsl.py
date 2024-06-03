@@ -1,5 +1,6 @@
 from collections import defaultdict
 import csv
+import math
 import time
 from tqdm import tqdm
 from storage_config import *
@@ -79,3 +80,21 @@ if __name__ == "__main__":
             total_count += len(toy_dict[feature])
     print(f"Average features in one dictionary: {count_features/len(dict_by_length):.2f}")
     print(f"Average length in each feature: {total_count / count_features:.2f}")
+    print()
+
+    # Toy QuickUMLS
+    print("Toy QuickUMLS")
+    # Pseudomonas aeruginosa (Pa) infection
+    toy_string = "Pseudomonas aeruginosa"
+    threshold = 0.7
+    toy_string_padded = toy_string.center(len(toy_string)+4, '#')
+    min_length = math.ceil(len(toy_string_padded) * threshold) - 4
+    max_length = math.floor(len(toy_string_padded) / threshold) - 4
+    common_strings = []
+    for i in range(len(toy_string_padded) - 3):
+        for length in range(min_length, max_length+1):
+            if toy_string_padded[i:i+3] in dict_by_length[length].keys():
+                common_strings.extend(dict_by_length[length][toy_string_padded[i:i+3]])
+    print(f"Length of common strings: {len(common_strings)}")
+    print(common_strings)
+
