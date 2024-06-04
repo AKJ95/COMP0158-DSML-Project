@@ -1,8 +1,14 @@
+# Import built-in libraries
+from bisect import bisect_left
 from collections import Counter, defaultdict
 import csv
 import math
 import time
+
+# Import pip libraries
 from tqdm import tqdm
+
+# Import project files
 from storage_config import *
 
 
@@ -24,6 +30,14 @@ def get_definitions(source_filter: list) -> list:
         if not source_filter or line[4] in source_filter:
             definitions.append(line)
     return definitions
+
+
+def binary_search(sorted_list: list, target: str) -> bool:
+    index = bisect_left(sorted_list, target)
+    if index != len(sorted_list) and sorted_list[index] == target:
+        return True
+    else:
+        return False
 
 
 if __name__ == "__main__":
@@ -57,18 +71,25 @@ if __name__ == "__main__":
     toy_dict = defaultdict(list)
     dict_by_length = []
     for _ in range(max_string_length + 3):
-        dict_by_length.append(defaultdict(set))
+        dict_by_length.append(defaultdict(list))
 
     count = 0
     for s in umls_strings:
         s_padded = s.center(len(s) + 4, '#')
         s_length = len(s)
         for i in range(len(s_padded)-3):
-            dict_by_length[s_length+2][f"{s_padded[i:i+3]}"].add(s)
+            if s not in dict_by_length[s_length+2][f"{s_padded[i:i+3]}"]:
+                dict_by_length[s_length+2][f"{s_padded[i:i+3]}"].append(s)
         # Report Progress
         count += 1
         if count == len(umls_strings) or count % 50000 == 0:
             print(f"Progress: {count}/{len(umls_strings)}; {(count/len(umls_strings)*100):.2f}%")
+
+    # Sort strings in each feature
+    for feature_dict in dict_by_length:
+        for feature in feature_dict:
+            feature_dict[feature].sort()
+
     end = time.time()
     print(end - start)
 
@@ -92,19 +113,19 @@ if __name__ == "__main__":
     min_length = math.ceil((len(toy_string)+2) * threshold)
     max_length = math.floor((len(toy_string)+2) / threshold)
     matched_flag = False
+    features = [toy_string_padded[i:i + 3] for i in range(len(toy_string_padded) - 3)]
+    features_sorted = sorted(features, key=(lambda x: len(dict_by_length[length][x])))
 
     for length in range(min_length, max_length+1):
         common_strings = []
         rho = threshold * (length + len(toy_string) + 2) / (1 + threshold)
-        features = [toy_string_padded[i:i+3] for i in range(len(toy_string_padded) - 3)]
-        features_sorted = sorted(features, key=(lambda x: len(dict_by_length[length][x])))
         m = defaultdict(int)
         for k in range(len(features_sorted) - round(rho) + 1):
             for s in dict_by_length[length][features_sorted[k]]:
                 m[s] += 1
-        for k in range(len(features_sorted) - round(rho) + 1):
+        for k in range(len(features_sorted) - round(rho) + 1, len(features_sorted)):
             for s in m.keys():
-                if s in dict_by_length[length][features_sorted[k]]:
+                if binary_search(dict_by_length[length][features_sorted[k]], s):
                     m[s] += 1
                 if m[s] >= rho:
                     matched_flag = True
