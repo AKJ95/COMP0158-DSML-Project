@@ -102,10 +102,18 @@ if __name__ == "__main__":
 
     count = 0
     for s in umls_strings:
-        s_padded = s.center(len(s) + 4, '#')
-        s_length = len(s)
-        for i in range(len(s_padded)-3):
-            dict_by_length[s_length+2][f"{s_padded[i:i+3]}"].add(s)
+        # trigram alphabet level
+        # s_padded = s.center(len(s) + 4, '#')
+        # s_length = len(s)
+        # for i in range(len(s_padded)-3):
+        #     dict_by_length[s_length+2][f"{s_padded[i:i+3]}"].add(s)
+
+        # Unigram token level
+        s_unigrams = s.split()
+        s_length = len(s_unigrams)
+        for unigram in s_unigrams:
+            dict_by_length[s_length][unigram].add(s)
+
         # Report Progress
         count += 1
         if count == len(umls_strings) or count % 50000 == 0:
@@ -129,22 +137,28 @@ if __name__ == "__main__":
     # Pseudomonas aeruginosa (Pa) infection
     start = time.time()
     toy_string = "pseudomonas aeruginosa (pa) infection"
-    threshold = 0.7
-    toy_string_padded = toy_string.center(len(toy_string) + 4, '#')
-    min_length = math.ceil((len(toy_string)+2) * threshold)
-    max_length = math.floor((len(toy_string)+2) / threshold)
+    threshold = 0.6
     matched_flag = False
-    features = [toy_string_padded[i:i + 3] for i in range(len(toy_string_padded) - 3)]
+
+    # toy_string_padded = toy_string.center(len(toy_string) + 4, '#')
+    # min_length = math.ceil((len(toy_string)+2) * threshold)
+    # max_length = math.floor((len(toy_string)+2) / threshold)
+    # features = [toy_string_padded[i:i + 3] for i in range(len(toy_string_padded) - 3)]
+
+    features = toy_string.split()
+    min_length = math.ceil(len(features) * threshold)
+    max_length = math.floor(len(features) / threshold)
 
     for length in range(min_length, max_length+1):
         common_strings = []
-        rho = threshold * (length + len(toy_string) + 2) / (1 + threshold)
+        # rho = threshold * (length + len(toy_string) + 2) / (1 + threshold)
+        rho = threshold * (length + len(features)) / (1 + threshold)
         m = defaultdict(int)
         features_sorted = sorted(features, key=(lambda x: len(dict_by_length[length][x])))
-        for k in range(round(rho)):
+        for k in range(len(features_sorted) - round(rho) + 1):
             for s in dict_by_length[length][features_sorted[k]]:
                 m[s] += 1
-        for k in range(round(rho), len(features_sorted)):
+        for k in range(len(features_sorted) - round(rho) + 1, len(features_sorted)):
             for s in m.keys():
                 if s in dict_by_length[length][features_sorted[k]]:
                     m[s] += 1
