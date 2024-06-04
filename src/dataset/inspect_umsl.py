@@ -82,9 +82,11 @@ if __name__ == "__main__":
     for line in tqdm(open(MRCONSO_PATH), desc='Parsing UMLS concepts (MRCONSO.RRF)'):
         line = line.rstrip().split('|')
         if line[1] == "ENG":
-            sui.add(line[5])
-            umls_strings.add(line[14])
-            max_string_length = max(max_string_length, len(line[14]))
+            lowercase_s = line[14].lowercase()
+            if lowercase_s not in umls_strings:
+                sui.add(line[5])
+                umls_strings.add(lowercase_s)
+                max_string_length = max(max_string_length, len(line[14]))
     print(f"Number of unique English strings in UMLS: {len(sui)}")
     print(f"Length of ongest string: {max_string_length}")
 
@@ -127,7 +129,7 @@ if __name__ == "__main__":
     print("Toy QuickUMLS")
     # Pseudomonas aeruginosa (Pa) infection
     start = time.time()
-    toy_string = "Pseudomonas aeruginosa (Pa) infection"
+    toy_string = "pseudomonas aeruginosa (pa) infection"
     threshold = 0.7
     toy_string_padded = toy_string.center(len(toy_string) + 4, '#')
     min_length = math.ceil((len(toy_string)+2) * threshold)
