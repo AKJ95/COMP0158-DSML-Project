@@ -86,7 +86,7 @@ if __name__ == "__main__":
             insertion_index = get_insertion_index_by_binary_search(dict_by_length[s_length+2][f"{s_padded[i:i+3]}"], s)
             current_dict = dict_by_length[s_length+2][f"{s_padded[i:i+3]}"]
             if insertion_index != len(current_dict) \
-                    and current_dict != s \
+                    and current_dict[insertion_index] != s \
                     or insertion_index == len(current_dict):
                 dict_by_length[s_length + 2][f"{s_padded[i:i + 3]}"].insert(insertion_index, s)
         # Report Progress
