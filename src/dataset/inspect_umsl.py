@@ -114,7 +114,7 @@ if __name__ == "__main__":
         features.extend(s_unigrams)
         if len(s_unigrams) > 1:
             for i in range(len(s_unigrams) - 1):
-                features.extend(" ".join([s_unigrams[i], s_unigrams[i+1]]))
+                features.append(" ".join([s_unigrams[i], s_unigrams[i+1]]))
         s_length = len(features)
         for gram in features:
             dict_by_length[s_length][gram].add(s)
@@ -155,7 +155,7 @@ if __name__ == "__main__":
     features.extend(s_unigrams)
     if len(s_unigrams) > 1:
         for i in range(len(s_unigrams) - 1):
-            features.extend(" ".join([s_unigrams[i], s_unigrams[i + 1]]))
+            features.append(" ".join([s_unigrams[i], s_unigrams[i + 1]]))
 
     min_length = math.ceil(len(features) * threshold)
     max_length = math.floor(len(features) / threshold)
