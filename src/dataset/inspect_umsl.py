@@ -87,22 +87,44 @@ if __name__ == "__main__":
     # Pseudomonas aeruginosa (Pa) infection
     start = time.time()
     toy_string = "Pseudomonas aeruginosa (Pa) infection"
-    threshold = 0.98
+    threshold = 0.7
     toy_string_padded = toy_string.center(len(toy_string) + 4, '#')
     min_length = math.ceil((len(toy_string)+2) * threshold)
     max_length = math.floor((len(toy_string)+2) / threshold)
     matched_flag = False
+
     for length in range(min_length, max_length+1):
         common_strings = []
         rho = threshold * (length + len(toy_string) + 2) / (1 + threshold)
-        for i in range(len(toy_string_padded) - 3):
-            if toy_string_padded[i:i+3] in dict_by_length[length].keys():
-                common_strings.extend(dict_by_length[length][toy_string_padded[i:i+3]])
-        string_counter = Counter(common_strings)
-        most_occurrences = string_counter.most_common(1)[0][1]
-        if most_occurrences >= rho:
-            matched_flag = True
+        features = [toy_string_padded[i:i+3] for i in range(len(toy_string_padded) - 3)]
+        features_sorted = sorted(features, key=(lambda x: len(dict_by_length[length][x])))
+        m = defaultdict(int)
+        for k in range(len(features_sorted) - round(rho) + 1):
+            for s in dict_by_length[length][features_sorted[k]]:
+                m[s] += 1
+        for k in range(len(features_sorted) - round(rho) + 1):
+            for s in m.keys():
+                if s in dict_by_length[length][features_sorted[k]]:
+                    m[s] += 1
+                if m[s] >= rho:
+                    matched_flag = True
+                    break
+            if matched_flag:
+                break
+        if matched_flag:
             break
+
+    # for length in range(min_length, max_length+1):
+    #     common_strings = []
+    #     rho = threshold * (length + len(toy_string) + 2) / (1 + threshold)
+    #     for i in range(len(toy_string_padded) - 3):
+    #         if toy_string_padded[i:i+3] in dict_by_length[length].keys():
+    #             common_strings.extend(dict_by_length[length][toy_string_padded[i:i+3]])
+    #     string_counter = Counter(common_strings)
+    #     most_occurrences = string_counter.most_common(1)[0][1]
+    #     if most_occurrences >= rho:
+    #         matched_flag = True
+    #         break
 
     end = time.time()
     duration = end - start
