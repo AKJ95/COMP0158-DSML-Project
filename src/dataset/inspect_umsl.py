@@ -40,6 +40,11 @@ def binary_search(sorted_list: list, target: str) -> bool:
         return False
 
 
+def get_insertion_index_by_binary_search(sorted_list: list, target: str) -> int:
+    index = bisect_left(sorted_list, target)
+    return index
+
+
 if __name__ == "__main__":
     cui = set()
     sui = set()
@@ -78,17 +83,14 @@ if __name__ == "__main__":
         s_padded = s.center(len(s) + 4, '#')
         s_length = len(s)
         for i in range(len(s_padded)-3):
-            if s not in dict_by_length[s_length+2][f"{s_padded[i:i+3]}"]:
-                dict_by_length[s_length+2][f"{s_padded[i:i+3]}"].append(s)
+            insertion_index = get_insertion_index_by_binary_search(dict_by_length[s_length+2][f"{s_padded[i:i+3]}"], s)
+            if insertion_index != len(dict_by_length[s_length+2][f"{s_padded[i:i+3]}"]) \
+                    and dict_by_length[s_length+2][f"{s_padded[i:i+3]}"][insertion_index] != s:
+                dict_by_length[s_length + 2][f"{s_padded[i:i + 3]}"].insert(insertion_index, s)
         # Report Progress
         count += 1
         if count == len(umls_strings) or count % 50000 == 0:
             print(f"Progress: {count}/{len(umls_strings)}; {(count/len(umls_strings)*100):.2f}%")
-
-    # Sort strings in each feature
-    for feature_dict in dict_by_length:
-        for feature in feature_dict:
-            feature_dict[feature].sort()
 
     end = time.time()
     print(end - start)
