@@ -110,9 +110,14 @@ if __name__ == "__main__":
 
         # Unigram token level
         s_unigrams = s.split()
-        s_length = len(s_unigrams)
-        for unigram in s_unigrams:
-            dict_by_length[s_length][unigram].add(s)
+        features = []
+        features.extend(s_unigrams)
+        if len(s_unigrams) > 1:
+            for i in range(len(s_unigrams) - 1):
+                features.extend(" ".join([s_unigrams[i], s_unigrams[i+1]]))
+        s_length = len(features)
+        for gram in features:
+            dict_by_length[s_length][gram].add(s)
 
         # Report Progress
         count += 1
@@ -145,7 +150,13 @@ if __name__ == "__main__":
     # max_length = math.floor((len(toy_string)+2) / threshold)
     # features = [toy_string_padded[i:i + 3] for i in range(len(toy_string_padded) - 3)]
 
-    features = toy_string.split()
+    s_unigrams = toy_string.split()
+    features = []
+    features.extend(s_unigrams)
+    if len(s_unigrams) > 1:
+        for i in range(len(s_unigrams) - 1):
+            features.extend(" ".join([s_unigrams[i], s_unigrams[i + 1]]))
+
     min_length = math.ceil(len(features) * threshold)
     max_length = math.floor(len(features) / threshold)
 
