@@ -97,19 +97,14 @@ if __name__ == "__main__":
     toy_dict = defaultdict(list)
     dict_by_length = []
     for _ in range(max_string_length + 3):
-        dict_by_length.append(defaultdict(list))
+        dict_by_length.append(defaultdict(set))
 
     count = 0
     for s in umls_strings:
         s_padded = s.center(len(s) + 4, '#')
         s_length = len(s)
         for i in range(len(s_padded)-3):
-            insertion_index = get_insertion_index_by_binary_search(dict_by_length[s_length+2][f"{s_padded[i:i+3]}"], s)
-            current_dict = dict_by_length[s_length+2][f"{s_padded[i:i+3]}"]
-            if insertion_index != len(current_dict) \
-                    and current_dict[insertion_index] != s \
-                    or insertion_index == len(current_dict):
-                dict_by_length[s_length + 2][f"{s_padded[i:i + 3]}"].insert(insertion_index, s)
+            dict_by_length[s_length+2][f"{s_padded[i:i+3]}"].add(s)
         # Report Progress
         count += 1
         if count == len(umls_strings) or count % 50000 == 0:
@@ -143,14 +138,14 @@ if __name__ == "__main__":
     for length in range(min_length, max_length+1):
         common_strings = []
         rho = threshold * (length + len(toy_string) + 2) / (1 + threshold)
-        m = defaultdict(int)
+        m = Counter()
         features_sorted = sorted(features, key=(lambda x: len(dict_by_length[length][x])))
         for k in range(len(features_sorted) - round(rho) + 1):
-            for s in dict_by_length[length][features_sorted[k]]:
-                m[s] += 1
+            m_k = Counter(s for s in dict_by_length[length][features_sorted[k]])
+            m += m_k
         for k in range(len(features_sorted) - round(rho) + 1, len(features_sorted)):
             for s in m.keys():
-                if binary_search(dict_by_length[length][features_sorted[k]], s):
+                if s in dict_by_length[length][features_sorted[k]]:
                     m[s] += 1
                 if m[s] >= rho:
                     matched_flag = True
