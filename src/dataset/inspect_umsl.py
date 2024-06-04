@@ -84,8 +84,10 @@ if __name__ == "__main__":
         s_length = len(s)
         for i in range(len(s_padded)-3):
             insertion_index = get_insertion_index_by_binary_search(dict_by_length[s_length+2][f"{s_padded[i:i+3]}"], s)
-            if insertion_index != len(dict_by_length[s_length+2][f"{s_padded[i:i+3]}"]) \
-                    and dict_by_length[s_length+2][f"{s_padded[i:i+3]}"][insertion_index] != s:
+            current_dict = dict_by_length[s_length+2][f"{s_padded[i:i+3]}"]
+            if insertion_index != len(current_dict) \
+                    and current_dict != s \
+                    or insertion_index == len(current_dict):
                 dict_by_length[s_length + 2][f"{s_padded[i:i + 3]}"].insert(insertion_index, s)
         # Report Progress
         count += 1
@@ -116,12 +118,12 @@ if __name__ == "__main__":
     max_length = math.floor((len(toy_string)+2) / threshold)
     matched_flag = False
     features = [toy_string_padded[i:i + 3] for i in range(len(toy_string_padded) - 3)]
-    features_sorted = sorted(features, key=(lambda x: len(dict_by_length[length][x])))
 
     for length in range(min_length, max_length+1):
         common_strings = []
         rho = threshold * (length + len(toy_string) + 2) / (1 + threshold)
         m = defaultdict(int)
+        features_sorted = sorted(features, key=(lambda x: len(dict_by_length[length][x])))
         for k in range(len(features_sorted) - round(rho) + 1):
             for s in dict_by_length[length][features_sorted[k]]:
                 m[s] += 1
