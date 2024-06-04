@@ -82,7 +82,7 @@ if __name__ == "__main__":
     for line in tqdm(open(MRCONSO_PATH), desc='Parsing UMLS concepts (MRCONSO.RRF)'):
         line = line.rstrip().split('|')
         if line[1] == "ENG":
-            lowercase_s = line[14].lowercase()
+            lowercase_s = line[14].lower()
             if lowercase_s not in umls_strings:
                 sui.add(line[5])
                 umls_strings.add(lowercase_s)
