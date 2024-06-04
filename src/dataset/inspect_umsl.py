@@ -85,7 +85,7 @@ if __name__ == "__main__":
             lowercase_s = line[14]
             sui.add(line[5])
             umls_strings.add(lowercase_s)
-            max_string_length = max(max_string_length, len(line[14]))
+            max_string_length = max(max_string_length, len(line[14].split()) * 2)
     print(f"Number of unique English strings in UMLS: {len(sui)}")
     print(f"Length of ongest string: {max_string_length}")
 
