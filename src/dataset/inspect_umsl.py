@@ -138,11 +138,11 @@ if __name__ == "__main__":
     for length in range(min_length, max_length+1):
         common_strings = []
         rho = threshold * (length + len(toy_string) + 2) / (1 + threshold)
-        m = Counter()
+        m = defaultdict(int)
         features_sorted = sorted(features, key=(lambda x: len(dict_by_length[length][x])))
         for k in range(len(features_sorted) - round(rho) + 1):
-            m_k = Counter(s for s in dict_by_length[length][features_sorted[k]])
-            m += m_k
+            for s in dict_by_length[length][features_sorted[k]]:
+                m[s] += 1
         for k in range(len(features_sorted) - round(rho) + 1, len(features_sorted)):
             for s in m.keys():
                 if s in dict_by_length[length][features_sorted[k]]:
