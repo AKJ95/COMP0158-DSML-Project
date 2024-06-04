@@ -82,11 +82,10 @@ if __name__ == "__main__":
     for line in tqdm(open(MRCONSO_PATH), desc='Parsing UMLS concepts (MRCONSO.RRF)'):
         line = line.rstrip().split('|')
         if line[1] == "ENG":
-            lowercase_s = line[14].lower()
-            if lowercase_s not in umls_strings:
-                sui.add(line[5])
-                umls_strings.add(lowercase_s)
-                max_string_length = max(max_string_length, len(line[14]))
+            lowercase_s = line[14]
+            sui.add(line[5])
+            umls_strings.add(lowercase_s)
+            max_string_length = max(max_string_length, len(line[14]))
     print(f"Number of unique English strings in UMLS: {len(sui)}")
     print(f"Length of ongest string: {max_string_length}")
 
@@ -142,10 +141,10 @@ if __name__ == "__main__":
         rho = threshold * (length + len(toy_string) + 2) / (1 + threshold)
         m = defaultdict(int)
         features_sorted = sorted(features, key=(lambda x: len(dict_by_length[length][x])))
-        for k in range(len(features_sorted) - round(rho) + 1):
+        for k in range(round(rho)):
             for s in dict_by_length[length][features_sorted[k]]:
                 m[s] += 1
-        for k in range(len(features_sorted) - round(rho) + 1, len(features_sorted)):
+        for k in range(round(rho), len(features_sorted)):
             for s in m.keys():
                 if s in dict_by_length[length][features_sorted[k]]:
                     m[s] += 1
