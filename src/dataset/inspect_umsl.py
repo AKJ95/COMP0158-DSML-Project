@@ -33,11 +33,32 @@ def get_definitions(source_filter: list) -> list:
 
 
 def binary_search(sorted_list: list, target: str) -> bool:
-    index = bisect_left(sorted_list, target)
-    if index != len(sorted_list) and sorted_list[index] == target:
-        return True
-    else:
-        return False
+    # index = bisect_left(sorted_list, target)
+    # if index != len(sorted_list) and sorted_list[index] == target:
+    #     return True
+    # else:
+    #     return False
+    low = 0
+    high = len(sorted_list) - 1
+
+    while low <= high:
+
+        mid = (high + low) // 2
+
+        # If x is greater, ignore left half
+        if sorted_list[mid] < target:
+            low = mid + 1
+
+        # If x is smaller, ignore right half
+        elif sorted_list[mid] > target:
+            high = mid - 1
+
+        # means x is present at mid
+        else:
+            return True
+
+    # If we reach here, then the element was not present
+    return False
 
 
 def get_insertion_index_by_binary_search(sorted_list: list, target: str) -> int:
