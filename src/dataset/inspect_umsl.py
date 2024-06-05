@@ -164,22 +164,26 @@ if __name__ == "__main__":
         common_strings = []
         # rho = threshold * (length + len(toy_string) + 2) / (1 + threshold)
         rho = threshold * (length + len(features)) / (1 + threshold)
-        m = defaultdict(int)
-        features_sorted = sorted(features, key=(lambda x: len(dict_by_length[length][x])))
-        for k in range(len(features_sorted) - round(rho) + 1):
-            for s in dict_by_length[length][features_sorted[k]]:
-                m[s] += 1
-        for k in range(len(features_sorted) - round(rho) + 1, len(features_sorted)):
-            for s in m.keys():
-                if s in dict_by_length[length][features_sorted[k]]:
-                    m[s] += 1
-                if m[s] >= rho:
-                    matched_flag = True
-                    break
-            if matched_flag:
-                break
-        if matched_flag:
-            break
+        # m = defaultdict(int)
+        # features_sorted = sorted(features, key=(lambda x: len(dict_by_length[length][x])))
+        # for k in range(len(features_sorted) - round(rho) + 1):
+        #     for s in dict_by_length[length][features_sorted[k]]:
+        #         m[s] += 1
+        # for k in range(len(features_sorted) - round(rho) + 1, len(features_sorted)):
+        #     for s in m.keys():
+        #         if s in dict_by_length[length][features_sorted[k]]:
+        #             m[s] += 1
+        #         if m[s] >= rho:
+        #             matched_flag = True
+        #             break
+        #     if matched_flag:
+        #         break
+        # if matched_flag:
+        #     break
+        for feature in features:
+            common_strings.extend(dict_by_length[length][feature])
+        string_count = Counter(common_strings)
+        matched_flag = string_count.most_common(1)[0][1] >= rho
 
     # for length in range(min_length, max_length+1):
     #     common_strings = []
