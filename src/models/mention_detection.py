@@ -169,7 +169,7 @@ if __name__ == "__main__":
     for ngram in ngrams:
         count += 1
         print(ngram)
-        if count > 10:
+        if count > 30:
             break
     print(f"Time elapsed: {end-start:.3f} seconds")
 

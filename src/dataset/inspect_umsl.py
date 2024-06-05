@@ -141,7 +141,7 @@ if __name__ == "__main__":
     print("Toy QuickUMLS")
     # Pseudomonas aeruginosa (Pa) infection
     start = time.time()
-    toy_string = "pseudomonas aeruginosa (pa) infection"
+    toy_string = "infection in cystic fibrosis"
     threshold = 0.6
     matched_flag = False
 
@@ -182,8 +182,11 @@ if __name__ == "__main__":
         #     break
         for feature in features:
             common_strings.extend(dict_by_length[length][feature])
-        string_count = Counter(common_strings)
-        matched_flag = string_count.most_common(1)[0][1] >= rho
+        if len(common_strings) > 0:
+            string_count = Counter(common_strings)
+            matched_flag = string_count.most_common(1)[0][1] >= rho
+        if matched_flag:
+            break
 
     # for length in range(min_length, max_length+1):
     #     common_strings = []
