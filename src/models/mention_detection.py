@@ -163,14 +163,18 @@ if __name__ == "__main__":
     nlp = spacy.load("en_core_web_sm")
     start = time.time()
     sentence = "Pseudomonas aeruginosa (Pa) infection in cystic fibrosis (CF) patients is associated with worse long-term pulmonary disease and shorter survival, and chronic Pa infection (CPA) is associated with reduced lung function, faster rate of lung decline, increased rates of exacerbations and shorter survival. By using exome sequencing and extreme phenotype design, it was recently shown that isoforms of dynactin 4 (DCTN4) may influence Pa infection in CF, leading to worse respiratory disease. The purpose of this study was to investigate the role of DCTN4 missense variants on Pa infection incidence, age at first Pa infection and chronic Pa infection incidence in a cohort of adult CF patients from a single centre. Polymerase chain reaction and direct sequencing were used to screen DNA samples for DCTN4 variants. A total of 121 adult CF patients from the Cochin Hospital CF centre have been included, all of them carrying two CFTR defects: 103 developed at least 1 pulmonary infection with Pa, and 68 patients of them had CPA. DCTN4 variants were identified in 24% (29/121) CF patients with Pa infection and in only 17% (3/18) CF patients with no Pa infection. Of the patients with CPA, 29% (20/68) had DCTN4 missense variants vs 23% (8/35) in patients without CPA. Interestingly, p.Tyr263Cys tend to be more frequently observed in CF patients with CPA than in patients without CPA (4/68 vs 0/35), and DCTN4 missense variants tend to be more frequent in male CF patients with CPA bearing two class II mutations than in male CF patients without CPA bearing two class II mutations (P = 0.06). Our observations reinforce that DCTN4 missense variants, especially p.Tyr263Cys, may be involved in the pathogenesis of CPA in male CF."
-    ngrams = match(sentence)
-    end = time.time()
-    count = 0
-    for ngram in ngrams:
-        count += 1
-        print(ngram)
-        if count > 30:
-            break
-    print(f"Time elapsed: {end-start:.3f} seconds")
+    # ngrams = match(sentence)
+    # end = time.time()
+    # count = 0
+    # for ngram in ngrams:
+    #     count += 1
+    #     print(ngram)
+    #     if count > 30:
+    #         break
+    # print(f"Time elapsed: {end-start:.3f} seconds")
+    doc = nlp(sentence)
+
+    for ent in doc.ents:
+        print(ent.text, ent.start_char, ent.end_char, ent.label_)
 
 
