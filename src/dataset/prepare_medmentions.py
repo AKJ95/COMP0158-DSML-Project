@@ -1,4 +1,5 @@
 # Import built-in libraries
+import csv
 from enum import Enum
 import re
 
@@ -32,6 +33,7 @@ if __name__ == "__main__":
         sentence_starting_indices = []
         current_token_index = 0
         current_sentence_id = 0
+        cuis = set()
         for line in tqdm(f, desc="Parsing MedMentions data..."):
             # Update status of type of the line being processed
             if is_pubid(line[:8]) and line[:8] != current_pubid:
@@ -105,3 +107,13 @@ if __name__ == "__main__":
         print(f"Number of PubMed articles: {len(documents)}")
         print(f"Number of sentences: {current_sentence_id}")
         print(f"Number of tokens: {len(preprocessed_lines)}")
+
+    print("Writing csv file for NER training...")
+    with open(MEDMENTIONS_NER_PATH, 'w', newline='') as f:
+        csv_writer = csv.writer(f, delimiter=',')
+        header = ["PubMed ID", "Sentence ID", "Token", "POS", "Tag"]
+
+        csv_writer.writerow(header)
+        for row in preprocessed_lines:
+            csv_writer.writerow(row)
+    print("Completed writing csv file.")
