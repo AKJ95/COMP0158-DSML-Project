@@ -8,23 +8,35 @@ import spacy
 from tqdm import tqdm
 
 # Import project code
-from storage_config import *
+from configs.load_configs import *
 
 
+# Enum to keep track of the status of the current line being read
 class LineStatus(Enum):
     ANNOTATION = 0
     TITLE = 1
     ABSTRACT = 2
 
 
+# Function to check if a string is a PubMed ID
 def is_pubid(pubid: str) -> bool:
     match_flag = re.match(pattern=r'^[0-9]{8}$', string=pubid) is not None
     return match_flag
 
 
+# Main function: Parse MedMentions data and write to a csv file
 if __name__ == "__main__":
+    # Flag to determine which version of the MedMentions data to use
+    st21pv_flag = True
+    # Load the root directory for raw MedMentions data
+    raw_medmentions_root = load_raw_medmentions_root(st21pv_flag=st21pv_flag)
+    # Load the path for processed MedMentions data
+    processed_medmentions_path = load_processed_medmentions_ner_path(st21pv_flag=st21pv_flag)
+
+    # Load the spaCy model for tokenisation
     nlp = spacy.load("en_core_web_sm")
-    with open(MEDMENTIONS_FULL_PATH) as f:
+    with open(raw_medmentions_root) as f:
+        # Initialise variables
         status = LineStatus.ANNOTATION
         current_pubid = ""
         documents = []
@@ -34,6 +46,8 @@ if __name__ == "__main__":
         current_token_index = 0
         current_sentence_id = 0
         cuis = set()
+
+        # Iterate through each line in the MedMentions data
         for line in tqdm(f, desc="Parsing MedMentions data..."):
             # Update status of type of the line being processed
             if is_pubid(line[:8]) and line[:8] != current_pubid:
@@ -43,6 +57,8 @@ if __name__ == "__main__":
             elif status == LineStatus.ABSTRACT:
                 status = LineStatus.ANNOTATION
 
+            # Process the line based on its status
+            # If the line is a title, process the previous document and update variables for the new document
             if status == LineStatus.TITLE:
                 # Process any remaining tokens from the previous document
                 for i in range(current_token_index, len(tokens)):
@@ -54,6 +70,8 @@ if __name__ == "__main__":
                 current_pubid = line[:8]
                 title = line.split("|")[-1][:-1]
                 documents.append(title)
+            # If the line is an abstract, concatenate it with the title
+            # and process the tokens of the combined document
             elif status == LineStatus.ABSTRACT:
                 # Retrieve abstract and concatenate with its title.
                 num_tokens_in_title = len(list(nlp(documents[-1])))
@@ -79,17 +97,29 @@ if __name__ == "__main__":
                     if token_index < starting_index:
                         if i in sentence_starting_indices:
                             current_sentence_id += 1
-                        preprocessed_lines.append([current_pubid, current_sentence_id, token_text, tokens[i].pos_, "O"])
+                        preprocessed_lines.append([current_pubid,
+                                                   current_sentence_id,
+                                                   token_text,
+                                                   tokens[i].pos_,
+                                                   "O"])
                     # The token that matches the starting index of the annotation should be recorded as "B"
                     elif token_index == starting_index:
                         if i in sentence_starting_indices:
                             current_sentence_id += 1
-                        preprocessed_lines.append([current_pubid, current_sentence_id, token_text, tokens[i].pos_, "B"])
+                        preprocessed_lines.append([current_pubid,
+                                                   current_sentence_id,
+                                                   token_text,
+                                                   tokens[i].pos_,
+                                                   "B-Entity"])
                     # Any tokens after the starting index but in front of the ending index should be recorded as "I"
                     elif token_index < ending_index:
                         if i in sentence_starting_indices:
                             current_sentence_id += 1
-                        preprocessed_lines.append([current_pubid, current_sentence_id, token_text, tokens[i].pos_, "I"])
+                        preprocessed_lines.append([current_pubid,
+                                                   current_sentence_id,
+                                                   token_text,
+                                                   tokens[i].pos_,
+                                                   "I-Entity"])
                     # If the token appears after the annotation, stop parsing the tokens until the next line is read.
                     else:
                         current_token_index = i  # Save the current position of processed token.
@@ -109,7 +139,7 @@ if __name__ == "__main__":
         print(f"Number of tokens: {len(preprocessed_lines)}")
 
     print("Writing csv file for NER training...")
-    with open(MEDMENTIONS_NER_PATH, 'w', newline='') as f:
+    with open(processed_medmentions_path, 'w', newline='') as f:
         csv_writer = csv.writer(f, delimiter=',')
         header = ["PubMed ID", "Sentence ID", "Token", "POS", "Tag"]
 

@@ -1,0 +1,29 @@
+# src/config.yaml
+# This is a sample configuration file
+
+# COMP0158 - DSML Project
+
+# Data
+data:
+  # Absolute path to the project's root directory
+  # Change this name to the absolute path of the root directory on your machine.
+  root_dir: /Volumes/Buffalo/UCL/COMP0158/codebase
+
+  # Relative paths to the data directories
+  raw_data:
+    umls_2024: data/raw/2024AA-full/2024AA/
+    medmentions_full_root: data/raw/MedMentions-master/full/data/
+    medmentions_st21pv_root: data/raw/MedMentions-master/st21pv/data
+  processed_data:
+    medmentions_full: data/processed/medmentions_full_ner.csv
+    medmentions_st21pv: data/processed/medmentions_st21pv_ner.csv
+  interim_data: data/interim
+  external_data: data/external
+
+ner:
+  model_name: "microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract"
+  batch_size: 2
+  max_len: 128
+  num_epochs: 1
+  learning_rate: 0.00001
+  max_grad_norm: 10.0
