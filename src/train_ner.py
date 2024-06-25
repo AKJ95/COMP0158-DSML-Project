@@ -1,3 +1,6 @@
+# Load built-in libraries
+import time
+
 # Load external libraries
 import pandas as pd
 from torch.utils.data import DataLoader
@@ -23,7 +26,6 @@ def preprocess_medmentions_df(df: pd.DataFrame) -> pd.DataFrame:
         lambda x: ' '.join(x))
     df['word_labels'] = df[['Sentence ID', 'Token', 'Tag']].groupby(['Sentence ID'])['Tag'].transform(
         lambda x: ','.join(x))
-
     return df
 
 
@@ -49,6 +51,8 @@ if __name__ == "__main__":
 
     label2id = {k: v for v, k in enumerate(medmentions_df.Tag.unique())}
     id2label = {v: k for v, k in enumerate(medmentions_df.Tag.unique())}
+
+    medmentions_df = medmentions_df[["sentence", "word_labels"]].drop_duplicates().reset_index(drop=True)
 
     train_size = 0.8
     train_dataset = medmentions_df.sample(frac=train_size, random_state=200)
@@ -86,7 +90,11 @@ if __name__ == "__main__":
 
     optimizer = torch.optim.Adam(params=model.parameters(), lr=config.learning_rate)
 
+    print("Training starts...")
+    start = time.time()
     for epoch in range(config.num_epochs):
         print(f"Training epoch: {epoch + 1}")
         model, optimizer = train(model, training_loader, optimizer, device, config.max_grad_norm)
         labels, predictions, ner_labels, ner_preds = valid(model, testing_loader, device, id2label)
+    end = time.time()
+    print(f"Training took {(end - start)/60:.1f} minutes.")

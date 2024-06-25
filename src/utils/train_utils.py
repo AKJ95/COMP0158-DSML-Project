@@ -45,7 +45,7 @@ def train(model, training_loader, optimizer, device, max_grad_norm) -> Tuple[tor
 
         if idx % 100 == 0:
             loss_step = tr_loss / nb_tr_steps
-            print(f"Training loss per 100 training steps: {loss_step}")
+            print(f"Training loss per 100 training steps at step {idx}: {loss_step}")
 
         targets, predictions = compute_accuracy(model, targets, tr_logits, mask)
 
@@ -93,7 +93,7 @@ def valid(model, testing_loader, device, id2label) -> Tuple[list, list, list, li
 
             if idx % 100 == 0:
                 loss_step = eval_loss / nb_eval_steps
-                print(f"Validation loss per 100 evaluation steps: {loss_step}")
+                print(f"Validation loss per 100 evaluation steps at step {idx}: {loss_step}")
 
             # compute evaluation accuracy
             targets, predictions = compute_accuracy(model, targets, eval_logits, mask)
