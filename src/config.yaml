@@ -15,8 +15,8 @@ data:
     medmentions_full_root: data/raw/MedMentions-master/full/data/
     medmentions_st21pv_root: data/raw/MedMentions-master/st21pv/data
   processed_data:
-    medmentions_full: data/processed/medmentions_full_ner.csv
-    medmentions_st21pv: data/processed/medmentions_st21pv_ner.csv
+    medmentions_full: data/processed/medmentions_full_ner
+    medmentions_st21pv: data/processed/medmentions_st21pv_ner
   interim_data: data/interim
   external_data: data/external
 

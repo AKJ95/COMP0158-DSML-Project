@@ -45,23 +45,33 @@ if __name__ == "__main__":
 
     # Load the MedMentions dataset.
     # Set keep_default_na=False to prevent "NaN", "null" etc. from being intepreted as NaN.
-    medmentions_path = load_processed_medmentions_ner_path(st21pv_flag=True)
-    medmentions_df = pd.read_csv(medmentions_path, encoding='unicode_escape', keep_default_na=False)
-    medmentions_df = preprocess_medmentions_df(medmentions_df)
+    train_path = load_processed_medmentions_ner_path("trng", st21pv_flag=True)
+    dev_path = load_processed_medmentions_ner_path("dev", st21pv_flag=True)
+    train_dataset = pd.read_csv(train_path, encoding='unicode_escape', keep_default_na=False)
+    dev_dataset = pd.read_csv(dev_path, encoding='unicode_escape', keep_default_na=False)
+    train_dataset = preprocess_medmentions_df(train_dataset)
+    dev_dataset = preprocess_medmentions_df(dev_dataset)
+    # medmentions_path = load_processed_medmentions_ner_path(st21pv_flag=True)
+    # medmentions_df = pd.read_csv(medmentions_path, encoding='unicode_escape', keep_default_na=False)
+    # medmentions_df = preprocess_medmentions_df(medmentions_df)
 
-    label2id = {k: v for v, k in enumerate(medmentions_df.Tag.unique())}
-    id2label = {v: k for v, k in enumerate(medmentions_df.Tag.unique())}
+    # label2id = {k: v for v, k in enumerate(medmentions_df.Tag.unique())}
+    # id2label = {v: k for v, k in enumerate(medmentions_df.Tag.unique())}
+    label2id = {k: v for v, k in enumerate(train_dataset.Tag.unique())}
+    id2label = {v: k for v, k in enumerate(train_dataset.Tag.unique())}
 
-    medmentions_df = medmentions_df[["sentence", "word_labels"]].drop_duplicates().reset_index(drop=True)
+    # medmentions_df = medmentions_df[["sentence", "word_labels"]].drop_duplicates().reset_index(drop=True)
+    train_dataset = train_dataset[["sentence", "word_labels"]].drop_duplicates().reset_index(drop=True)
+    dev_dataset = dev_dataset[["sentence", "word_labels"]].drop_duplicates().reset_index(drop=True)
 
-    train_size = 0.8
-    train_dataset = medmentions_df.sample(frac=train_size, random_state=200)
-    test_dataset = medmentions_df.drop(train_dataset.index).reset_index(drop=True)
-    train_dataset = train_dataset.reset_index(drop=True)
+    # train_size = 0.8
+    # train_dataset = medmentions_df.sample(frac=train_size, random_state=200)
+    # dev_dataset = medmentions_df.drop(train_dataset.index).reset_index(drop=True)
+    # train_dataset = train_dataset.reset_index(drop=True)
 
-    print("FULL Dataset: {}".format(medmentions_df.shape))
+    # print("FULL Dataset: {}".format(medmentions_df.shape))
     print("TRAIN Dataset: {}".format(train_dataset.shape))
-    print("TEST Dataset: {}".format(test_dataset.shape))
+    print("TEST Dataset: {}".format(dev_dataset.shape))
 
     # Load the tokenizer and model
     tokenizer = AutoTokenizer.from_pretrained(ner_model_name)
@@ -73,20 +83,20 @@ if __name__ == "__main__":
     model.to(device)
 
     training_set = MedMentionsDataset(train_dataset, tokenizer, config.max_length, label2id)
-    testing_set = MedMentionsDataset(test_dataset, tokenizer, config.max_length, label2id)
+    dev_set = MedMentionsDataset(dev_dataset, tokenizer, config.max_length, label2id)
 
     train_params = {'batch_size': config.batch_size,
                     'shuffle': config.train_shuffle,
                     'num_workers': config.num_workers
                     }
 
-    test_params = {'batch_size': config.batch_size,
+    dev_params = {'batch_size': config.batch_size,
                    'shuffle': False,
                    'num_workers': config.num_workers
-                   }
+                  }
 
     training_loader = DataLoader(training_set, **train_params)
-    testing_loader = DataLoader(testing_set, **test_params)
+    dev_loader = DataLoader(dev_set, **dev_params)
 
     optimizer = torch.optim.Adam(params=model.parameters(), lr=config.learning_rate)
 
@@ -95,6 +105,6 @@ if __name__ == "__main__":
     for epoch in range(config.num_epochs):
         print(f"Training epoch: {epoch + 1}")
         model, optimizer = train(model, training_loader, optimizer, device, config.max_grad_norm, id2label)
-        labels, predictions, ner_labels, ner_preds = valid(model, testing_loader, device, id2label)
+        labels, predictions, ner_labels, ner_preds = valid(model, dev_loader, device, id2label)
     end = time.time()
     print(f"Training took {(end - start)/60:.1f} minutes.")

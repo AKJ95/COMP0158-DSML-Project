@@ -40,7 +40,7 @@ def load_raw_medmentions_root(st21pv_flag=False) -> str:
         return os.path.join(PROJECT_ROOT, mm_root, "corpus_pubtator.txt")
 
 
-def load_processed_medmentions_ner_path(st21pv_flag=False) -> str:
+def load_processed_medmentions_ner_path(split_label: str, st21pv_flag=False) -> str:
     """
     Load the root directory for processed MedMentions data.
 
@@ -56,7 +56,17 @@ def load_processed_medmentions_ner_path(st21pv_flag=False) -> str:
     with open(CONFIG_PATH, 'r') as f:
         config = yaml.safe_load(f)
         mm_path = config["data"]["processed_data"][version]
-        return os.path.join(PROJECT_ROOT, mm_path)
+        return os.path.join(PROJECT_ROOT, f"{mm_path}_{split_label}.csv")
+
+
+def load_pubmed_ids(split_label: str) -> list[str]:
+    with open(CONFIG_PATH, 'r') as f:
+        config = yaml.safe_load(f)
+        mm_root = config["data"]["raw_data"]["medmentions_full_root"]
+        file_path = os.path.join(PROJECT_ROOT, mm_root, f"corpus_pubtator_pmids_{split_label}.txt")
+    with open(file_path, 'r') as file:
+        pubmed_ids = [line.strip() for line in file]
+    return pubmed_ids
 
 
 def load_ner_model_name() -> str:
