@@ -1,37 +1,48 @@
+# Import built-in libraries
 from typing import Tuple
 
+# Import external libraries
+from nervaluate import Evaluator
 import torch
 from torchmetrics import Accuracy
 
 
-def get_batch_data(batch, device):
+def get_batch_data(batch, device) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     ids = batch['ids'].to(device, dtype=torch.long)
     mask = batch['mask'].to(device, dtype=torch.long)
     targets = batch['targets'].to(device, dtype=torch.long)
     return ids, mask, targets
 
 
-def forward_pass(model, ids, mask, targets):
+def forward_pass(model, ids, mask, targets) -> Tuple[torch.Tensor, torch.Tensor]:
     outputs = model(input_ids=ids, attention_mask=mask, labels=targets)
     loss, logits = outputs.loss, outputs.logits
     return loss, logits
 
 
-def compute_accuracy(model, targets, logits, mask):
+def compute_accuracy(model, targets, logits, mask) -> Tuple[torch.Tensor, torch.Tensor]:
     flattened_targets = targets.view(-1)
     active_logits = logits.view(-1, model.num_labels)
-    flattened_predictions = torch.argmax(active_logits, axis=1)
+    flattened_predictions = torch.argmax(active_logits, dim=1)
     active_accuracy = mask.view(-1) == 1
     targets = torch.masked_select(flattened_targets, active_accuracy)
     predictions = torch.masked_select(flattened_predictions, active_accuracy)
     return targets, predictions
 
 
+def compute_entity_level_performance(labels: list[list[str]], predictions: list[list[str]]) -> dict:
+    evaluator = Evaluator(labels, predictions, tags=["Entity"], loader="list")
+    performance_dict, _, _, _ = evaluator.evaluate()
+    return performance_dict
+
+
 # Defining the training function on the 80% of the dataset for tuning the bert model
-def train(model, training_loader, optimizer, device, max_grad_norm) -> Tuple[torch.nn.Module, torch.optim.Optimizer]:
+def train(model, training_loader, optimizer, device, max_grad_norm, id2label) -> Tuple[torch.nn.Module,
+                                                                                       torch.optim.Optimizer]:
     tr_loss, tr_accuracy = 0, 0
     nb_tr_examples, nb_tr_steps = 0, 0
     tr_preds, tr_labels = [], []
+    nervaluate_preds, nervaluate_labels = [], []
     # put model in training mode
     model.train()
 
@@ -52,6 +63,9 @@ def train(model, training_loader, optimizer, device, max_grad_norm) -> Tuple[tor
         tr_preds.extend(predictions)
         tr_labels.extend(targets)
 
+        nervaluate_labels.append([id2label[tag_id.item()] for tag_id in targets])
+        nervaluate_preds.append([id2label[tag_id.item()] for tag_id in predictions])
+
         accuracy_score = Accuracy(task="multiclass", num_classes=model.num_labels)
         tmp_tr_accuracy = accuracy_score(targets.cpu(), predictions.cpu())
         tr_accuracy += tmp_tr_accuracy
@@ -70,10 +84,15 @@ def train(model, training_loader, optimizer, device, max_grad_norm) -> Tuple[tor
     tr_accuracy = tr_accuracy / nb_tr_steps
     print(f"Training loss epoch: {epoch_loss}")
     print(f"Training accuracy epoch: {tr_accuracy}")
+    entity_level_performance = compute_entity_level_performance(nervaluate_labels, nervaluate_preds)
+    print("Entity level performance: ", entity_level_performance)
     return model, optimizer
 
 
 def valid(model, testing_loader, device, id2label) -> Tuple[list, list, list, list]:
+    """
+    Function to evaluate the model on the dataset
+    """
     # put model in evaluation mode
     model.eval()
 
@@ -111,12 +130,11 @@ def valid(model, testing_loader, device, id2label) -> Tuple[list, list, list, li
     labels = [id2label[tag_id.item()] for tag_id in eval_labels]
     predictions = [id2label[tag_id.item()] for tag_id in eval_preds]
 
-    print(labels)
-    print(predictions)
-
     eval_loss = eval_loss / nb_eval_steps
     eval_accuracy = eval_accuracy / nb_eval_steps
     print(f"Validation Loss: {eval_loss}")
     print(f"Validation Accuracy: {eval_accuracy}")
+    entity_level_performance = compute_entity_level_performance(nervaluate_labels, nervaluate_preds)
+    print("Entity level performance: ", entity_level_performance)
 
     return labels, predictions, nervaluate_labels, nervaluate_preds

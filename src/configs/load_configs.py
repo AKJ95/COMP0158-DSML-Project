@@ -17,6 +17,8 @@ class NERTrainingConfiguration:
             self.num_epochs = config["ner"]["num_epochs"]
             self.learning_rate = config["ner"]["learning_rate"]
             self.max_grad_norm = config["ner"]["max_grad_norm"]
+            self.num_workers = config["ner"]["num_workers"]
+            self.train_shuffle = config["ner"]["train_shuffle"]
 
 
 def load_raw_medmentions_root(st21pv_flag=False) -> str:

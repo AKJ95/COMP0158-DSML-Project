@@ -76,13 +76,13 @@ if __name__ == "__main__":
     testing_set = MedMentionsDataset(test_dataset, tokenizer, config.max_length, label2id)
 
     train_params = {'batch_size': config.batch_size,
-                    'shuffle': True,
-                    'num_workers': 0
+                    'shuffle': config.train_shuffle,
+                    'num_workers': config.num_workers
                     }
 
     test_params = {'batch_size': config.batch_size,
-                   'shuffle': True,
-                   'num_workers': 0
+                   'shuffle': False,
+                   'num_workers': config.num_workers
                    }
 
     training_loader = DataLoader(training_set, **train_params)
@@ -94,7 +94,7 @@ if __name__ == "__main__":
     start = time.time()
     for epoch in range(config.num_epochs):
         print(f"Training epoch: {epoch + 1}")
-        model, optimizer = train(model, training_loader, optimizer, device, config.max_grad_norm)
+        model, optimizer = train(model, training_loader, optimizer, device, config.max_grad_norm, id2label)
         labels, predictions, ner_labels, ner_preds = valid(model, testing_loader, device, id2label)
     end = time.time()
     print(f"Training took {(end - start)/60:.1f} minutes.")
