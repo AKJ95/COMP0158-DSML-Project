@@ -29,3 +29,4 @@ ner:
   max_grad_norm: 10.0
   num_workers: 4
   train_shuffle: True
+  dropout_prob: 0.5

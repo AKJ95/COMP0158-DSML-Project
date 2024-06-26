@@ -3,6 +3,7 @@ import time
 
 # Load external libraries
 import pandas as pd
+import torch.nn as nn
 from torch.utils.data import DataLoader
 from transformers import AutoTokenizer, AutoModelForTokenClassification
 
@@ -85,6 +86,7 @@ if __name__ == "__main__":
                                                             id2label=id2label,
                                                             label2id=label2id
                                                             )
+    model.dropout = nn.Dropout(p=config.dropout_prob, inplace=False)
     model.to(device)
 
     training_set = MedMentionsDataset(train_dataset, tokenizer, config.max_length, label2id)

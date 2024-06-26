@@ -19,6 +19,7 @@ class NERTrainingConfiguration:
             self.max_grad_norm = config["ner"]["max_grad_norm"]
             self.num_workers = config["ner"]["num_workers"]
             self.train_shuffle = config["ner"]["train_shuffle"]
+            self.dropout_prob = config["ner"]["dropout_prob"]
 
 
 def load_raw_medmentions_root(st21pv_flag=False) -> str:
