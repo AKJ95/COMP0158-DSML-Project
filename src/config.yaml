@@ -22,9 +22,9 @@ data:
 
 ner:
   model_name: "microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract"
-  batch_size: 2
+  batch_size: 4
   max_len: 128
-  num_epochs: 1
+  num_epochs: 5
   learning_rate: 0.00001
   max_grad_norm: 10.0
   num_workers: 4
