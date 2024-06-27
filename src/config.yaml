@@ -27,6 +27,6 @@ ner:
   num_epochs: 5
   learning_rate: 0.00001
   max_grad_norm: 10.0
-  num_workers: 4
+  num_workers: 0
   train_shuffle: True
   dropout_prob: 0.5

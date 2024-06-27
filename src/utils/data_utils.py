@@ -43,7 +43,8 @@ class MedMentionsDataset(Dataset):
         return {
             'ids': torch.tensor(ids, dtype=torch.long),
             'mask': torch.tensor(attn_mask, dtype=torch.long),
-            'targets': torch.tensor(label_ids, dtype=torch.long)
+            'targets': torch.tensor(label_ids, dtype=torch.long),
+            'tokens': tokenized_sentence
         }
 
     def __len__(self):

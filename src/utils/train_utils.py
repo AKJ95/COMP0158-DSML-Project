@@ -36,6 +36,12 @@ def compute_entity_level_performance(labels: list[list[str]], predictions: list[
     return performance_dict
 
 
+def transpose_and_flatten_2d_list(lst):
+    transposed = [list(i) for i in zip(*lst)]
+    flattened = [item for sublist in transposed for item in sublist if item != '[PAD]']
+    return flattened
+
+
 # Defining the training function on the 80% of the dataset for tuning the bert model
 def train(model, training_loader, optimizer, device, max_grad_norm, id2label) -> Tuple[torch.nn.Module,
                                                                                        torch.optim.Optimizer]:
@@ -63,8 +69,28 @@ def train(model, training_loader, optimizer, device, max_grad_norm, id2label) ->
         tr_preds.extend(predictions)
         tr_labels.extend(targets)
 
-        nervaluate_labels.append([id2label[tag_id.item()] for tag_id in targets])
-        nervaluate_preds.append([id2label[tag_id.item()] for tag_id in predictions])
+        # print(ids.shape)
+        # print(ids[0])
+        # print(mask[0])
+        # print(targets.shape)
+        # print(predictions.shape)
+        # print(len(batch['tokens']))
+        tokens = transpose_and_flatten_2d_list(batch['tokens'])
+        word_level_predictions = []
+        word_level_targets = []
+        wp_preds = list(zip(tokens, predictions))
+        for index in range(len(wp_preds)):
+            if (wp_preds[index][0].startswith("##")) or (wp_preds[index][0] in ['[CLS]', '[SEP]', '[PAD]']):
+                # skip prediction
+                continue
+            else:
+                word_level_predictions.append(wp_preds[index][1])
+                word_level_targets.append(targets[index])
+        # print(len(word_level_predictions))
+        # print(len(word_level_targets))
+        # print(type(word_level_targets[0]))
+        nervaluate_labels.append([id2label[tag_id.item()] for tag_id in word_level_targets])
+        nervaluate_preds.append([id2label[tag_id.item()] for tag_id in word_level_predictions])
 
         accuracy_score = Accuracy(task="multiclass", num_classes=model.num_labels)
         tmp_tr_accuracy = accuracy_score(targets.cpu(), predictions.cpu())
@@ -120,8 +146,19 @@ def valid(model, testing_loader, device, id2label) -> Tuple[list, list, list, li
             eval_labels.extend(targets)
             eval_preds.extend(predictions)
 
-            nervaluate_labels.append([id2label[tag_id.item()] for tag_id in targets])
-            nervaluate_preds.append([id2label[tag_id.item()] for tag_id in predictions])
+            tokens = transpose_and_flatten_2d_list(batch['tokens'])
+            word_level_predictions = []
+            word_level_targets = []
+            wp_preds = list(zip(tokens, predictions))
+            for index in range(len(wp_preds)):
+                if (wp_preds[index][0].startswith("##")) or (wp_preds[index][0] in ['[CLS]', '[SEP]', '[PAD]']):
+                    # skip prediction
+                    continue
+                else:
+                    word_level_predictions.append(wp_preds[index][1])
+                    word_level_targets.append(targets[index])
+            nervaluate_labels.append([id2label[tag_id.item()] for tag_id in word_level_targets])
+            nervaluate_preds.append([id2label[tag_id.item()] for tag_id in word_level_predictions])
 
             accuracy_score = Accuracy(task="multiclass", num_classes=model.num_labels)
             tmp_eval_accuracy = accuracy_score(targets.cpu(), predictions.cpu())
