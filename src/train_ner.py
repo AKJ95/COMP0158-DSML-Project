@@ -125,6 +125,7 @@ if __name__ == "__main__":
     labels, predictions, ner_labels, ner_preds = valid(model, test_loader, device, id2label)
     end = time.time()
     print(f"Training took {(end - start) / 60:.1f} minutes.")
-    print("Saving model...")
+    print("Saving model and tokenizer...")
     torch.save(model.state_dict(), config.model_path)
+    tokenizer.save_pretrained(config.tokenizer_path)
     print("Model saved.")

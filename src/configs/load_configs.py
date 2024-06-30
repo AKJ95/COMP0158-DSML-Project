@@ -21,6 +21,7 @@ class NERTrainingConfiguration:
             self.train_shuffle = config["ner"]["train_shuffle"]
             self.dropout_prob = config["ner"]["dropout_prob"]
             self.model_path = os.path.join(PROJECT_ROOT, config["ner"]["model_path"])
+            self.tokenizer_path = os.path.join(PROJECT_ROOT, config["ner"]["tokenizer_path"])
 
 
 def load_raw_medmentions_root(st21pv_flag=False) -> str:
