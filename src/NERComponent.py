@@ -33,4 +33,4 @@ if __name__ == "__main__":
     ner_component = NERComponent()
     sentences = ["The patient was prescribed 100mg of ibuprofen for pain relief.",
                  "The patient was prescribed 500mg of amoxicillin for infection."]
-    print(ner_component.predict(sentences)
+    print(ner_component.predict(sentences))
