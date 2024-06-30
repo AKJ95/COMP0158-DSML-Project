@@ -3,6 +3,7 @@ import time
 
 # Load external libraries
 import pandas as pd
+import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
 from transformers import AutoTokenizer, AutoModelForTokenClassification
@@ -124,3 +125,6 @@ if __name__ == "__main__":
     labels, predictions, ner_labels, ner_preds = valid(model, test_loader, device, id2label)
     end = time.time()
     print(f"Training took {(end - start) / 60:.1f} minutes.")
+    print("Saving model...")
+    torch.save(model.state_dict(), config.model_path)
+    print("Model saved.")
