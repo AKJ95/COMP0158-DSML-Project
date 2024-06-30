@@ -27,8 +27,15 @@ class NERComponent:
         inputs = self.tokenizer(texts, padding=True, truncation=True, max_length=512, return_tensors="pt")
         with torch.no_grad():
             outputs = self.model(**inputs)
-        print(outputs)
-
+        logits = outputs.logits
+        predictions = torch.argmax(logits, dim=2)
+        results = []
+        for i in range(len(texts)):
+            result = []
+            for j in range(len(texts[i])):
+                result.append(self.id2label[predictions[i][j].item()])
+            results.append(result)
+        return results
 
 
 if __name__ == "__main__":
