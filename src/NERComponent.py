@@ -21,12 +21,16 @@ class NERComponent:
                                                                      label2id=self.label2id
                                                                      )
         self.model.load_state_dict(torch.load(self.model_path))
-
-    def predict(self, text: str):
         self.model.eval()
+
+    def predict(self, texts: list[str]):
+        inputs = self.tokenizer(texts, padding=True, truncation=True, max_length=512, return_tensors="pt")
+        print(inputs)
+
 
 
 if __name__ == "__main__":
     ner_component = NERComponent()
-    print(ner_component.tokenizer)
-    print(ner_component.model)
+    sentences = ["The patient was prescribed 100mg of ibuprofen for pain relief.",
+                 "The patient was prescribed 500mg of amoxicillin for infection."]
+    print(ner_component.predict(sentences)
