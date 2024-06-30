@@ -22,6 +22,8 @@ class NERTrainingConfiguration:
             self.dropout_prob = config["ner"]["dropout_prob"]
             self.model_path = os.path.join(PROJECT_ROOT, config["ner"]["model_path"])
             self.tokenizer_path = os.path.join(PROJECT_ROOT, config["ner"]["tokenizer_path"])
+            self.label2id = {'B-Entity': 0, 'O': 1, 'I-Entity': 2}
+            self.id2label = {0: 'B-Entity', 1: 'O', 2: 'I-Entity'}
 
 
 def load_raw_medmentions_root(st21pv_flag=False) -> str:
