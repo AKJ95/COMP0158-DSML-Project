@@ -25,7 +25,9 @@ class NERComponent:
 
     def predict(self, texts: list[str]):
         inputs = self.tokenizer(texts, padding=True, truncation=True, max_length=512, return_tensors="pt")
-        print(inputs)
+        with torch.no_grad():
+            outputs = self.model(**inputs)
+        print(outputs)
 
 
 
