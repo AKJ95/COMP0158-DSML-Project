@@ -51,7 +51,6 @@ class NERResult:
         self.spans = spans
 
 
-
 class NERComponent:
     def __init__(self):
         ner_configs = get_ner_training_config()
@@ -81,8 +80,6 @@ class NERComponent:
         logits = outputs.logits
         predictions = torch.argmax(logits, dim=2).cpu().numpy()
         texts_tokenized = [self.tokenizer.convert_ids_to_tokens(input_ids) for input_ids in inputs["input_ids"]]
-        texts_tokenized_processed = []
-        predictions_processed = []
         results = []
         for i in range(len(texts_tokenized)):
             tokens_processed = []
@@ -101,7 +98,6 @@ class NERComponent:
                                tokens_processed,
                                bio_tags_to_spans(tokens_processed, sentence_prediction_processed))
             results.append(result)
-        print(texts_tokenized_processed)
 
         return results
 
@@ -111,8 +107,8 @@ if __name__ == "__main__":
     sentences = ["The patient was prescribed 100mg of ibuprofen for pain relief.",
                  "The patient was prescribed 500mg of amoxicillin for infection."]
     ner_results = ner_component.predict(sentences)
-    for result in ner_results:
-        print(result.text)
-        for span in result.spans:
+    for ner_result in ner_results:
+        print(ner_result.text)
+        for span in ner_result.spans:
             print(f"Entity: {span.text} (start: {span.start}, end: {span.end})")
         print()
