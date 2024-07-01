@@ -20,22 +20,40 @@ class NERComponent:
                                                                      id2label=self.id2label,
                                                                      label2id=self.label2id
                                                                      )
-        self.model.load_state_dict(torch.load(self.model_path))
+        # self.model.load_state_dict(torch.load(self.model_path))
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.model.to(self.device)
         self.model.eval()
 
     def predict(self, texts: list[str]):
+        # Tokenize and make predictions.
         inputs = self.tokenizer(texts, padding=True, truncation=True, max_length=512, return_tensors="pt")
+        ids = inputs["input_ids"].to(self.device)
+        mask = inputs["attention_mask"].to(self.device)
         with torch.no_grad():
-            outputs = self.model(**inputs)
+            outputs = self.model(ids, mask)
         logits = outputs.logits
-        predictions = torch.argmax(logits, dim=2)
-        results = []
-        for i in range(len(texts)):
-            result = []
-            for j in range(len(texts[i])):
-                result.append(self.id2label[predictions[i][j].item()])
-            results.append(result)
-        return results
+        predictions = torch.argmax(logits, dim=2).cpu().numpy()
+        texts_tokenized = [self.tokenizer.convert_ids_to_tokens(input_ids) for input_ids in inputs["input_ids"]]
+        texts_tokenized_processed = []
+        predictions_processed = []
+        for i in range(len(texts_tokenized)):
+            tokens_processed = []
+            sentence_prediction_processed = []
+            for j in range(len(texts_tokenized[i])):
+                if texts_tokenized[i][j].startswith("##"):
+                    tokens_processed[-1] += texts_tokenized[i][j][2:]
+                elif texts_tokenized[i][j] == "[CLS]" \
+                        or texts_tokenized[i][j] == "[SEP]" \
+                        or texts_tokenized[i][j] == "[PAD]":
+                    continue
+                else:
+                    tokens_processed.append(texts_tokenized[i][j])
+                    sentence_prediction_processed.append(self.id2label[predictions[i][j]])
+            texts_tokenized_processed.append(tokens_processed)
+            predictions_processed.append(sentence_prediction_processed)
+        print(texts_tokenized_processed)
+        return texts_tokenized_processed, predictions_processed
 
 
 if __name__ == "__main__":
