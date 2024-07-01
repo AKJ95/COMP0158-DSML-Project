@@ -20,7 +20,7 @@ class NERComponent:
                                                                      id2label=self.id2label,
                                                                      label2id=self.label2id
                                                                      )
-        # self.model.load_state_dict(torch.load(self.model_path))
+        self.model.load_state_dict(torch.load(self.model_path))
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.model.to(self.device)
         self.model.eval()
