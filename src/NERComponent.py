@@ -6,6 +6,52 @@ from transformers import AutoTokenizer, AutoModelForTokenClassification
 from configs.load_configs import *
 
 
+class Span:
+    def __init__(self, start: int, end: int, text: str):
+        self.start = start
+        self.end = end
+        self.text = text
+
+
+def bio_tags_to_spans(tokens: list[str], bio_tags: list[str]) -> list[Span]:
+    spans = []
+    start_idx = None
+    current_entity = None
+
+    for idx, tag in enumerate(bio_tags):
+        if tag.startswith('B-'):
+            if current_entity is not None:
+                spans.append(Span(start_idx, idx, " ".join(tokens[start_idx:idx])))
+            current_entity = tag[2:]
+            start_idx = idx
+        elif tag.startswith('I-'):
+            if current_entity is None:
+                start_idx = idx
+                current_entity = tag[2:]
+            elif current_entity != tag[2:]:
+                spans.append(Span(start_idx, idx, " ".join(tokens[start_idx:idx])))
+                current_entity = tag[2:]
+                start_idx = idx
+        else:
+            if current_entity is not None:
+                spans.append(Span(start_idx, idx, " ".join(tokens[start_idx:idx])))
+                current_entity = None
+                start_idx = None
+
+    if current_entity is not None:
+        spans.append(Span(start_idx, len(bio_tags), " ".join(tokens[start_idx:len(bio_tags)])))
+
+    return spans
+
+
+class NERResult:
+    def __init__(self, text: str,  tokens: list[str], spans: list[Span]):
+        self.text = text
+        self.tokens = tokens
+        self.spans = spans
+
+
+
 class NERComponent:
     def __init__(self):
         ner_configs = get_ner_training_config()
@@ -25,7 +71,7 @@ class NERComponent:
         self.model.to(self.device)
         self.model.eval()
 
-    def predict(self, texts: list[str]):
+    def predict(self, texts: list[str]) -> list[NERResult]:
         # Tokenize and make predictions.
         inputs = self.tokenizer(texts, padding=True, truncation=True, max_length=512, return_tensors="pt")
         ids = inputs["input_ids"].to(self.device)
@@ -37,6 +83,7 @@ class NERComponent:
         texts_tokenized = [self.tokenizer.convert_ids_to_tokens(input_ids) for input_ids in inputs["input_ids"]]
         texts_tokenized_processed = []
         predictions_processed = []
+        results = []
         for i in range(len(texts_tokenized)):
             tokens_processed = []
             sentence_prediction_processed = []
@@ -50,14 +97,22 @@ class NERComponent:
                 else:
                     tokens_processed.append(texts_tokenized[i][j])
                     sentence_prediction_processed.append(self.id2label[predictions[i][j]])
-            texts_tokenized_processed.append(tokens_processed)
-            predictions_processed.append(sentence_prediction_processed)
+            result = NERResult(texts[i],
+                               tokens_processed,
+                               bio_tags_to_spans(tokens_processed, sentence_prediction_processed))
+            results.append(result)
         print(texts_tokenized_processed)
-        return texts_tokenized_processed, predictions_processed
+
+        return results
 
 
 if __name__ == "__main__":
     ner_component = NERComponent()
     sentences = ["The patient was prescribed 100mg of ibuprofen for pain relief.",
                  "The patient was prescribed 500mg of amoxicillin for infection."]
-    print(ner_component.predict(sentences))
+    ner_results = ner_component.predict(sentences)
+    for result in ner_results:
+        print(result.text)
+        for span in result.spans:
+            print(f"Entity: {span.text} (start: {span.start}, end: {span.end})")
+        print()
