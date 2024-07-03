@@ -9,7 +9,7 @@ PYTT_CONFIG = {}
 
 PYTT_CONFIG['external'] = True
 PYTT_CONFIG['lower_case'] = True
-PYTT_CONFIG['name'] = 'models/BERT/scibert_scivocab_uncased'
+PYTT_CONFIG['name'] = 'scibert_scivocab_uncased'
 PYTT_CONFIG['path'] = 'models/BERT/scibert_scivocab_uncased'
 
 # PYTT_CONFIG['external'] = True
