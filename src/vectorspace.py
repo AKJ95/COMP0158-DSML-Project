@@ -242,7 +242,7 @@ class VSM(object):
 
 
 if __name__ == '__main__':
-    p = 'data/mm_st21pv.cuis.scibert_scivocab_uncased.vecs'
+    p = 'data/processed/mm_st21pv.cuis.scibert_scivocab_uncased.vecs'
     # p = 'models/VSMs/umls.2017AA.active.st21pv.en_core_sci_lg.cuis.vecs'
     vsm = FaissVSM()
     # vsm.load()
