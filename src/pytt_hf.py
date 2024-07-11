@@ -24,8 +24,10 @@ else:
     pytt_tokenizer = BertTokenizer.from_pretrained(PYTT_CONFIG['name'], do_lower_case=PYTT_CONFIG['lower_case'])
     pytt_model = BertModel.from_pretrained(PYTT_CONFIG['name'], output_hidden_states=True, output_attentions=True)
 
+
+device = 'cuda' if th.cuda.is_available() else 'cpu'
 pytt_model.eval()
-pytt_model.to('cuda')
+pytt_model.to(device)
 
 
 def get_num_features(tokens):
@@ -42,7 +44,7 @@ def toks2vecs(tokens, layers=[-1, -2, -3, -4], subword_op='avg', layer_op='sum',
                      sent_encodings + \
                      pytt_tokenizer.encode(pytt_tokenizer.sep_token)
 
-    input_ids = th.tensor([sent_encodings]).to('cuda')
+    input_ids = th.tensor([sent_encodings]).to(device)
     all_hidden_states, all_attentions = pytt_model(input_ids)[-2:]
 
     all_hidden_states = sum([all_hidden_states[i] for i in layers])
@@ -53,7 +55,7 @@ def toks2vecs(tokens, layers=[-1, -2, -3, -4], subword_op='avg', layer_op='sum',
     tok_embeddings = []
     encoding_idx = 0
     for tok, tok_encodings in zip(tokens, encoding_map):
-        tok_embedding = th.zeros(pytt_model.config.hidden_size).to('cuda')
+        tok_embedding = th.zeros(pytt_model.config.hidden_size).to(device)
         for tok_encoding in tok_encodings:
             tok_embedding += all_hidden_states[encoding_idx]
             encoding_idx += 1
