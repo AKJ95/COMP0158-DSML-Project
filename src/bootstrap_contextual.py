@@ -59,8 +59,8 @@ if __name__ == '__main__':
         logging.info('#Docs:%d #Concepts:%d #Types:%d #Skipped Ann.:%d' % (
         doc_idx, len(concept_vecs), len(st_ann_vecs), skipped_anns))
 
-        if doc_idx == 10:
-            break
+        # if doc_idx == 10:
+        #     break
 
         for sent in doc['sentences']:
 
