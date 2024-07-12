@@ -244,10 +244,11 @@ class VSM(object):
 if __name__ == '__main__':
     p = 'data/processed/mm_st21pv.cuis.scibert_scivocab_uncased.vecs'
     # p = 'models/VSMs/umls.2017AA.active.st21pv.en_core_sci_lg.cuis.vecs'
-    vsm = FaissVSM()
+    # vsm = FaissVSM()
     # vsm.load()
-    print('creating ...')
-    vsm.create(p)
-    print('saving ...')
-    vsm.save(p.replace('.vecs', '.index'), p.replace('.vecs', '.labels'))
-    # vsm = VSM(p)
+    # print('creating ...')
+    # vsm.create(p)
+    # print('saving ...')
+    # vsm.save(p.replace('.vecs', '.index'), p.replace('.vecs', '.labels'))
+    vsm = VSM(p)
+    print(f"VSM embedding stats: {vsm.vectors.shape}")
