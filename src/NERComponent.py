@@ -70,7 +70,7 @@ class NERComponent:
         self.model.to(self.device)
         self.model.eval()
 
-    def predict(self, texts: str) -> list[NERResult]:
+    def predict(self, texts: str) -> NERResult:
         # Tokenize and make predictions.
         inputs = self.tokenizer(texts, padding=True, truncation=True, max_length=512, return_tensors="pt")
         ids = inputs["input_ids"].to(self.device)
@@ -80,35 +80,30 @@ class NERComponent:
         logits = outputs.logits
         predictions = torch.argmax(logits, dim=2).cpu().numpy()
         texts_tokenized = [self.tokenizer.convert_ids_to_tokens(input_ids) for input_ids in inputs["input_ids"]]
-        results = []
-        for i in range(len(texts_tokenized)):
-            tokens_processed = []
-            sentence_prediction_processed = []
-            for j in range(len(texts_tokenized[i])):
-                if texts_tokenized[i][j].startswith("##"):
-                    tokens_processed[-1] += texts_tokenized[i][j][2:]
-                elif texts_tokenized[i][j] == "[CLS]" \
-                        or texts_tokenized[i][j] == "[SEP]" \
-                        or texts_tokenized[i][j] == "[PAD]":
-                    continue
-                else:
-                    tokens_processed.append(texts_tokenized[i][j])
-                    sentence_prediction_processed.append(self.id2label[predictions[i][j]])
-            result = NERResult(texts,
-                               tokens_processed,
-                               bio_tags_to_spans(tokens_processed, sentence_prediction_processed))
-            results.append(result)
-
-        return results
+        tokens_processed = []
+        sentence_prediction_processed = []
+        for j in range(len(texts_tokenized[i])):
+            if texts_tokenized[i][j].startswith("##"):
+                tokens_processed[-1] += texts_tokenized[i][j][2:]
+            elif texts_tokenized[i][j] == "[CLS]" \
+                    or texts_tokenized[i][j] == "[SEP]" \
+                    or texts_tokenized[i][j] == "[PAD]":
+                continue
+            else:
+                tokens_processed.append(texts_tokenized[i][j])
+                sentence_prediction_processed.append(self.id2label[predictions[i][j]])
+        result = NERResult(texts,
+                           tokens_processed,
+                           bio_tags_to_spans(tokens_processed, sentence_prediction_processed))
+        return result
 
 
 if __name__ == "__main__":
     ner_component = NERComponent()
     sentence = "The patient was prescribed 100mg of ibuprofen for pain relief."
-    ner_results = ner_component.predict(sentence)
-    for ner_result in ner_results:
-        print(ner_result.text)
-        print(ner_result.tokens)
-        for span in ner_result.spans:
-            print(f"Entity: {span.text} (start: {span.start}, end: {span.end})")
-        print()
+    ner_result = ner_component.predict(sentence)
+    print(ner_result.text)
+    print(ner_result.tokens)
+    for span in ner_result.spans:
+        print(f"Entity: {span.text} (start: {span.start}, end: {span.end})")
+    print()
