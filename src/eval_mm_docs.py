@@ -102,7 +102,7 @@ if __name__ == '__main__':
     logging.info('Loading MedMentions ...')
     # mm_docs = read_mm_converted('data/MedMentions/full/custom/mm_converted.dev.json')
     # mm_docs = read_mm_converted('data/MedMentions/st21pv/custom/mm_converted.dev.json')
-    mm_docs = read_mm_converted('data/MedMentions/st21pv/custom/mm_converted.test.json')
+    mm_docs = read_mm_converted('data/processed/mm_converted.test.json')
 
     logging.info('Processing Instances ...')
     for doc_idx, doc in enumerate(mm_docs):
