@@ -124,9 +124,11 @@ class MedLinker(object):
             spans = []
             for span in ner_prediction.spans:
                 spans.append((span.start, span.end))
-            print(ner_prediction)
-            print(tokens)
-            print(spans)
+
+            # Uncomment to log NER predictions
+            # print(ner_prediction)
+            # print(tokens)
+            # print(spans)
             # tokens, spans = self.medner.predict(sentence)
 
         doc = MedLinkerDoc(sentence, tokens, spans)
@@ -321,7 +323,7 @@ if __name__ == '__main__':
     # medlinker.load_cui_clf(cui_clf_path)
     # medlinker.load_cui_validator(cui_val_path, validator_thresh=0.70)
 
-    s = 'Myeloid derived suppressor cells (MDSC) are immature myeloid cells with immunosuppressive activity.'
+    s = 'Research indicates the negative impact of wartime deployment on the well being of service members, military spouses, and children.'
     r = medlinker.predict(s, predict_sty=False)
     print(r)
 
