@@ -132,7 +132,7 @@ if __name__ == "__main__":
     print("Training finished")
     print(f"Best epoch: {best_epoch}; Best f1 score: {best_exact_f1}")
     print("Final verification of results on validation set")
-    _ = valid(best_model, test_loader, device, id2label)
+    _ = valid(best_model, dev_loader, device, id2label)
     print("Evaluation on test set...")
     _ = valid(best_model, test_loader, device, id2label)
     end = time.time()
