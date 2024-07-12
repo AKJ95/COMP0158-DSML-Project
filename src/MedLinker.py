@@ -119,7 +119,15 @@ class MedLinker(object):
         if (gold_tokens is not None) and (gold_spans is not None):
             tokens, spans = gold_tokens, gold_spans
         else:
-            tokens, spans = self.medner.predict(sentence)
+            ner_prediction = self.medner.predict(sentence)
+            tokens = ner_prediction.tokens
+            spans = []
+            for span in ner_prediction.spans:
+                spans.append((span.start, span.end))
+            print(ner_prediction)
+            print(tokens)
+            print(spans)
+            # tokens, spans = self.medner.predict(sentence)
 
         doc = MedLinkerDoc(sentence, tokens, spans)
         doc.set_contextual_vectors()
@@ -314,6 +322,6 @@ if __name__ == '__main__':
     # medlinker.load_cui_validator(cui_val_path, validator_thresh=0.70)
 
     s = 'Myeloid derived suppressor cells (MDSC) are immature myeloid cells with immunosuppressive activity.'
-    r = medlinker.predict(s)
+    r = medlinker.predict(s, predict_sty=False)
     print(r)
 
