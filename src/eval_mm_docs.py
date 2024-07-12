@@ -108,8 +108,8 @@ if __name__ == '__main__':
     for doc_idx, doc in enumerate(mm_docs):
         perf_stats['n_docs'] += 1
 
-        if doc_idx > 100:
-            break
+        # if doc_idx > 100:
+        #     break
 
         logging.info('At doc #%d' % doc_idx)
 
