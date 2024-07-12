@@ -79,7 +79,8 @@ def calc_f1(metrics):
 
 def calc_acc(metrics):
     try:
-        return metrics['tp'] / sum(metrics.values())
+        # return metrics['tp'] / sum(metrics.values())
+        return metrics['tp'] / (metrics['tp'] + metrics['fp'] + metrics['fn'])
     except ZeroDivisionError:
         return 0
 
