@@ -94,7 +94,7 @@ class NERComponent:
                 else:
                     tokens_processed.append(texts_tokenized[i][j])
                     sentence_prediction_processed.append(self.id2label[predictions[i][j]])
-            result = NERResult(texts[i],
+            result = NERResult(texts,
                                tokens_processed,
                                bio_tags_to_spans(tokens_processed, sentence_prediction_processed))
             results.append(result)
