@@ -70,7 +70,7 @@ class NERComponent:
         self.model.to(self.device)
         self.model.eval()
 
-    def predict(self, texts: list[str]) -> list[NERResult]:
+    def predict(self, texts: str) -> list[NERResult]:
         # Tokenize and make predictions.
         inputs = self.tokenizer(texts, padding=True, truncation=True, max_length=512, return_tensors="pt")
         ids = inputs["input_ids"].to(self.device)
@@ -104,9 +104,8 @@ class NERComponent:
 
 if __name__ == "__main__":
     ner_component = NERComponent()
-    sentences = ["The patient was prescribed 100mg of ibuprofen for pain relief.",
-                 "The patient was prescribed 500mg of amoxicillin for infection."]
-    ner_results = ner_component.predict(sentences)
+    sentence = "The patient was prescribed 100mg of ibuprofen for pain relief."
+    ner_results = ner_component.predict(sentence)
     for ner_result in ner_results:
         print(ner_result.text)
         print(ner_result.tokens)
