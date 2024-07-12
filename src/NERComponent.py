@@ -109,6 +109,7 @@ if __name__ == "__main__":
     ner_results = ner_component.predict(sentences)
     for ner_result in ner_results:
         print(ner_result.text)
+        print(ner_result.tokens)
         for span in ner_result.spans:
             print(f"Entity: {span.text} (start: {span.start}, end: {span.end})")
         print()
