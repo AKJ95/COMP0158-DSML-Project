@@ -82,16 +82,16 @@ class NERComponent:
         texts_tokenized = [self.tokenizer.convert_ids_to_tokens(input_ids) for input_ids in inputs["input_ids"]]
         tokens_processed = []
         sentence_prediction_processed = []
-        for j in range(len(texts_tokenized[i])):
-            if texts_tokenized[i][j].startswith("##"):
-                tokens_processed[-1] += texts_tokenized[i][j][2:]
-            elif texts_tokenized[i][j] == "[CLS]" \
-                    or texts_tokenized[i][j] == "[SEP]" \
-                    or texts_tokenized[i][j] == "[PAD]":
+        for j in range(len(texts_tokenized[0])):
+            if texts_tokenized[0][j].startswith("##"):
+                tokens_processed[-1] += texts_tokenized[0][j][2:]
+            elif texts_tokenized[0][j] == "[CLS]" \
+                    or texts_tokenized[0][j] == "[SEP]" \
+                    or texts_tokenized[0][j] == "[PAD]":
                 continue
             else:
-                tokens_processed.append(texts_tokenized[i][j])
-                sentence_prediction_processed.append(self.id2label[predictions[i][j]])
+                tokens_processed.append(texts_tokenized[0][j])
+                sentence_prediction_processed.append(self.id2label[predictions[0][j]])
         result = NERResult(texts,
                            tokens_processed,
                            bio_tags_to_spans(tokens_processed, sentence_prediction_processed))
