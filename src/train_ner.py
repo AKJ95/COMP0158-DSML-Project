@@ -117,12 +117,24 @@ if __name__ == "__main__":
 
     print("Training starts...")
     start = time.time()
+    best_exact_f1 = 0
+    best_model = None
+    best_epoch = 0
     for epoch in range(config.num_epochs):
         print(f"Training epoch: {epoch + 1}")
         model, optimizer = train(model, training_loader, optimizer, device, config.max_grad_norm, id2label)
-        labels, predictions, ner_labels, ner_preds = valid(model, dev_loader, device, id2label)
+        labels, predictions, ner_labels, ner_preds, entity_level_performance = valid(model, dev_loader, device, id2label)
+        if entity_level_performance["exact"]["f1"] > best_exact_f1:
+            best_model = model
+            best_exact_f1 = entity_level_performance["exact"]["f1"]
+            best_epoch = epoch + 1
+    print("-" * 50)
+    print("Training finished")
+    print(f"Best epoch: {best_epoch}; Best f1 score: {best_exact_f1}")
+    print("Final verification of results on validation set")
+    _ = valid(best_model, test_loader, device, id2label)
     print("Evaluation on test set...")
-    labels, predictions, ner_labels, ner_preds = valid(model, test_loader, device, id2label)
+    _ = valid(best_model, test_loader, device, id2label)
     end = time.time()
     print(f"Training took {(end - start) / 60:.1f} minutes.")
     print("Saving model and tokenizer...")
