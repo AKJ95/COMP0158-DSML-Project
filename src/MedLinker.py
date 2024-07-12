@@ -314,6 +314,6 @@ if __name__ == '__main__':
     # medlinker.load_cui_validator(cui_val_path, validator_thresh=0.70)
 
     s = 'Myeloid derived suppressor cells (MDSC) are immature myeloid cells with immunosuppressive activity.'
-    # r = medlinker.predict(s)
-    # print(r)
+    r = medlinker.predict(s)
+    print(r)
 
