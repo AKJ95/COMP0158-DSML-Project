@@ -252,6 +252,6 @@ if __name__ == '__main__':
     # vsm.save(p.replace('.vecs', '.index'), p.replace('.vecs', '.labels'))
     vsm = VSM(p)
     print(f"VSM embedding stats: {vsm.vectors.shape}")
-    print(f"VSM embedding example: {vsm.vectors[0]}")
-    print(f"VSM labels stats: {vsm.labels}")
+    print(f"VSM embedding example: {vsm.vectors[0][:5]}")
+    print(f"VSM labels length: {len(vsm.labels)}")
     print(f"VSM label example: {vsm.labels[0]}")
