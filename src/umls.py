@@ -1,6 +1,7 @@
 import json
 from collections import Counter
 
+
 class UMLS_KB(object):
 
     def __init__(self, umls_version):
@@ -52,6 +53,7 @@ class UMLS_KB(object):
         s += 'Aliases (%d): %s\n' % (len(cui_info['STR']), '; '.join(cui_info['STR'][:5]))
         s += 'Types: %s\n' % '; '.join(cui_info['STY'])
         print(s)
+
 
 umls_kb_st21pv = UMLS_KB('umls.2024AA.active.st21pv')
 umls_kb_full = UMLS_KB('umls.2024AA.active.full')

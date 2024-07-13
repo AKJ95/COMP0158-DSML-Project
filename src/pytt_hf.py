@@ -1,21 +1,8 @@
 import torch as th
 from pytorch_transformers import BertModel, BertTokenizer
 
-PYTT_CONFIG = {}
-# PYTT_CONFIG['external'] = False
-# PYTT_CONFIG['lower_case'] = False
-# PYTT_CONFIG['name'] = 'bert-large-cased'
-# PYTT_CONFIG['path'] = None
-
-PYTT_CONFIG['external'] = True
-PYTT_CONFIG['lower_case'] = True
-PYTT_CONFIG['name'] = 'scibert_scivocab_uncased'
-PYTT_CONFIG['path'] = 'models/BERT/scibert_scivocab_uncased'
-
-# PYTT_CONFIG['external'] = True
-# PYTT_CONFIG['lower_case'] = True
-# PYTT_CONFIG['name'] = 'NCBI_BERT_pubmed_uncased_large'
-# PYTT_CONFIG['path'] = '/mnt/E68C68028C67CC1D/projects/umls-contextual-linker/data/NCBI_BERT_pubmed_uncased_large'
+PYTT_CONFIG = {'external': True, 'lower_case': True, 'name': 'scibert_scivocab_uncased',
+               'path': 'models/BERT/scibert_scivocab_uncased'}
 
 if PYTT_CONFIG['external']:
     pytt_tokenizer = BertTokenizer.from_pretrained(PYTT_CONFIG['path'], do_lower_case=PYTT_CONFIG['lower_case'])
@@ -23,7 +10,6 @@ if PYTT_CONFIG['external']:
 else:
     pytt_tokenizer = BertTokenizer.from_pretrained(PYTT_CONFIG['name'], do_lower_case=PYTT_CONFIG['lower_case'])
     pytt_model = BertModel.from_pretrained(PYTT_CONFIG['name'], output_hidden_states=True, output_attentions=True)
-
 
 device = 'cuda' if th.cuda.is_available() else 'cpu'
 pytt_model.eval()
@@ -34,10 +20,9 @@ def get_num_features(tokens):
     return len(sum([pytt_tokenizer.encode(t) for t in tokens], [])) + 2  # plus CLS and SEP
 
 
-def toks2vecs(tokens, layers=[-1, -2, -3, -4], subword_op='avg', layer_op='sum', return_tokens=True):
-    # if PYTT_CONFIG['lower_case']:
-    #     tokens = [t.lower() for t in tokens]
-
+def toks2vecs(tokens, layers=None, subword_op='avg', layer_op='sum', return_tokens=True):
+    if layers is None:
+        layers = [-1, -2, -3, -4]
     encoding_map = [pytt_tokenizer.encode(t) for t in tokens]
     sent_encodings = sum(encoding_map, [])
     sent_encodings = pytt_tokenizer.encode(pytt_tokenizer.cls_token) + \

@@ -236,7 +236,10 @@ def iterate_annotations(sci_nlp, dataset_examples):
 #     return [-1]
 
 
-def locate_tokens(all_tokens, subset_tokens, reserved_spans=set()):
+def locate_tokens(all_tokens, subset_tokens, reserved_spans=None):
+    if reserved_spans is None:
+        reserved_spans = set()
+
     def get_idxs(elems, e):
         return [i for i, e_ in enumerate(elems) if e == e_]
 

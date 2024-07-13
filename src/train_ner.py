@@ -11,7 +11,7 @@ from transformers import AutoTokenizer, AutoModelForTokenClassification
 # Load project source code
 from configs.load_configs import *
 from utils.data_utils import MedMentionsDataset
-from utils.train_utils import *
+from utils.train_utils import train, valid
 
 
 def preprocess_medmentions_df(df: pd.DataFrame) -> pd.DataFrame:
