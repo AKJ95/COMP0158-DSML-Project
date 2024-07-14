@@ -2,7 +2,7 @@ import numpy as np
 # from sklearn.externals import joblib
 
 from pytt_hf import toks2vecs
-# from matcher_simstring import SimString_UMLS
+from matcher_simstring import SimString_UMLS
 # from matcher_exactmatch import WhitespaceTokenizer  # ???
 from vectorspace import VSM
 # from vectorspace import FaissVSM
@@ -103,9 +103,8 @@ class MedLinker(object):
     #     self.st_validator = joblib.load(clf_path)
     #     self.st_validator_thresh = validator_thresh
     #
-    # def load_string_matcher(self, ngram_db_path, ngram_map_path):
-    #     #
-    #     self.string_matcher = SimString_UMLS(self.umls_kb, ngram_db_path, ngram_map_path)
+    def load_string_matcher(self, ngram_db_path, ngram_map_path):
+        self.string_matcher = SimString_UMLS(self.umls_kb, ngram_db_path, ngram_map_path)
 
     def load_exact_matcher(self, em_path):
         # TO-DO
