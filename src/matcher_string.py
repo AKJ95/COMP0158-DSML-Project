@@ -95,7 +95,7 @@ def create_umls_ss_db(umls_kb, char_ngram_len=3, n_max_tokens=5):
     for cui in all_cuis:
         cui_count += 1
         if cui_count % 1000 == 0 or cui_count == len(all_cuis):
-            logging.info('At #CUI: %d/%d' % (cui_count, len(all_cuis)))
+            logging.info(f"{cui_count}/{len(all_cuis)} processed: {cui_count/len(all_cuis)*100:.2f}%")
         cui_aliases = set([a.lower() for a in umls_kb.get_aliases(cui, include_name=True)])
 
         for alias in cui_aliases:
