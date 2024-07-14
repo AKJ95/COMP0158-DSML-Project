@@ -17,10 +17,11 @@ from umls import umls_kb_st21pv as umls_kb
 
 cx_ner_path = 'models/ContextualNER/mm_st21pv_SCIBERT_uncased/'
 em_ner_path = 'models/ExactMatchNER/umls.2017AA.active.st21pv.nerfed_nlp_and_matcher.max3.p'
-ngram_db_path = 'models/SimString/umls.2017AA.active.st21pv.aliases.3gram.5toks.db'
-ngram_map_path = 'models/SimString/umls.2017AA.active.st21pv.aliases.5toks.map'
+ngram_db_path = 'data/processed/umls.2017AA.active.st21pv.aliases.3gram.5toks.db'
+ngram_map_path = 'data/processed/umls.2017AA.active.st21pv.aliases.5toks.map'
 st_vsm_path = 'models/VSMs/mm_st21pv.sts_anns.scibert_scivocab_uncased.vecs'
-cui_vsm_path = 'models/VSMs/mm_st21pv.cuis.scibert_scivocab_uncased.vecs'
+# cui_vsm_path = 'models/VSMs/mm_st21pv.cuis.scibert_scivocab_uncased.vecs'
+cui_vsm_path = 'data/processed/mm_st21pv.cuis.scibert_scivocab_uncased.vecs'
 cui_idx_path = 'models/VSMs/umls.2017AA.active.st21pv.scibert_scivocab_uncased.cuis.index'
 cui_lbs_path = 'models/VSMs/umls.2017AA.active.st21pv.scibert_scivocab_uncased.cuis.labels'
 
@@ -106,9 +107,6 @@ if __name__ == '__main__':
     logging.info('Processing Instances ...')
     for doc_idx, doc in enumerate(mm_docs):
         perf_stats['n_docs'] += 1
-
-        # if doc_idx > 100:
-        #     break
 
         logging.info('At doc #%d' % doc_idx)
 
