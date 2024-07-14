@@ -15,9 +15,9 @@ logging.basicConfig(level=logging.DEBUG,
                     datefmt='%d-%b-%y %H:%M:%S')
 
 
-mm_splits = {'train':[], 'dev': [], 'test': []}
-# mm_splits['train'], mm_splits['dev'], mm_splits['test'] = read_full_med_mentions('data/MedMentions/full/data/')
-mm_splits['train'], mm_splits['dev'], mm_splits['test'] = read_full_med_mentions('data/raw/MedMentions-master/st21pv/data/')
+mm_contents = read_full_med_mentions('data/raw/MedMentions-master/st21pv/data/')
+mm_splits = {'train': mm_contents[0], 'dev': mm_contents[1], 'test': mm_contents[2]}
+
 
 logging.info('Processing Instances ...')
 
@@ -33,13 +33,12 @@ for split_label in ['dev', 'test', 'train']:
         if doc_idx % 100 == 0:
             logging.info('[%s] Converted %d/%d instances.' % (split_label, doc_idx, len(instances)))
 
-        doc = {}
-        doc['idx'] = doc_idx
-        doc['title'] = ex.title
-        doc['abstract'] = ex.abstract
-        doc['text'] = ex.text
-        doc['pubmed_id'] = ex.pubmed_id
-        doc['sentences'] = []
+        doc = {'idx': doc_idx,
+               'title': ex.title,
+               'abstract': ex.abstract,
+               'text': ex.text,
+               'pubmed_id': ex.pubmed_id,
+               'sentences': []}
 
         # get sentence positions to delimit annotations to sentences
         sent_span_idxs = get_sent_boundaries(sci_nlp, ex.text, ex.title)

@@ -68,10 +68,8 @@ for row_idx, row in enumerate(c.execute('SELECT * FROM descriptions')):
             continue
 
     if CUI not in cui_data:
-        CUI_info = {}
-        CUI_info['SAB'] = SAB
+        CUI_info = {'SAB': SAB, 'STY': STY}
         # CUI_info['TTY'] = TTY
-        CUI_info['STY'] = STY
 
         if NO_DEFS is False:
             CUI_info['DEF'] = []
