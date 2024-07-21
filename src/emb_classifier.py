@@ -1,14 +1,14 @@
-import joblib
-import pickle
+# import joblib
+# import pickle
 import numpy as np
 from sklearn.neural_network import MLPClassifier
-from sklearn.linear_model import LogisticRegression
+# from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
 
-from keras.models import Sequential
-from keras.layers import Dense
-from keras.utils import to_categorical
-from keras.callbacks import EarlyStopping
+# from keras.models import Sequential
+# from keras.layers import Dense
+# from keras.utils import to_categorical
+# from keras.callbacks import EarlyStopping
 
 
 def load_precomputed_embeddings(precomputed_path, mm_ann, label_mapping=None):
@@ -52,7 +52,7 @@ print('Loading precomputed ...')
 X_train, y_train, train_label_mapping = load_precomputed_embeddings(path_precomputed_train_vecs, mm_ann)
 X_dev, y_dev, _ = load_precomputed_embeddings(path_precomputed_dev_vecs, mm_ann, train_label_mapping)
 
-# clf = MLPClassifier(hidden_layer_sizes=(512,), activation='relu', solver='adam', max_iter=200, verbose=True, random_state=42)
+clf = MLPClassifier(hidden_layer_sizes=(512,), activation='relu', solver='adam', max_iter=200, verbose=True, random_state=42)
 # clf = MLPClassifier(hidden_layer_sizes=(64,), activation='relu', solver='adam', max_iter=200, verbose=True, random_state=42)
 # clf = LogisticRegression(random_state=42, multi_class='multinomial', solver='sag', max_iter=200, n_jobs=4, verbose=True)
 
@@ -61,37 +61,37 @@ n_classes = len(set(y_train)) + 1  # UNK
 #     Dense(512, activation='relu', input_shape=(768,)),
 #     Dense(n_classes, activation='softmax'),
 # ])
-model = Sequential([
-    Dense(n_classes, activation='softmax', input_shape=(768,)),
-])
-
-model.compile(
-    optimizer='adam',
-    loss='categorical_crossentropy',
-    metrics=['accuracy'],
-)
-
-es = EarlyStopping(monitor='acc', mode='max', verbose=1, min_delta=0.01, patience=10)
+# model = Sequential([
+#     Dense(n_classes, activation='softmax', input_shape=(768,)),
+# ])
+#
+# model.compile(
+#     optimizer='adam',
+#     loss='categorical_crossentropy',
+#     metrics=['accuracy'],
+# )
+#
+# es = EarlyStopping(monitor='acc', mode='max', verbose=1, min_delta=0.01, patience=10)
 
 print('Training ...')
-# clf.fit(X_train, y_train)
+clf.fit(X_train, y_train)
 
-model.fit(
-    X_train,
-    to_categorical(y_train),
-    epochs=100,
-    batch_size=64,
-    callbacks=[es],
-)
+# model.fit(
+#     X_train,
+#     to_categorical(y_train),
+#     epochs=100,
+#     batch_size=64,
+#     callbacks=[es],
+# )
 
 print('Evaluating ...')
 # y_dev_preds = mlp.predict_proba(X_dev)
-# y_dev_preds = clf.predict(X_dev)
+y_dev_preds = clf.predict(X_dev)
 
-# acc = accuracy_score(y_dev, y_dev_preds)
+acc = accuracy_score(y_dev, y_dev_preds)
 
-loss, acc = model.evaluate(X_dev, to_categorical(y_dev, num_classes=len(train_label_mapping)))
-print('Acc:', acc)
+# loss, acc = model.evaluate(X_dev, to_categorical(y_dev, num_classes=len(train_label_mapping)))
+# print('Acc:', acc)
 
 print('Saving model ...')
 # joblib.dump(clf, 'lr_multi.%s.model.joblib' % mm_ann)
