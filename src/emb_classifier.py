@@ -45,8 +45,8 @@ def load_precomputed_embeddings(precomputed_path, mm_ann, label_mapping=None):
 
 # mm_ann = 'sty' # MLP512 Acc: 0.8110184669494629 SOFTMAX Acc: 0.7777806720469078
 mm_ann = 'cui'
-path_precomputed_train_vecs = 'mm_st21pv.train.scibert_scivocab_uncased.precomputed'
-path_precomputed_dev_vecs = 'mm_st21pv.dev.scibert_scivocab_uncased.precomputed'
+path_precomputed_train_vecs = 'data/processed/mm_st21pv.train.scibert_scivocab_uncased.precomputed'
+path_precomputed_dev_vecs = 'data/processed/mm_st21pv.dev.scibert_scivocab_uncased.precomputed'
 
 print('Loading precomputed ...')
 X_train, y_train, train_label_mapping = load_precomputed_embeddings(path_precomputed_train_vecs, mm_ann)
