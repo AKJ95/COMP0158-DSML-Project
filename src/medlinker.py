@@ -7,7 +7,7 @@ from matcher_simstring import SimString_UMLS
 from vectorspace import VSM
 # from vectorspace import FaissVSM
 
-# from matcher_softmax import SoftMax_CLF
+from matcher_softmax import SoftMax_CLF
 
 from NERComponent import NERComponent
 
@@ -80,10 +80,10 @@ class MedLinker(object):
     #     self.sty_clf = SoftMax_CLF(threshold=0.5)
     #     self.sty_clf.load(model_path, model_path.replace('.h5', '.map'))
     #
-    # def load_cui_clf(self, model_path):
-    #     #
-    #     self.cui_clf = SoftMax_CLF(threshold=0.5)
-    #     self.cui_clf.load(model_path, model_path.replace('.h5', '.map'))
+    def load_cui_clf(self, model_path):
+        #
+        self.cui_clf = SoftMax_CLF(threshold=0.5)
+        self.cui_clf.load(model_path, model_path.replace('.h5', '.map'))
 
     def load_st_VSM(self, st_vsm_path):
         #
@@ -299,7 +299,7 @@ if __name__ == '__main__':
     # ngram_map_path = 'models/SimString/umls.2017AA.active.st21pv.aliases.5toks.map'
     # st_vsm_path = 'models/VSMs/mm_st21pv.sts_anns.scibert_scivocab_uncased.vecs'
     cui_vsm_path = 'models/VSMs/mm_st21pv.cuis.scibert_scivocab_uncased.vecs'
-    # cui_clf_path = 'models/Classifiers/softmax.cui.h5'
+    cui_clf_path = 'models/Classifiers/softmax.cui.h5'
     # sty_clf_path = 'models/Classifiers/softmax.sty.h5'
     # cui_val_path = 'models/Validators/mm_st21pv.lr_clf_cui.dev.joblib'
     # sty_val_path = 'models/Validators/mm_st21pv.lr_clf_sty.dev.joblib'
@@ -318,11 +318,10 @@ if __name__ == '__main__':
     # medlinker.load_sty_clf(sty_clf_path)
     # medlinker.load_st_validator(sty_val_path, validator_thresh=0.45)
 
-    medlinker.load_cui_VSM(cui_vsm_path)
-    # medlinker.load_cui_clf(cui_clf_path)
+    # medlinker.load_cui_VSM(cui_vsm_path)
+    medlinker.load_cui_clf(cui_clf_path)
     # medlinker.load_cui_validator(cui_val_path, validator_thresh=0.70)
 
     s = 'Research indicates the negative impact of wartime deployment on the well being of service members, military spouses, and children.'
     r = medlinker.predict(s, predict_sty=False)
     print(r)
-
