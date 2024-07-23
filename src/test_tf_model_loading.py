@@ -1,6 +1,6 @@
-from keras.models import load_model
+import torch
 
 
 if __name__ == '__main__':
     model_path = 'models/Classifiers/softmax.cui.h5'
-    model = load_model(model_path)
+    model = torch.load(model_path)
