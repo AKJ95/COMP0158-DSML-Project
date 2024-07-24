@@ -86,5 +86,5 @@ if __name__ == '__main__':
 
     toy_output = pytorch_softmax(X_train[:64])
     preds = torch.argmax(toy_output, 1)
-    print(train_label_mapping(preds.cpu().numpy()))
+    print(train_label_mapping[preds.cpu().numpy()])
     print(y_train[:64])
