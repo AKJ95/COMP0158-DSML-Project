@@ -65,11 +65,6 @@ n_classes = len(set(y_train)) + 1  # UNK
 #     Dense(n_classes, activation='softmax', input_shape=(768,)),
 # ])
 #
-# model.compile(
-#     optimizer='adam',
-#     loss='categorical_crossentropy',
-#     metrics=['accuracy'],
-# )
 #
 # es = EarlyStopping(monitor='acc', mode='max', verbose=1, min_delta=0.01, patience=10)
 
@@ -81,6 +76,11 @@ model = Sequential([
         Dense(18426, activation='softmax', input_shape=(768,)),
     ])
 model.load_weights("models/Classifiers/softmax.cui.h5")
+model.compile(
+    optimizer='adam',
+    loss='categorical_crossentropy',
+    metrics=['accuracy'],
+)
 
 # model.fit(
 #     X_train,
