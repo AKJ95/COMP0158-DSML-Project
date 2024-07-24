@@ -1,3 +1,5 @@
+import joblib
+
 from keras.models import Sequential
 from keras.layers import Dense
 import numpy as np
@@ -59,7 +61,9 @@ if __name__ == '__main__':
     path_precomputed_dev_map = 'models/Classifiers/softmax.cui.map'
 
     print('Loading precomputed ...')
-    X_train, y_train, train_label_mapping = load_precomputed_embeddings(path_precomputed_train_vecs, mm_ann, path_precomputed_dev_map)
+    mapping = label_mapping = joblib.load(path_precomputed_dev_map)
+    mapping = {i: l for l, i in mapping.items()}
+    X_train, y_train, train_label_mapping = load_precomputed_embeddings(path_precomputed_train_vecs, mm_ann, mapping)
     X_dev, y_dev, _ = load_precomputed_embeddings(path_precomputed_dev_vecs, mm_ann, train_label_mapping)
     X_train = torch.from_numpy(X_train).to(device)
     y_train = torch.from_numpy(np.array(y_train)).to(device)
