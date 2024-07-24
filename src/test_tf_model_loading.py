@@ -78,7 +78,7 @@ if __name__ == '__main__':
         'fc.bias': torch.from_numpy(tf_biases),
     })
 
-    model.to(device)
+    pytorch_softmax.to(device)
 
-    toy_output = model(X_dev[:64])
+    toy_output = pytorch_softmax(X_dev[:64])
     print(toy_output.shape)
