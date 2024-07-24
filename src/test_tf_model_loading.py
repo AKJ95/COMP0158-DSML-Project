@@ -56,9 +56,10 @@ if __name__ == '__main__':
     mm_ann = 'cui'
     path_precomputed_train_vecs = 'data/processed/mm_st21pv.train.scibert_scivocab_uncased.precomputed'
     path_precomputed_dev_vecs = 'data/processed/mm_st21pv.dev.scibert_scivocab_uncased.precomputed'
+    path_precomputed_dev_map = 'models/Classifiers/softmax.cui.map'
 
     print('Loading precomputed ...')
-    X_train, y_train, train_label_mapping = load_precomputed_embeddings(path_precomputed_train_vecs, mm_ann)
+    X_train, y_train, train_label_mapping = load_precomputed_embeddings(path_precomputed_train_vecs, mm_ann, path_precomputed_dev_map)
     X_dev, y_dev, _ = load_precomputed_embeddings(path_precomputed_dev_vecs, mm_ann, train_label_mapping)
     X_train = torch.from_numpy(X_train).to(device)
     y_train = torch.from_numpy(np.array(y_train)).to(device)
