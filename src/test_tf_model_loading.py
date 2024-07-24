@@ -30,6 +30,7 @@ def load_precomputed_embeddings(precomputed_path, mm_ann, label_mapping=None):
 
     X = np.vstack(all_vecs)
     y = []
+    print(all_anns[:10])
     for ann in all_anns:
         try:
             y.append(label_mapping[ann])
@@ -63,8 +64,7 @@ if __name__ == '__main__':
     print('Loading precomputed ...')
     mapping = label_mapping = joblib.load(path_precomputed_dev_map)
     mapping = {i: l for l, i in mapping.items()}
-    print(len(mapping))
-    X_train, y_train, train_label_mapping = load_precomputed_embeddings(path_precomputed_train_vecs, mm_ann)
+    X_train, y_train, train_label_mapping = load_precomputed_embeddings(path_precomputed_train_vecs, mm_ann, mapping)
     X_dev, y_dev, _ = load_precomputed_embeddings(path_precomputed_dev_vecs, mm_ann, train_label_mapping)
     X_train = torch.from_numpy(X_train).to(device)
     y_train = torch.from_numpy(np.array(y_train)).to(device)
