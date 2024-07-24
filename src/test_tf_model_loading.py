@@ -63,12 +63,15 @@ if __name__ == '__main__':
     print('Loading precomputed ...')
     mapping = label_mapping = joblib.load(path_precomputed_dev_map)
     mapping = {i: l for l, i in mapping.items()}
+    print(len(mapping))
     X_train, y_train, train_label_mapping = load_precomputed_embeddings(path_precomputed_train_vecs, mm_ann)
     X_dev, y_dev, _ = load_precomputed_embeddings(path_precomputed_dev_vecs, mm_ann, train_label_mapping)
     X_train = torch.from_numpy(X_train).to(device)
     y_train = torch.from_numpy(np.array(y_train)).to(device)
     X_dev = torch.from_numpy(X_dev).to(device)
     y_dev = torch.from_numpy(np.array(y_dev)).to(device)
+
+
 
     model = Sequential([
         Dense(18426, activation='softmax', input_shape=(768,)),
@@ -87,6 +90,9 @@ if __name__ == '__main__':
     toy_output = pytorch_softmax(X_train[:64])
     preds = torch.argmax(toy_output, 1)
     for i in range(16):
-        print(train_label_mapping[preds.cpu().numpy()[i]])
+        print(toy_output[preds.cpu().numpy()[i]])
+        print(mapping[preds.cpu().numpy()[i]])
     for i in range(16):
-        print(train_label_mapping[y_train.cpu().numpy()[i]])
+        print(mapping[y_train.cpu().numpy()[i]])
+
+

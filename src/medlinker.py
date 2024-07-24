@@ -7,7 +7,7 @@ from matcher_simstring import SimString_UMLS
 from vectorspace import VSM
 # from vectorspace import FaissVSM
 
-from matcher_softmax import SoftMax_CLF
+# from matcher_softmax import SoftMax_CLF
 
 from NERComponent import NERComponent
 
@@ -80,10 +80,10 @@ class MedLinker(object):
     #     self.sty_clf = SoftMax_CLF(threshold=0.5)
     #     self.sty_clf.load(model_path, model_path.replace('.h5', '.map'))
     #
-    def load_cui_clf(self, model_path):
-        #
-        self.cui_clf = SoftMax_CLF(threshold=0.5)
-        self.cui_clf.load(model_path, model_path.replace('.h5', '.map'))
+    # def load_cui_clf(self, model_path):
+    #     #
+    #     self.cui_clf = SoftMax_CLF(threshold=0.5)
+    #     self.cui_clf.load(model_path, model_path.replace('.h5', '.map'))
 
     def load_st_VSM(self, st_vsm_path):
         #
