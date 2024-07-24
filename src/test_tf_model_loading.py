@@ -65,7 +65,6 @@ if __name__ == '__main__':
     X_dev = torch.from_numpy(X_dev).to(device)
     y_dev = torch.from_numpy(np.array(y_dev)).to(device)
 
-
     model = Sequential([
         Dense(18426, activation='softmax', input_shape=(768,)),
     ])
@@ -80,5 +79,7 @@ if __name__ == '__main__':
 
     pytorch_softmax.to(device)
 
-    toy_output = pytorch_softmax(X_dev[:64])
-    print(toy_output.shape)
+    toy_output = pytorch_softmax(X_train[:64])
+    preds = torch.argmax(toy_output, 1)
+    print(preds)
+    print(y_train[:64])
