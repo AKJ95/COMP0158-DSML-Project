@@ -90,7 +90,7 @@ if __name__ == '__main__':
     toy_output = pytorch_softmax(X_train[:64])
     preds = torch.argmax(toy_output, 1)
     for i in range(16):
-        print(toy_output[preds.cpu().numpy()[i]])
+        print(toy_output[i][preds.cpu().numpy()[i]])
         print(mapping[preds.cpu().numpy()[i]])
     for i in range(16):
         print(mapping[y_train.cpu().numpy()[i]])
