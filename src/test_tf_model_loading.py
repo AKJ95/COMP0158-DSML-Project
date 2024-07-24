@@ -88,3 +88,5 @@ if __name__ == '__main__':
     preds = torch.argmax(toy_output, 1)
     for i in range(16):
         print(train_label_mapping[preds.cpu().numpy()[i]])
+    for i in range(16):
+        print(train_label_mapping[y_train.cpu().numpy()[i]])
