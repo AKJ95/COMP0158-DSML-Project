@@ -77,7 +77,6 @@ model = Sequential([
     ])
 model.load_weights("models/Classifiers/softmax.cui.h5")
 model.compile(
-    optimizer='adam',
     loss='categorical_crossentropy',
     metrics=['accuracy'],
 )
