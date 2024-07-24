@@ -1,9 +1,5 @@
-# import joblib
-# import pickle
 import numpy as np
-from sklearn.neural_network import MLPClassifier
-# from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score
+
 
 from keras.models import Sequential
 from keras.layers import Dense
@@ -11,46 +7,11 @@ from keras.utils import to_categorical
 from keras.callbacks import EarlyStopping
 
 
-def load_precomputed_embeddings(precomputed_path, mm_ann, label_mapping=None):
-    all_anns, all_vecs = [], []
 
-    with open(precomputed_path, 'r') as f:
-        for line in f:
-            elems = line.split('\t')
-            cui = elems[3]
-            sty = elems[4]
-            vec = np.array(list(map(float, elems[-1].split())), dtype=np.float32)
-
-            if mm_ann == 'sty':
-                all_anns.append(sty)
-            elif mm_ann == 'cui':
-                all_anns.append(cui)
-
-            all_vecs.append(vec)
-
-    if label_mapping is None:
-        label_mapping = {a: i + 1 for i, a in enumerate(set(all_anns))}
-        label_mapping['UNK'] = 0
-
-    X = np.vstack(all_vecs)
-    y = []
-    for ann in all_anns:
-        try:
-            y.append(label_mapping[ann])
-        except KeyError:
-            y.append(0)
-
-    return X, y, label_mapping
 
 
 # mm_ann = 'sty' # MLP512 Acc: 0.8110184669494629 SOFTMAX Acc: 0.7777806720469078
-mm_ann = 'cui'
-path_precomputed_train_vecs = 'data/processed/mm_st21pv.train.scibert_scivocab_uncased.precomputed'
-path_precomputed_dev_vecs = 'data/processed/mm_st21pv.dev.scibert_scivocab_uncased.precomputed'
 
-print('Loading precomputed ...')
-X_train, y_train, train_label_mapping = load_precomputed_embeddings(path_precomputed_train_vecs, mm_ann)
-X_dev, y_dev, _ = load_precomputed_embeddings(path_precomputed_dev_vecs, mm_ann, train_label_mapping)
 
 # clf = MLPClassifier(hidden_layer_sizes=(512,), activation='relu', solver='adam', max_iter=200, verbose=True, random_state=42)
 # clf = MLPClassifier(hidden_layer_sizes=(64,), activation='relu', solver='adam', max_iter=200, verbose=True, random_state=42)
