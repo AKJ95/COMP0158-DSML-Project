@@ -96,7 +96,7 @@ print('Evaluating ...')
 
 # acc = accuracy_score(y_dev, y_dev_preds)
 
-loss, acc = model.evaluate(X_dev[:1], to_categorical(y_dev[:1], num_classes=len(train_label_mapping)))
+loss, acc = model.evaluate(X_dev[:1], to_categorical(y_dev[:1], num_classes=18426))
 print('Acc:', acc)
 
 # print('Saving model ...')
