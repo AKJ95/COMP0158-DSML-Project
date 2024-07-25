@@ -30,7 +30,6 @@ def load_precomputed_embeddings(precomputed_path, mm_ann, label_mapping=None):
 
     X = np.vstack(all_vecs)
     y = []
-    print(all_anns[:10])
     for ann in all_anns:
         try:
             y.append(label_mapping[ann])
@@ -76,11 +75,12 @@ if __name__ == '__main__':
     pytorch_softmax.to(device)
     pytorch_softmax.eval()
 
-    score_dict = pytorch_softmax.predict(X_train[:1])
-    max_label = None
-    max_score = 0
-    for k, v in score_dict.items():
-        if v > max_score:
-            max_score = v
-            max_label = k
-    print(f"Prediction: {max_label} with score {max_score}")
+    for training_id in range(16):
+        score_dict = pytorch_softmax.predict(X_train[training_id])
+        max_label = None
+        max_score = 0
+        for k, v in score_dict.items():
+            if v > max_score:
+                max_score = v
+                max_label = k
+        print(f"Prediction: {max_label} with score {max_score}")
