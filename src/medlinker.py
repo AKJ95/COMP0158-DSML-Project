@@ -195,6 +195,8 @@ class MedLinker(object):
 
     def match_cui(self, span_str, span_ctx_vec):
         #
+        print(span_ctx_vec.shape)
+        print(type(span_ctx_vec))
         matches_str = []
         if self.string_matcher is not None:
             matches_str = self.string_matcher.match_cuis(span_str.lower())
