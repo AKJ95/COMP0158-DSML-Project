@@ -3,13 +3,16 @@ import numpy as np
 
 from pytt_hf import toks2vecs
 from matcher_simstring import SimString_UMLS
+import torch
 # from matcher_exactmatch import WhitespaceTokenizer  # ???
 from vectorspace import VSM
 # from vectorspace import FaissVSM
 
 # from matcher_softmax import SoftMax_CLF
 
+
 from NERComponent import NERComponent
+from softmax_pytorch import SoftmaxClassifier
 
 
 def norm(v):
@@ -84,6 +87,11 @@ class MedLinker(object):
     #     #
     #     self.cui_clf = SoftMax_CLF(threshold=0.5)
     #     self.cui_clf.load(model_path, model_path.replace('.h5', '.map'))
+
+    def load_cui_softmax_pt(self):
+        self.cui_clf = SoftmaxClassifier(18426,
+                                         'models/Classifiers/softmax.cui.map',
+                                         'models/Classifiers/softmax.cui.pt')
 
     def load_st_VSM(self, st_vsm_path):
         #
@@ -195,8 +203,6 @@ class MedLinker(object):
 
     def match_cui(self, span_str, span_ctx_vec):
         #
-        print(span_ctx_vec.shape)
-        print(type(span_ctx_vec))
         matches_str = []
         if self.string_matcher is not None:
             matches_str = self.string_matcher.match_cuis(span_str.lower())
@@ -206,7 +212,8 @@ class MedLinker(object):
 
         matches_ctx = []
         if self.cui_clf is not None:
-            matches_ctx = self.cui_clf.predict(span_ctx_vec)
+            span_ctx_vec_tensor = torch.unsqueeze(torch.from_numpy(span_ctx_vec), 0)
+            matches_ctx = self.cui_clf.predict(span_ctx_vec_tensor)
         elif self.cui_vsm is not None:
             span_ctx_vec = norm(span_ctx_vec)
             matches_ctx = self.cui_vsm.most_similar(span_ctx_vec, threshold=0.5)
