@@ -26,6 +26,14 @@ class NERTrainingConfiguration:
             self.id2label = {0: 'B-Entity', 1: 'O', 2: 'I-Entity'}
 
 
+class SoftmaxConfiguration:
+    def __init__(self, config_path: str):
+        with open(config_path, 'r') as f:
+            config = yaml.safe_load(f)
+            self.softmax_tf_path = config["softmax_classifier"]["tensorflow_model_path"]
+            self.softmax_pt_path = config["softmax_classifier"]["pytorch_model_path"]
+
+
 def load_raw_medmentions_root(st21pv_flag=False) -> str:
     """
     Load the root directory for raw MedMentions data.
@@ -88,3 +96,7 @@ def load_ner_model_name() -> str:
 
 def get_ner_training_config() -> NERTrainingConfiguration:
     return NERTrainingConfiguration(CONFIG_PATH)
+
+
+def get_softmax_classifier_configuration() -> SoftmaxConfiguration:
+    return SoftmaxConfiguration(CONFIG_PATH)
