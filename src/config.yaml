@@ -36,3 +36,4 @@ ner:
 softmax_classifier:
   tensorflow_model_path: "models/Classifiers/softmax.cui.h5"
   pytorch_model_path: "models/Classifiers/softmax.cui.pt"
+  label_mapping: "models/Classifiers/softmax.cui.map"

@@ -1,10 +1,10 @@
 import joblib
 
-from keras.models import Sequential
-from keras.layers import Dense
 import numpy as np
 import torch
 import torch.nn as nn
+
+from softmax_pytorch import SoftmaxClassifier
 
 
 def load_precomputed_embeddings(precomputed_path, mm_ann, label_mapping=None):
@@ -71,28 +71,16 @@ if __name__ == '__main__':
     X_dev = torch.from_numpy(X_dev).to(device)
     y_dev = torch.from_numpy(np.array(y_dev)).to(device)
 
-
-
-    model = Sequential([
-        Dense(18426, activation='softmax', input_shape=(768,)),
-    ])
-    model.load_weights("models/Classifiers/softmax.cui.h5")
-    tf_weights = model.weights[0].numpy()
-    tf_biases = model.weights[1].numpy()
-    pytorch_softmax = SoftMax_CLF(18426)
-    pytorch_softmax.load_state_dict({
-        'fc.weight': torch.from_numpy(np.transpose(tf_weights)),
-        'fc.bias': torch.from_numpy(tf_biases),
-    })
-
+    pytorch_softmax = SoftmaxClassifier(18426, path_precomputed_dev_map)
+    pytorch_softmax.load_state_dict(torch.load('models/Classifiers/softmax.cui.pt'))
     pytorch_softmax.to(device)
+    pytorch_softmax.eval()
 
-    toy_output = pytorch_softmax(X_train[:64])
-    preds = torch.argmax(toy_output, 1)
-    for i in range(16):
-        print(toy_output[i][preds.cpu().numpy()[i]])
-        print(mapping[preds.cpu().numpy()[i]])
-    for i in range(16):
-        print(mapping[y_train.cpu().numpy()[i]])
-
-
+    score_dict = pytorch_softmax.predict(X_train[:1])
+    max_label = None
+    max_score = 0
+    for k, v in score_dict.items():
+        if v > max_score:
+            max_score = v
+            max_label = k
+    print(f"Prediction: {max_label} with score {max_score}")
