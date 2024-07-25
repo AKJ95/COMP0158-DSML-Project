@@ -76,7 +76,7 @@ if __name__ == '__main__':
     pytorch_softmax.eval()
 
     for training_id in range(16):
-        score_dict = pytorch_softmax.predict(X_train[training_id])
+        score_dict = pytorch_softmax.predict(X_train[training_id:training_id + 1])
         max_label = None
         max_score = 0
         for k, v in score_dict.items():
