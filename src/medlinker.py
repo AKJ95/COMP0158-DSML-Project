@@ -214,17 +214,19 @@ class MedLinker(object):
             matches_str = [(cui, 1 / (1 + idx)) for idx, (cui, _, _, _) in enumerate(matches_str)]
 
         matches_ctx = []
+        vsm_matches_ctx = []
         if self.cui_clf is not None:
             span_ctx_vec_tensor = torch.unsqueeze(torch.from_numpy(span_ctx_vec), 0)
             span_ctx_vec_tensor = span_ctx_vec_tensor.to(self.device)
             matches_ctx = self.cui_clf.predict(span_ctx_vec_tensor)
-        elif self.cui_vsm is not None:
-            span_ctx_vec = norm(span_ctx_vec)
-            matches_ctx = self.cui_vsm.most_similar(span_ctx_vec, threshold=0.5)
 
-        scores_str, scores_ctx = dict(matches_str), dict(matches_ctx)
-        matches = {cui: max(scores_str.get(cui, 0), scores_ctx.get(cui, 0))
-                   for cui in scores_str.keys() | scores_ctx.keys()}
+        if self.cui_vsm is not None:
+            span_ctx_vec = norm(span_ctx_vec)
+            vsm_matches_ctx = self.cui_vsm.most_similar(span_ctx_vec, threshold=0.5)
+
+        scores_str, scores_ctx, scores_vsm = dict(matches_str), dict(matches_ctx), dict(vsm_matches_ctx)
+        matches = {cui: max(scores_str.get(cui, 0), scores_ctx.get(cui, 0), scores_vsm.get(cui, 0))
+                   for cui in scores_str.keys() | scores_ctx.keys() | scores_vsm.keys()}
         matches = sorted(matches.items(), key=lambda x: x[1], reverse=True)
 
         if (self.cui_validator is not None) and (len(matches) > 0):
@@ -332,7 +334,7 @@ if __name__ == '__main__':
     # medlinker.load_st_validator(sty_val_path, validator_thresh=0.45)
 
     # medlinker.load_cui_VSM(cui_vsm_path)
-    medlinker.load_cui_clf(cui_clf_path)
+    # medlinker.load_cui_clf(cui_clf_path)
     # medlinker.load_cui_validator(cui_val_path, validator_thresh=0.70)
 
     s = 'Research indicates the negative impact of wartime deployment on the well being of service members, military spouses, and children.'
