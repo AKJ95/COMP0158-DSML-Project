@@ -15,9 +15,9 @@ if __name__ == '__main__':
     model.load_weights(configs.softmax_tf_path)
     tf_weights = model.weights[0].numpy()
     tf_biases = model.weights[1].numpy()
-    pytorch_softmax = SoftmaxClassifier(18426)
-    pytorch_softmax.load_state_dict({
+    pytorch_softmax_model = SoftmaxClassifier(18426)
+    pytorch_softmax_model.load_state_dict({
         'fc.weight': torch.from_numpy(np.transpose(tf_weights)),
         'fc.bias': torch.from_numpy(tf_biases),
     })
-    torch.save(model.state_dict(), configs.softmax_pt_path)
+    torch.save(pytorch_softmax_model.state_dict(), configs.softmax_pt_path)
