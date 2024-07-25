@@ -78,6 +78,8 @@ class MedLinker(object):
         self.st_validator = None
         self.st_validator_thresh = None
 
+        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
     # def load_sty_clf(self, model_path):
     #     #
     #     self.sty_clf = SoftMax_CLF(threshold=0.5)
@@ -92,6 +94,7 @@ class MedLinker(object):
         self.cui_clf = SoftmaxClassifier(18426,
                                          'models/Classifiers/softmax.cui.map',
                                          'models/Classifiers/softmax.cui.pt')
+        self.cui_clf.to(self.device)
 
     def load_st_VSM(self, st_vsm_path):
         #
@@ -213,6 +216,7 @@ class MedLinker(object):
         matches_ctx = []
         if self.cui_clf is not None:
             span_ctx_vec_tensor = torch.unsqueeze(torch.from_numpy(span_ctx_vec), 0)
+            span_ctx_vec_tensor = span_ctx_vec_tensor.to(self.device)
             matches_ctx = self.cui_clf.predict(span_ctx_vec_tensor)
         elif self.cui_vsm is not None:
             span_ctx_vec = norm(span_ctx_vec)
