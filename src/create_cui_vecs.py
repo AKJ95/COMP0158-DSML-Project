@@ -21,23 +21,28 @@ sci_nlp = spacy.load('en_core_sci_md', disable=['tagger', 'parser', 'ner'])
 start = time.time()
 logging.info('Embedding aliases ...')
 cui_vecs = {}
+cui_with_def = 0
 for cui_idx, cui in enumerate(umls_kb.get_all_cuis()):
 
     if cui_idx % 1000 == 0:
-        logging.info('At #CUI: %d/%d' % (cui_idx, len(umls_kb.umls_data)))
+        logging.info('At #CUI: %d/%d; %d with defs' % (cui_idx, len(umls_kb.umls_data), cui_with_def))
 
-    cui_aliases_vecs = []
-    print(umls_kb.umls_data[cui]["DEF"])
-    for alias in umls_kb.get_aliases(cui, include_name=True):
-        alias_toks = [t.text.lower() for t in sci_nlp(alias)]
-        alias_vecs = toks2vecs(alias_toks, return_tokens=False)
+    if umls_kb.umls_data[cui]["DEF"]:
+        cui_aliases_vecs = []
 
-        alias_vec = np.array(alias_vecs).mean(axis=0)
-        cui_aliases_vecs.append(alias_vec)
+        print(umls_kb.umls_data[cui]["DEF"])
+        for alias in umls_kb.get_aliases(cui, include_name=True):
+            alias_toks = [t.text.lower() for t in sci_nlp(alias)]
+            alias_vecs = toks2vecs(alias_toks, return_tokens=False)
 
-    cui_vecs[cui] = np.array(cui_aliases_vecs).mean(axis=0)
+            alias_vec = np.array(alias_vecs).mean(axis=0)
+            cui_aliases_vecs.append(alias_vec)
+
+        cui_vecs[cui] = np.array(cui_aliases_vecs).mean(axis=0)
+        cui_with_def += 1
 
 
+logging.info(f"Total concepts with definitions: {cui_with_def}")
 logging.info('Writing vecs ...')
 vecs_path = 'data/processed/%s.%s.cuis.vecs' % (umls_kb.umls_version, PYTT_CONFIG['name'])
 with open(vecs_path, 'w') as vecs_f:
