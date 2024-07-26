@@ -35,12 +35,18 @@ for cui_idx, cui in enumerate(umls_kb.get_all_cuis()):
             #
             # alias_vec = np.array(alias_vecs).mean(axis=0)
             # cui_aliases_vecs.append(alias_vec)
-            alias_toks = [t.text.lower() for t in sci_nlp(alias)]
-            text = alias + " " + umls_kb.umls_data[cui]["DEF"][0]
-            text_toks = [t.text.lower() for t in sci_nlp(text)][:64]
-            text_vecs = toks2vecs(text_toks, return_tokens=False)
-            alias_vec = np.array(text_vecs)[:len(alias_toks)].mean(axis=0)
-            cui_aliases_vecs.append(alias_vec)
+            for definition in umls_kb.umls_data[cui]["DEF"]:
+                text = alias + " means: " + definition
+                text_toks = [t.text.lower() for t in sci_nlp(text)][:64]
+                text_vecs = toks2vecs(text_toks, return_tokens=False)
+                alias_vec = np.array(text_vecs).mean(axis=0)
+                cui_aliases_vecs.append(alias_vec)
+            # alias_toks = [t.text.lower() for t in sci_nlp(alias)]
+            # text = alias + " " + umls_kb.umls_data[cui]["DEF"][0]
+            # text_toks = [t.text.lower() for t in sci_nlp(text)][:64]
+            # text_vecs = toks2vecs(text_toks, return_tokens=False)
+            # alias_vec = np.array(text_vecs)[:len(alias_toks)].mean(axis=0)
+            # cui_aliases_vecs.append(alias_vec)
 
         cui_vecs[cui] = np.array(cui_aliases_vecs).mean(axis=0)
         cui_with_def += 1
@@ -48,7 +54,7 @@ for cui_idx, cui in enumerate(umls_kb.get_all_cuis()):
 
 logging.info(f"Total concepts with definitions: {cui_with_def}")
 logging.info('Writing vecs ...')
-vecs_path = 'data/processed/%s.%s.cuis.def.vecs' % (umls_kb.umls_version, PYTT_CONFIG['name'])
+vecs_path = 'data/processed/%s.%s.cuis.def2.vecs' % (umls_kb.umls_version, PYTT_CONFIG['name'])
 with open(vecs_path, 'w') as vecs_f:
     for cui, vec in cui_vecs.items():
         vec_str = ' '.join([str(round(v, 6)) for v in vec.tolist()])
