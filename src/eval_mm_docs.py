@@ -24,7 +24,7 @@ ngram_map_path = 'data/processed/umls.2024AA.active.st21pv.aliases.5toks.map'
 st_vsm_path = 'models/VSMs/mm_st21pv.sts_anns.scibert_scivocab_uncased.vecs'
 # cui_vsm_path = 'models/VSMs/mm_st21pv.cuis.scibert_scivocab_uncased.vecs'
 cui_vsm_path = 'data/processed/mm_st21pv.cuis.scibert_scivocab_uncased.vecs'
-cui_def_vsm_path = 'data/processed/umls.2024AA.active.st21pv.scibert_scivocab_uncased.cuis.def.vecs'
+cui_def_vsm_path = 'data/processed/umls.2024AA.active.st21pv.scibert_scivocab_uncased.cuis.vecs'
 cui_idx_path = 'models/VSMs/umls.2017AA.active.st21pv.scibert_scivocab_uncased.cuis.index'
 cui_lbs_path = 'models/VSMs/umls.2017AA.active.st21pv.scibert_scivocab_uncased.cuis.labels'
 
