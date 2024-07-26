@@ -48,7 +48,7 @@ for cui_idx, cui in enumerate(umls_kb.get_all_cuis()):
 
 logging.info(f"Total concepts with definitions: {cui_with_def}")
 logging.info('Writing vecs ...')
-vecs_path = 'data/processed/%s.%s.cuis.vecs' % (umls_kb.umls_version, PYTT_CONFIG['name'])
+vecs_path = 'data/processed/%s.%s.cuis.def.vecs' % (umls_kb.umls_version, PYTT_CONFIG['name'])
 with open(vecs_path, 'w') as vecs_f:
     for cui, vec in cui_vecs.items():
         vec_str = ' '.join([str(round(v, 6)) for v in vec.tolist()])
