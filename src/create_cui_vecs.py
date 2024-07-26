@@ -30,10 +30,16 @@ for cui_idx, cui in enumerate(umls_kb.get_all_cuis()):
     if umls_kb.umls_data[cui]["DEF"]:
         cui_aliases_vecs = []
         for alias in umls_kb.get_aliases(cui, include_name=True):
+            # alias_toks = [t.text.lower() for t in sci_nlp(alias)]
+            # alias_vecs = toks2vecs(alias_toks, return_tokens=False)
+            #
+            # alias_vec = np.array(alias_vecs).mean(axis=0)
+            # cui_aliases_vecs.append(alias_vec)
             alias_toks = [t.text.lower() for t in sci_nlp(alias)]
-            alias_vecs = toks2vecs(alias_toks, return_tokens=False)
-
-            alias_vec = np.array(alias_vecs).mean(axis=0)
+            text = alias + " " + umls_kb.umls_data[cui]["DEF"][0]
+            text_toks = [t.text.lower() for t in sci_nlp(text)]
+            text_vecs = toks2vecs(text_toks, return_tokens=False)
+            alias_vec = np.array(text_vecs)[:len(alias_toks)].mean(axis=0)
             cui_aliases_vecs.append(alias_vec)
 
         cui_vecs[cui] = np.array(cui_aliases_vecs).mean(axis=0)
