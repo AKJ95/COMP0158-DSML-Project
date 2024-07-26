@@ -27,6 +27,7 @@ for cui_idx, cui in enumerate(umls_kb.get_all_cuis()):
         logging.info('At #CUI: %d/%d' % (cui_idx, len(umls_kb.umls_data)))
 
     cui_aliases_vecs = []
+    print(umls_kb.umls_data[cui]["DEF"])
     for alias in umls_kb.get_aliases(cui, include_name=True):
         alias_toks = [t.text.lower() for t in sci_nlp(alias)]
         alias_vecs = toks2vecs(alias_toks, return_tokens=False)
