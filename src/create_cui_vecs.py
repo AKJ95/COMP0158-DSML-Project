@@ -34,8 +34,8 @@ for cui_idx, cui in enumerate(umls_kb.get_all_cuis()):
             alias_toks = [t.text.lower() for t in sci_nlp(alias)]
             definition_toks = [t.text.lower() for t in sci_nlp(umls_kb.umls_data[cui]["DEF"][0])]
             combined_vecs = toks2vecs(alias_toks + definition_toks, return_tokens=False)
-            alias_vecs = toks2vecs(alias_toks, return_tokens=False)
-            alias_vec = np.array(combined_vecs)[:len(alias_toks)].mean(axis=0)
+            alias_vecs = toks2vecs(combined_vecs, return_tokens=False)
+            alias_vec = np.array(alias_vecs)[:len(alias_toks)].mean(axis=0)
             cui_aliases_vecs.append(alias_vec)
 
         cui_vecs[cui] = np.array(cui_aliases_vecs).mean(axis=0)
