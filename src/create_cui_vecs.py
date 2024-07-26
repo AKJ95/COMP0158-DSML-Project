@@ -33,7 +33,7 @@ for cui_idx, cui in enumerate(umls_kb.get_all_cuis()):
         for alias in umls_kb.get_aliases(cui, include_name=True):
             alias_toks = [t.text.lower() for t in sci_nlp(alias)]
             alias_vecs = toks2vecs(alias_toks, return_tokens=False)
-
+            assert len(alias_toks) == len(alias_vecs)
             alias_vec = np.array(alias_vecs).mean(axis=0)
             cui_aliases_vecs.append(alias_vec)
 
