@@ -27,7 +27,7 @@ cui_vsm_path = 'data/processed/mm_st21pv.cuis.scibert_scivocab_uncased.vecs'
 cui_def_vsm_path = 'data/processed/umls.2024AA.active.st21pv.scibert_scivocab_uncased.cuis.vecs'
 cui_idx_path = 'models/VSMs/umls.2017AA.active.st21pv.scibert_scivocab_uncased.cuis.index'
 cui_lbs_path = 'models/VSMs/umls.2017AA.active.st21pv.scibert_scivocab_uncased.cuis.labels'
-validator_path = "models/Validators/mm_st21pv.lr_clf_cui.train2.joblib"
+validator_path = "models/Validators/mm_st21pv.lr_clf_cui.train2.new_sklearn.joblib"
 
 # full
 # from umls import umls_kb_full as umls_kb
