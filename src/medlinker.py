@@ -225,7 +225,7 @@ class MedLinker(object):
             vsm_matches_ctx = self.cui_vsm.most_similar(span_ctx_vec, threshold=0.5)
 
         scores_str, scores_ctx, scores_vsm = dict(matches_str), dict(matches_ctx), dict(vsm_matches_ctx)
-        matches = {cui: sum([scores_str.get(cui, 0), scores_ctx.get(cui, 0), scores_vsm.get(cui, 0)]) / 3
+        matches = {cui: max(scores_str.get(cui, 0), scores_ctx.get(cui, 0), scores_vsm.get(cui, 0))
                    for cui in scores_str.keys() | scores_ctx.keys() | scores_vsm.keys()}
         matches = sorted(matches.items(), key=lambda x: x[1], reverse=True)
 
