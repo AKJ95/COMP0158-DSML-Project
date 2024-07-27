@@ -1,9 +1,10 @@
+import joblib
+
 import numpy as np
-# from sklearn.externals import joblib
+import torch
 
 from pytt_hf import toks2vecs
 from matcher_simstring import SimString_UMLS
-import torch
 # from matcher_exactmatch import WhitespaceTokenizer  # ???
 from vectorspace import VSM
 # from vectorspace import FaissVSM
@@ -104,10 +105,10 @@ class MedLinker(object):
         #
         self.cui_vsm = VSM(cui_vecs_path)
 
-    # def load_cui_validator(self, clf_path, validator_thresh=0.5):
-    #     #
-    #     self.cui_validator = joblib.load(clf_path)
-    #     self.cui_validator_thresh = validator_thresh
+    def load_cui_validator(self, clf_path, validator_thresh=0.5):
+        #
+        self.cui_validator = joblib.load(clf_path)
+        self.cui_validator_thresh = validator_thresh
     #
     # def load_st_validator(self, clf_path, validator_thresh=0.5):
     #     #
