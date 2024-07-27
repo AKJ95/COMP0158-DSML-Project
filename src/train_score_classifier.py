@@ -5,6 +5,7 @@ import itertools
 
 from sklearn.linear_model import LogisticRegression
 import joblib
+import torch
 
 # from matcher_exactmatch import WhitespaceTokenizer  # ???
 
@@ -105,6 +106,8 @@ if __name__ == '__main__':
                 # CUI Matching
                 matches_cui_str = medlinker.string_matcher.match_cuis(span_str.lower())
                 # matches_cui_vsm = medlinker.cui_vsm.most_similar(span_vec)
+                span_vec_tensor = torch.unsqueeze(torch.from_numpy(span_vec), 0)
+                span_vec_tensor = span_vec_tensor.to(medlinker.device)
                 matches_cui_vsm = medlinker.cui_clf.predict(span_vec, threshold=0.5)
 
                 if len(matches_cui_str + matches_cui_vsm) == 0:
