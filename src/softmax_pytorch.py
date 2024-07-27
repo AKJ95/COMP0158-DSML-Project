@@ -14,6 +14,7 @@ class SoftmaxClassifier(nn.Module):
         self.label_mapping = {i: l for l, i in self.label_mapping.items()}
         if checkpoint_path:
             self.load_state_dict(torch.load(checkpoint_path))
+        self.eval()
 
     def forward(self, x):
         x = self.fc(x)
@@ -21,7 +22,7 @@ class SoftmaxClassifier(nn.Module):
         return x
 
     def predict(self, x, threshold=0.5):
-        x = self.forward(x)[0].cpu().detach().numpy()
+        x = self.forward(x).detach().cpu().numpy()[0]
         score_dict = {}
         for i in range(len(x)):
             if x[i] > threshold:
