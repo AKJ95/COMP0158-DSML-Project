@@ -55,7 +55,7 @@ def read_mm_converted(mm_set_path):
 if __name__ == '__main__':
 
     logging.info('Loading MedMentions ...')
-    mm_docs = read_mm_converted('data/MedMentions/st21pv/custom/mm_converted.train.json')
+    mm_docs = read_mm_converted('data/processed/mm_converted.train.json')
     # mm_docs = read_mm_converted('data/MedMentions/st21pv/custom/mm_converted.dev.json')
 
     X_sty, X_cui, y_sty, y_cui = [], [], [], []
