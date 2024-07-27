@@ -221,13 +221,13 @@ class MedLinker(object):
             span_ctx_vec_tensor = span_ctx_vec_tensor.to(self.device)
             matches_ctx = self.cui_clf.predict(span_ctx_vec_tensor)
 
-        if self.cui_vsm is not None:
+        elif self.cui_vsm is not None:
             span_ctx_vec = norm(span_ctx_vec)
             vsm_matches_ctx = self.cui_vsm.most_similar(span_ctx_vec, threshold=0.5)
 
-        scores_str, scores_ctx, scores_vsm = dict(matches_str), dict(matches_ctx), dict(vsm_matches_ctx)
-        matches = {cui: max(scores_str.get(cui, 0), scores_ctx.get(cui, 0), scores_vsm.get(cui, 0))
-                   for cui in scores_str.keys() | scores_ctx.keys() | scores_vsm.keys()}
+        scores_str, scores_ctx = dict(matches_str), dict(matches_ctx) # , dict(vsm_matches_ctx)
+        matches = {cui: max(scores_str.get(cui, 0), scores_ctx.get(cui, 0))
+                   for cui in scores_str.keys() | scores_ctx.keys()}
         matches = sorted(matches.items(), key=lambda x: x[1], reverse=True)
 
         if (self.cui_validator is not None) and (len(matches) > 0):

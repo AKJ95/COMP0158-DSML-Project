@@ -29,4 +29,6 @@ class SoftmaxClassifier(nn.Module):
                 cui_label = self.label_mapping[i]
                 cui_label = cui_label.lstrip('UMLS:')
                 score_dict[cui_label] = x[i]
+
+        score_dict = sorted(score_dict.items(), key=lambda x: x[1], reverse=True)
         return score_dict
