@@ -110,7 +110,7 @@ if __name__ == '__main__':
                 span_vec_tensor = span_vec_tensor.to(medlinker.device)
                 matches_cui_vsm = medlinker.cui_clf.predict(span_vec_tensor, threshold=0.5)
 
-                if len(matches_cui_str + matches_cui_vsm) == 0:
+                if len(matches_cui_str) + len(matches_cui_vsm) == 0:
                     n_skipped += 1
                     continue
 
