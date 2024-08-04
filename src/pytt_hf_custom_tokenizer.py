@@ -40,7 +40,6 @@ def toks2vecs(tokens, layers=None, subword_op='avg', layer_op='sum', return_toke
     input_ids = th.tensor([sent_encodings]).to(device)
     all_hidden_states, all_attentions = pytt_model(input_ids)[-2:]
 
-    print(all_hidden_states.shape)
     all_hidden_states = sum([all_hidden_states[i] for i in layers])
     print(len(all_hidden_states))
     all_hidden_states = all_hidden_states[0]  # batch size 1
