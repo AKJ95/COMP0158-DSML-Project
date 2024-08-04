@@ -63,7 +63,7 @@ if __name__ == '__main__':
         #     break
 
         for sent in doc['sentences']:
-
+            print(sent['tokens'])
             sent_ctx_out = toks2vecs(sent['tokens'])
 
             for ent in sent['spans']:
