@@ -18,8 +18,8 @@ pytt_tokenizer.add_special_tokens({'additional_special_tokens': ['[M_s]', '[M_e]
 print(pytt_tokenizer.all_special_tokens)
 toy_default_tokens = ["Hello", "World", "!"]
 toy_tokens = ["[M_s]", "Hello", "World", "!", "[M_e]"]
-output_1 = pytt_tokenizer.encode(toy_tokens)
-output_2 = pytt_tokenizer.encode(toy_default_tokens)
+output_1 = [pytt_tokenizer.encode(toy_token) for toy_token in toy_tokens]
+output_2 = [pytt_tokenizer.encode(toy_default_token) for toy_default_token in toy_default_tokens]
 print("output_1:", output_1)
 print("output_2:", output_2)
 
