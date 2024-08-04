@@ -15,10 +15,10 @@ device = 'cuda' if th.cuda.is_available() else 'cpu'
 pytt_model.eval()
 pytt_model.to(device)
 pytt_tokenizer.add_special_tokens({'additional_special_tokens': ['[M_s]', '[M_e]', '[ENT]']})
-toy_default_tokens = ["Hello", "World", "!"]
-toy_tokens = ["[M_s]", "Hello", "World", "!", "[M_e]"]
-output_1 = pytt_tokenizer.encode(toy_tokens, add_special_tokens=True)
-output_2 = pytt_tokenizer.encode(toy_default_tokens, add_special_tokens=True)
+toy_default_tokens = [pytt_tokenizer.cls_token, "Hello", "World", "!", pytt_tokenizer.sep_token]
+toy_tokens = [pytt_tokenizer.cls_token, "[M_s]", "Hello", "World", "!", "[M_e]", pytt_tokenizer.sep_token]
+output_1 = pytt_tokenizer.encode(toy_tokens)
+output_2 = pytt_tokenizer.encode(toy_default_tokens)
 print("output_1:", output_1)
 print("output_2:", output_2)
 
