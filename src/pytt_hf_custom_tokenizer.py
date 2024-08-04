@@ -24,26 +24,29 @@ print("output_1:", output_1)
 print("output_2:", output_2)
 
 
-# def get_num_features(tokens):
-#     return len(sum([pytt_tokenizer.encode(t) for t in tokens], [])) + 2  # plus CLS and SEP
-#
-#
-# def toks2vecs(tokens, layers=None, subword_op='avg', layer_op='sum', return_tokens=True):
-#     if layers is None:
-#         layers = [-1, -2, -3, -4]
-#     encoding_map = [pytt_tokenizer.encode(t) for t in tokens]
-#     sent_encodings = sum(encoding_map, [])
-#     sent_encodings = pytt_tokenizer.encode(pytt_tokenizer.cls_token) + \
-#                      sent_encodings + \
-#                      pytt_tokenizer.encode(pytt_tokenizer.sep_token)
-#
-#     input_ids = th.tensor([sent_encodings]).to(device)
-#     all_hidden_states, all_attentions = pytt_model(input_ids)[-2:]
-#
-#     all_hidden_states = sum([all_hidden_states[i] for i in layers])
-#     all_hidden_states = all_hidden_states[0]  # batch size 1
-#     all_hidden_states = all_hidden_states[1:-1]  # ignoring CLS and SEP
-#
+def get_num_features(tokens):
+    return len(sum([pytt_tokenizer.encode(t) for t in tokens], [])) + 2  # plus CLS and SEP
+
+
+def toks2vecs(tokens, layers=None, subword_op='avg', layer_op='sum', return_tokens=True):
+    if layers is None:
+        layers = [-1, -2, -3, -4]
+    encoding_map = [pytt_tokenizer.encode(t) for t in tokens]
+    sent_encodings = sum(encoding_map, [])
+    sent_encodings = pytt_tokenizer.encode(pytt_tokenizer.cls_token) + \
+                     sent_encodings + \
+                     pytt_tokenizer.encode(pytt_tokenizer.sep_token)
+
+    input_ids = th.tensor([sent_encodings]).to(device)
+    all_hidden_states, all_attentions = pytt_model(input_ids)[-2:]
+
+    print(all_hidden_states.shape)
+    all_hidden_states = sum([all_hidden_states[i] for i in layers])
+    print(len(all_hidden_states))
+    all_hidden_states = all_hidden_states[0]  # batch size 1
+    print(len(all_hidden_states))
+    all_hidden_states = all_hidden_states[1:-1]  # ignoring CLS and SEP
+
 #     # align and merge subword embeddings (average)
 #     tok_embeddings = []
 #     encoding_idx = 0
@@ -63,6 +66,7 @@ print("output_2:", output_2)
 #     return tok_embeddings
 #
 #
-# if __name__ == '__main__':
-#     sent = "Hello World !"
-#     sent_embeddings = toks2vecs(sent.split())
+if __name__ == '__main__':
+    # sent = "Hello World !"
+    sent_embeddings = toks2vecs(toy_tokens)
+    print(sent_embeddings)
