@@ -30,7 +30,7 @@ def get_num_features(tokens):
 
 def toks2vecs(tokens, layers=None, subword_op='avg', layer_op='sum', return_tokens=True):
     if layers is None:
-        layers = [-1, -2, -3, -4]
+        layers = [-1]
     encoding_map = [pytt_tokenizer.encode(t) for t in tokens]
     sent_encodings = sum(encoding_map, [])
     sent_encodings = pytt_tokenizer.encode(pytt_tokenizer.cls_token) + \
@@ -38,13 +38,15 @@ def toks2vecs(tokens, layers=None, subword_op='avg', layer_op='sum', return_toke
                      pytt_tokenizer.encode(pytt_tokenizer.sep_token)
 
     input_ids = th.tensor([sent_encodings]).to(device)
-    all_hidden_states, all_attentions = pytt_model(input_ids)[-2:]
+    output = pytt_model(input_ids)
+    all_hidden_states, all_attentions = output[-2:]
 
     all_hidden_states = sum([all_hidden_states[i] for i in layers])
     print(len(all_hidden_states))
     all_hidden_states = all_hidden_states[0]  # batch size 1
     print(len(all_hidden_states))
-    all_hidden_states = all_hidden_states[1:-1]  # ignoring CLS and SEP
+    # all_hidden_states = all_hidden_states[1:-1]  # ignoring CLS and SEP
+    cls_hidden_states = all_hidden_states[0]
 
 #     # align and merge subword embeddings (average)
 #     tok_embeddings = []
@@ -61,6 +63,9 @@ def toks2vecs(tokens, layers=None, subword_op='avg', layer_op='sum', return_toke
 #             tok_embeddings.append((tok, tok_embedding))
 #         else:
 #             tok_embeddings.append(tok_embedding)
+    print(type(cls_hidden_states))
+    print(cls_hidden_states)
+    print(output.last_hidden_state[0])
 #
 #     return tok_embeddings
 #
