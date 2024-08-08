@@ -156,7 +156,7 @@ class MedLinker(object):
 
                 if span_cuis is not None:
                     # span_info['cui'] = span_cuis[0]
-                    for i in range(1):
+                    for i in range(100):
                         span_info['cui'].append(span_cuis[i])
                 elif require_cui:
                     continue
