@@ -153,6 +153,7 @@ class MedLinker(object):
 
             if predict_cui:
                 span_cuis = self.match_cui(span_str, span_vec)
+                print(span_cuis)
 
                 if span_cuis is not None:
                     span_info['cui'] = span_cuis[0]
@@ -229,7 +230,6 @@ class MedLinker(object):
         matches = {cui: max(scores_str.get(cui, 0), scores_ctx.get(cui, 0), scores_vsm.get(cui, 0))
                    for cui in scores_str.keys() | scores_ctx.keys() | scores_vsm.keys()}
         matches = sorted(matches.items(), key=lambda x: x[1], reverse=True)
-        print(len(matches))
         if (self.cui_validator is not None) and (len(matches) > 0):
             pred_valid = self.validate_cui_pred(matches_str, scores_str,
                                                 matches_ctx, scores_ctx,
