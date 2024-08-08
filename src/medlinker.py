@@ -153,7 +153,6 @@ class MedLinker(object):
 
             if predict_cui:
                 span_cuis = self.match_cui(span_str, span_vec)
-                print(span_cuis)
 
                 if span_cuis is not None:
                     # span_info['cui'] = span_cuis[0]
