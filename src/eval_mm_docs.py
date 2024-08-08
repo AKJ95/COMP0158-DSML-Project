@@ -122,8 +122,10 @@ if __name__ == '__main__':
         for gold_sent in doc['sentences']:
             sent_preds = medlinker.predict(' '.join(gold_sent['tokens']))
             for pred_span in sent_preds['spans']:
-                if pred_span['cui'] is not None:
-                    pred_ents.add(pred_span['cui'][0])
+                # if pred_span['cui'] is not None:
+                #     pred_ents.add(pred_span['cui'][0])
+                for pred_cui in pred_span['cui']:
+                    pred_ents.add(pred_cui[0])
 
         perf_cui['tp'] += len(gold_ents.intersection(pred_ents))
         perf_cui['fp'] += len([pred_ent for pred_ent in pred_ents if pred_ent not in gold_ents])
