@@ -213,11 +213,9 @@ class MedLinker(object):
         elif self.exact_matcher is not None:
             matches_str = self.exact_matcher.match_cuis(span_str.lower())
             matches_str = [(cui, 1 / (1 + idx)) for idx, (cui, _, _, _) in enumerate(matches_str)]
-        num_matched_by_cpmerge = len(matches_str)
 
         matches_ctx = []
         vsm_matches_ctx = []
-        top_n = 100 - num_matched_by_cpmerge
         if self.cui_clf is not None:
             span_ctx_vec_tensor = torch.unsqueeze(torch.from_numpy(span_ctx_vec), 0)
             span_ctx_vec_tensor = span_ctx_vec_tensor.to(self.device)
@@ -225,15 +223,13 @@ class MedLinker(object):
 
         elif self.cui_vsm is not None:
             span_ctx_vec = norm(span_ctx_vec)
-            vsm_matches_ctx = self.cui_vsm.most_similar(span_ctx_vec, threshold=0.5, topn=top_n)
+            vsm_matches_ctx = self.cui_vsm.most_similar(span_ctx_vec, threshold=0.5, topn=100)
 
         scores_str, scores_ctx, scores_vsm = dict(matches_str), dict(matches_ctx), dict(vsm_matches_ctx)
-        print(f"Length of scores_str: {len(scores_str)}")
-        print(f"Length of scores_vsm: {len(scores_vsm)}")
         matches = {cui: max(scores_str.get(cui, 0), scores_ctx.get(cui, 0), scores_vsm.get(cui, 0))
                    for cui in scores_str.keys() | scores_ctx.keys() | scores_vsm.keys()}
         matches = sorted(matches.items(), key=lambda x: x[1], reverse=True)
-
+        print(len(matches))
         if (self.cui_validator is not None) and (len(matches) > 0):
             pred_valid = self.validate_cui_pred(matches_str, scores_str,
                                                 matches_ctx, scores_ctx,
