@@ -120,8 +120,7 @@ if __name__ == '__main__':
 
         pred_ents = set()
         for gold_sent in doc['sentences']:
-            gold_tokens = ' '.join(gold_sent['tokens'])
-            gold_spans = gold_sent['spans']
+            print(gold_sent['spans'])
             sent_preds = medlinker.predict(' '.join(gold_sent['tokens']),
                                            gold_tokens=gold_sent['tokens'],
                                            gold_spans=gold_sent['spans'])
