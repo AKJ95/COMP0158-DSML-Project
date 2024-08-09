@@ -104,7 +104,8 @@ class MedLinker(object):
     def predict(self, sentence,
                 gold_tokens=None, gold_spans=None,
                 predict_cui=True, predict_sty=True,
-                require_cui=True, require_sty=False):
+                require_cui=True, require_sty=False,
+                top_n=1):
         #
         if (gold_tokens is not None) and (gold_spans is not None):
             tokens, spans = gold_tokens, gold_spans
@@ -135,7 +136,7 @@ class MedLinker(object):
 
                 if span_cuis is not None:
                     # span_info['cui'] = span_cuis[0]
-                    for i in range(min(1, len(span_cuis))):
+                    for i in range(min(top_n, len(span_cuis))):
                         span_info['cui'].append(span_cuis[i])
                 elif require_cui:
                     continue
