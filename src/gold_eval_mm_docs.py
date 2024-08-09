@@ -106,6 +106,9 @@ if __name__ == '__main__':
                                            gold_tokens=gold_sent['tokens'],
                                            gold_spans=gold_spans,
                                            top_n=10)
+            for i in range(len(sent_preds['spans'])):
+                print(sent_preds['spans'][i]['cui'])
+                print(gold_sent['spans']['cui'].lstirp('UMLS:'))
             for pred_span in sent_preds['spans']:
                 for pred_cui in pred_span['cui']:
                     pred_ents.add(pred_cui[0])
