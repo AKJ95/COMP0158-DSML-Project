@@ -95,6 +95,7 @@ if __name__ == '__main__':
     logging.info('Processing Instances ...')
     span_count = 0
     in_top_n_count = 0
+    skip_count = 0
     for doc_idx, doc in enumerate(mm_docs):
         perf_stats['n_docs'] += 1
 
@@ -123,7 +124,9 @@ if __name__ == '__main__':
                 gold_entity_cui = gold_sent['spans'][i]['cui'].lstrip('UMLS:')
                 if gold_entity_cui in all_cuis:
                     gold_entity_name = umls_kb.get_entity_by_cui(gold_sent['spans'][i]['cui'].lstrip('UMLS:'))['Name']
-                    print(gold_entity_name)
+                else:
+                    skip_count += 1
+
 
                 span_count += 1
                 pred_entities = [entry[0] for entry in sent_preds['spans'][i]['cui']]
@@ -148,3 +151,4 @@ if __name__ == '__main__':
         counts_str = '\t'.join(['%s:%d' % (l.upper(), c) for l, c in counts.items()])
         print('[CUI]\tP:%.2f\tR:%.2f\tF1:%.2f\tACC:%.2f - %s' % (p, r, f, a, counts_str))
         print(f"Recall per span: {in_top_n_count / span_count * 100:.2f}%")
+        print(f"Skipped: {skip_count}/{span_count} ({skip_count / span_count * 100:.2f}%)")
