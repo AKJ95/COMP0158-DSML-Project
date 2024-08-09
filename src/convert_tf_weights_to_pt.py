@@ -7,6 +7,7 @@ from configs.load_configs import *
 from softmax_pytorch import SoftmaxClassifier
 
 
+# This script converts the weights of the softmax classifier from TensorFlow to PyTorch.
 if __name__ == '__main__':
     configs = get_softmax_classifier_configuration()
     model = Sequential([

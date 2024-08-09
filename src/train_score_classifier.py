@@ -81,28 +81,6 @@ if __name__ == '__main__':
             for span_start, span_end, span_vec in medlinker_doc.get_spans(include_vectors=True, normalize=False):
                 span_str = ' '.join(medlinker_doc.tokens[span_start:span_end])
 
-                # STY Matching
-                # matches_sty_str = medlinker.string_matcher.match_sts(span_str.lower())
-                # # matches_sty_vsm = medlinker.st_vsm.most_similar(span_vec)
-                # matches_sty_vsm = medlinker.sty_clf.predict(span_vec, threshold=0.5)
-                #
-                # if len(matches_sty_str + matches_sty_vsm) == 0:
-                #     n_skipped += 1
-                #     continue
-                #
-                # sty_matchers_agree = False
-                # if len(matches_sty_str) > 0 and len(matches_sty_vsm) > 0:
-                #     if matches_sty_str[0][0] == matches_sty_vsm[0][0]:
-                #         sty_matchers_agree = True
-                #
-                # scores_sty_str = dict(matches_sty_str)
-                # scores_sty_vsm = dict(matches_sty_vsm)
-                #
-                # sty_matches = {sty: max(scores_sty_str.get(sty, 0), scores_sty_vsm.get(sty, 0))
-                #                for sty in scores_sty_str.keys() | scores_sty_vsm.keys()}
-                # sty_matches = sorted(sty_matches.items(), key=lambda x: x[1], reverse=True)
-                # sty_top_match = sty_matches[0][0]
-
                 # CUI Matching
                 matches_cui_str = medlinker.string_matcher.match_cuis(span_str.lower())
                 # matches_cui_vsm = medlinker.cui_vsm.most_similar(span_vec)
@@ -126,31 +104,6 @@ if __name__ == '__main__':
                                for cui in scores_cui_str.keys() | scores_cui_vsm.keys()}
                 cui_matches = sorted(cui_matches.items(), key=lambda x: x[1], reverse=True)
                 cui_top_match = cui_matches[0][0]
-
-                # STY Features
-                # x_sty = []
-                # if len(matches_sty_str) > 0:
-                #     x_sty.append(matches_sty_str[0][1])
-                # else:
-                #     x_sty.append(0)
-                # if len(matches_sty_vsm) > 0:
-                #     x_sty.append(matches_sty_vsm[0][1])
-                # else:
-                #     x_sty.append(0)
-                # x_sty.append(sty_matches[0][1])
-                # x_sty.append((scores_sty_str.get(sty_top_match, 0) + scores_sty_vsm.get(sty_top_match, 0)) / 2)
-                # x_sty.append(int(sty_matchers_agree))
-                # # x_sty.append(int(cui_matchers_agree))
-                # X_sty.append(x_sty)
-                #
-                # sty_pred_correct = False
-                # for gold_span in gold_sent['spans']:
-                #     if span_start == gold_span['start'] and span_end == gold_span['end']:
-                #         if sty_top_match == gold_span['st']:
-                #             sty_pred_correct = True
-                #             break
-                #
-                # y_sty.append(int(sty_pred_correct))
 
                 # CUI Features
                 x_cui = []
@@ -177,13 +130,6 @@ if __name__ == '__main__':
                             break
 
                 y_cui.append(int(cui_pred_correct))
-
-    # logging.info('Training STY Logistic Regression ...')
-    # sty_lr_clf = LogisticRegression(random_state=42, verbose=True)
-    # sty_lr_clf.fit(X_sty, y_sty)
-    #
-    # logging.info('Saving STY Classifier ...')
-    # joblib.dump(sty_lr_clf, 'models/Validators/mm_st21pv.lr_clf_sty.train2.joblib')
 
     logging.info('Training CUI Logistic Regression ...')
     cui_lr_clf = LogisticRegression(random_state=42, verbose=True)

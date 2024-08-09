@@ -2,14 +2,10 @@ from functools import lru_cache
 
 import spacy
 from scispacy.umls_utils import UmlsKnowledgeBase
-
 from scispacy.umls_semantic_type_tree import construct_umls_tree_from_tsv
+
 umls_tree = construct_umls_tree_from_tsv("data/umls_semantic_type_tree.tsv")
-
 sci_nlp = spacy.load('en_core_sci_md')
-# sci_nlp = spacy.load('en_core_sci_lg')
-
-
 st21pv_set = {'T005', 'T007', 'T017', 'T022', 'T031', 'T033', 'T037', 'T038', 'T058', 'T062', 'T074', 'T082', 'T091',
               'T092', 'T097', 'T098', 'T103', 'T168', 'T170', 'T201', 'T204'}
 

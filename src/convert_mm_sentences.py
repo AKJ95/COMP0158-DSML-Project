@@ -2,19 +2,22 @@ import json
 import logging
 from time import time
 
+import spacy
+
 from mm_reader import read_full_med_mentions
 from mm_reader import get_sent_boundaries
 from mm_reader import get_sent_ents
 
-import spacy
 sci_nlp = spacy.load('en_core_sci_md')
 
 
+# Set up logging configuration.
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(levelname)s - %(message)s',
                     datefmt='%d-%b-%y %H:%M:%S')
 
 
+# Read in raw MedMentions data.
 mm_contents = read_full_med_mentions('data/raw/MedMentions-master/st21pv/data/')
 mm_splits = {'train': mm_contents[0], 'dev': mm_contents[1], 'test': mm_contents[2]}
 

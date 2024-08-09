@@ -5,13 +5,7 @@ import torch
 
 from pytt_hf import toks2vecs
 from matcher_simstring import SimString_UMLS
-# from matcher_exactmatch import WhitespaceTokenizer  # ???
 from vectorspace import VSM
-# from vectorspace import FaissVSM
-
-# from matcher_softmax import SoftMax_CLF
-
-
 from NERComponent import NERComponent
 from softmax_pytorch import SoftmaxClassifier
 
@@ -81,16 +75,6 @@ class MedLinker(object):
 
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-    # def load_sty_clf(self, model_path):
-    #     #
-    #     self.sty_clf = SoftMax_CLF(threshold=0.5)
-    #     self.sty_clf.load(model_path, model_path.replace('.h5', '.map'))
-    #
-    # def load_cui_clf(self, model_path):
-    #     #
-    #     self.cui_clf = SoftMax_CLF(threshold=0.5)
-    #     self.cui_clf.load(model_path, model_path.replace('.h5', '.map'))
-
     def load_cui_softmax_pt(self):
         self.cui_clf = SoftmaxClassifier(18426,
                                          'models/Classifiers/softmax.cui.map',
@@ -109,12 +93,7 @@ class MedLinker(object):
         #
         self.cui_validator = joblib.load(clf_path)
         self.cui_validator_thresh = validator_thresh
-    #
-    # def load_st_validator(self, clf_path, validator_thresh=0.5):
-    #     #
-    #     self.st_validator = joblib.load(clf_path)
-    #     self.st_validator_thresh = validator_thresh
-    #
+
     def load_string_matcher(self, ngram_db_path, ngram_map_path):
         self.string_matcher = SimString_UMLS(self.umls_kb, ngram_db_path, ngram_map_path)
 

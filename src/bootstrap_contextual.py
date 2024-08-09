@@ -6,19 +6,19 @@ import numpy as np
 from pytt_hf import toks2vecs
 from pytt_hf import PYTT_CONFIG
 
-# from umls_utils import sci_nlp
-# from umls_utils import cui2ent
-# from umls_utils import cui2st
-
-from umls import umls_kb_st21pv as umls_kb
-
+# Set up logging configuration.
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(levelname)s - %(message)s',
                     datefmt='%d-%b-%y %H:%M:%S')
 
 
 def iterate_docs_converted(split_path):
-    # load json dataset
+    """
+    Wrapper to iterate over converted MedMentions dataset.
+
+    :param split_path: The split file path to the converted dataset.
+    :return: A generator of documents in the specified split.
+    """
     with open(split_path, 'r') as json_f:
         dataset = json.load(json_f)
 
@@ -27,6 +27,16 @@ def iterate_docs_converted(split_path):
 
 
 def get_ctx_vec(sent_ctx_out, sent_tokens, span_idx_start, span_idx_end, normalize=False):
+    """
+    Compute the context vector for a span in a sentence.
+
+    :param sent_ctx_out:
+    :param sent_tokens: Tokens of the sentence.
+    :param span_idx_start: Starting index of the span.
+    :param span_idx_end: Ending index of the span.
+    :param normalize: Whether to normalize the context vector.
+    :return:
+    """
     span_toks = sent_tokens[span_idx_start:span_idx_end]
     span_ctx_out = sent_ctx_out[span_idx_start:span_idx_end]
 

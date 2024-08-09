@@ -77,20 +77,6 @@ def med_mentions_example_iterator(filename: str) -> Iterator[MedMentionExample]:
             yield process_example(lines)
 
 
-# def read_med_mentions(filename: str):
-#     """
-#     Reads in the MedMentions dataset into Spacy's
-#     NER format.
-#     """
-#     examples = []
-#     for example in med_mentions_example_iterator(filename):
-#         # spacy_format_entities = [(x.start, x.end, x.mention_type) for x in example.entities]
-#         spacy_format_entities = [(x.start, x.end, x.mention_text, x.mention_type, x.umls_id) for x in example.entities]
-#         examples.append((example.text, {"entities": spacy_format_entities}))
-
-#     return examples
-
-
 def read_full_med_mentions(directory_path: str,
                            label_mapping: Dict[str, str] = None,
                            span_only: bool = False):
@@ -201,39 +187,7 @@ def iterate_annotations(sci_nlp, dataset_examples):
                     sent_mention_extraction = sent[ent.start:ent.end]
                     assert ent.mention_text == sent_mention_extraction
 
-                    yield (ent, sent)
-
-
-# def locate_tokens(all_tokens, subset_tokens):
-#     """
-#     Returns a list of indices (LoL) for all mention tokens within a list of tokens (i.e. sentence tokens).
-#     """
-#     # tests all combinations, very slow and fails for long spans
-#     # gets the job done for now, to be improved later
-
-#     def get_idxs(elems, e):  # assumes must occurr
-#         return [i for i, e_ in enumerate(elems) if e == e_]
-
-#     def is_linear(elems):
-#         # return elems == [elems[0] + i for i in range(len(elems))]
-#         return all(e1 == e2 - 1 for e1, e2 in zip(elems, elems[1:]))
-
-#     # method isn't tractable for very long lists (also very rare)
-#     if len(subset_tokens) > 10:
-#         return [-1]
-
-#     all_possible_idxs = []  # indices for overlaps between all_tokens and subset
-#     for token in subset_tokens:
-#         if token in all_tokens:
-#             all_possible_idxs.append(get_idxs(all_tokens, token))
-
-#     if len(all_possible_idxs) > 0:
-#         for combination in itertools.product(*all_possible_idxs):
-#             combination = list(combination)
-#             if is_linear(combination):  # only want indices increasing by +1
-#                 return combination
-
-#     return [-1]
+                    yield ent, sent
 
 
 def locate_tokens(all_tokens, subset_tokens, reserved_spans=None):
@@ -328,12 +282,3 @@ def get_sent_ents(sci_nlp, sent_tokens, sent_start, sent_end, doc_entities):
                 reserved_spans.add((mention_token_start, mention_token_end))
 
     return sent_ents, skipped_mentions
-
-# def iterate_docs_converted(split_path):
-
-#     # load json dataset
-#     with open(split_path, 'r') as json_f:
-#         dataset = json.load(json_f)
-
-#     for doc in dataset['docs']:
-#         yield doc
