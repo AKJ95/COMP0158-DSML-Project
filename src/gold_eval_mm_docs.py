@@ -1,12 +1,10 @@
 import json
 import logging
 
-# from matcher_exactmatch import WhitespaceTokenizer  # ???
-
 from NERComponent import NERComponent
 from medlinker import MedLinker
-# st21pv
 from umls import umls_kb_st21pv as umls_kb
+
 
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(levelname)s - %(message)s',
@@ -28,26 +26,16 @@ cui_def_vsm_path = 'data/processed/umls.2024AA.active.st21pv.scibert_scivocab_un
 cui_idx_path = 'models/VSMs/umls.2017AA.active.st21pv.scibert_scivocab_uncased.cuis.index'
 cui_lbs_path = 'models/VSMs/umls.2017AA.active.st21pv.scibert_scivocab_uncased.cuis.labels'
 
-# full
-# from umls import umls_kb_full as umls_kb
-# cx_ner_path = 'models/ContextualNER/mm_full_SCIBERT_uncased/'
-# ngram_db_path = 'models/SimString/umls.2017AA.active.full.aliases.3gram.5toks.db'
-# ngram_map_path = 'models/SimString/umls.2017AA.active.full.aliases.5toks.map'
-
 
 print('Loading MedNER ...')
-# medner = MedNER(cx_ner_path, em_ner_path)
 medner = NERComponent()
 
 print('Loading MedLinker ...')
 medlinker = MedLinker(medner, umls_kb)
-# medlinker.load_st_VSM(st_vsm_path)
 medlinker.load_string_matcher(ngram_db_path, ngram_map_path)
 # medlinker.load_cui_softmax_pt()
 medlinker.load_cui_VSM(cui_vsm_path)
 
-
-# input('...')
 
 def read_mm_converted(mm_set_path):
     with open(mm_set_path, 'r') as json_f:
@@ -103,9 +91,7 @@ if __name__ == '__main__':
     perf_cui = {'tp': 0, 'fp': 0, 'fn': 0}
 
     logging.info('Loading MedMentions ...')
-    # mm_docs = read_mm_converted('data/MedMentions/full/custom/mm_converted.dev.json')
-    # mm_docs = read_mm_converted('data/MedMentions/st21pv/custom/mm_converted.dev.json')
-    mm_docs = read_mm_converted('data/processed/mm_converted.test.json')
+    mm_docs = read_mm_converted('data/processed/mm_converted.train.json')
 
     logging.info('Processing Instances ...')
     for doc_idx, doc in enumerate(mm_docs):
@@ -125,8 +111,6 @@ if __name__ == '__main__':
                                            gold_tokens=gold_sent['tokens'],
                                            gold_spans=gold_spans)
             for pred_span in sent_preds['spans']:
-                # if pred_span['cui'] is not None:
-                #     pred_ents.add(pred_span['cui'][0])
                 for pred_cui in pred_span['cui']:
                     pred_ents.add(pred_cui[0])
 
