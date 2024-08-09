@@ -108,7 +108,7 @@ if __name__ == '__main__':
                                            top_n=10)
             for i in range(len(sent_preds['spans'])):
                 print(sent_preds['spans'][i]['cui'])
-                print(gold_sent['spans'][i]['cui'].lstirp('UMLS:'))
+                print(gold_sent['spans'][i]['cui'].lstrip('UMLS:'))
             for pred_span in sent_preds['spans']:
                 for pred_cui in pred_span['cui']:
                     pred_ents.add(pred_cui[0])
