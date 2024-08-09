@@ -46,7 +46,10 @@ class UMLS_KB(object):
         return list(sty_sizes.most_common())
 
     def get_entity_by_cui(self, cui):
-        return self.umls_data[cui]
+        try:
+            return self.umls_data[cui]
+        except KeyError:
+            return None
 
     def pprint(self, cui):
         cui_info = self.umls_data[cui]

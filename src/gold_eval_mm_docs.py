@@ -84,7 +84,6 @@ def stringify_metrics(metrics):
 
 
 if __name__ == '__main__':
-    all_cuis = umls_kb.get_all_cuis()
 
     perf_stats = {'n_gold_spans': 0, 'n_pred_spans': 0, 'n_sents': 0, 'n_docs': 0}
     perf_cui = {'tp': 0, 'fp': 0, 'fn': 0}
@@ -122,11 +121,8 @@ if __name__ == '__main__':
                 embedding_tokens.extend(gold_sent['tokens'][sent_preds['spans'][i]['end']:])
 
                 gold_entity_cui = gold_sent['spans'][i]['cui'].lstrip('UMLS:')
-                if gold_entity_cui in all_cuis:
-                    gold_entity_name = umls_kb.get_entity_by_cui(gold_sent['spans'][i]['cui'].lstrip('UMLS:'))['Name']
-                else:
-                    skip_count += 1
-
+                gold_entity_kb = umls_kb.get_entity_by_cui(gold_sent['spans'][i]['cui'].lstrip('UMLS:'))
+                gold_entity_name = gold_entity_kb['Name'] if gold_entity_kb else ''
 
                 span_count += 1
                 pred_entities = [entry[0] for entry in sent_preds['spans'][i]['cui']]
