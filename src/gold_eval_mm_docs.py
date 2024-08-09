@@ -89,6 +89,8 @@ if __name__ == '__main__':
     mm_docs = read_mm_converted('data/processed/mm_converted.train.json')
 
     logging.info('Processing Instances ...')
+    span_count = 0
+    in_top_n_count = 0
     for doc_idx, doc in enumerate(mm_docs):
         perf_stats['n_docs'] += 1
 
@@ -107,9 +109,12 @@ if __name__ == '__main__':
                                            gold_spans=gold_spans,
                                            top_n=10)
             for i in range(len(sent_preds['spans'])):
+                span_count += 1
                 pred_entities = [entry[0] for entry in sent_preds['spans'][i]['cui']]
-                print(pred_entities)
-                print(gold_sent['spans'][i]['cui'].lstrip('UMLS:'))
+                gold_entity = gold_sent['spans'][i]['cui'].lstrip('UMLS:')
+                if gold_entity in pred_entities:
+                    pred_ents.add(gold_entity)
+                    in_top_n_count += 1
             for pred_span in sent_preds['spans']:
                 for pred_cui in pred_span['cui']:
                     pred_ents.add(pred_cui[0])
@@ -127,3 +132,4 @@ if __name__ == '__main__':
         counts = calc_counts(perf_cui)
         counts_str = '\t'.join(['%s:%d' % (l.upper(), c) for l, c in counts.items()])
         print('[CUI]\tP:%.2f\tR:%.2f\tF1:%.2f\tACC:%.2f - %s' % (p, r, f, a, counts_str))
+        print(f"Recall per span: {in_top_n_count / span_count * 100:.2f}%")
