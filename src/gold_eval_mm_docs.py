@@ -1,10 +1,13 @@
 import json
 import logging
 
+import spacy
+
 from NERComponent import NERComponent
 from medlinker import MedLinker
 from umls import umls_kb_st21pv as umls_kb
 
+sci_nlp = spacy.load('en_core_sci_md', disable=['tagger', 'parser', 'ner'])
 
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(levelname)s - %(message)s',
@@ -115,7 +118,9 @@ if __name__ == '__main__':
                 embedding_tokens.extend(gold_sent['tokens'][sent_preds['spans'][i]['start']:sent_preds['spans'][i]['end']])
                 embedding_tokens.append('[M_e]')
                 embedding_tokens.extend(gold_sent['tokens'][sent_preds['spans'][i]['end']:])
-                print(embedding_tokens)
+
+                gold_entity_name = umls_kb.get_entity_by_cui(gold_sent['spans'][i]['cui'].lstrip('UMLS:'))['Name']
+                print(gold_entity_name)
 
                 span_count += 1
                 pred_entities = [entry[0] for entry in sent_preds['spans'][i]['cui']]

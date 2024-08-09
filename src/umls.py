@@ -45,6 +45,9 @@ class UMLS_KB(object):
                 sty_sizes[sty] += 1
         return list(sty_sizes.most_common())
 
+    def get_entity_by_cui(self, cui):
+        return self.umls_data[cui]
+
     def pprint(self, cui):
         cui_info = self.umls_data[cui]
         s = ''
