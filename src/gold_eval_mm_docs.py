@@ -107,8 +107,16 @@ if __name__ == '__main__':
             sent_preds = medlinker.predict(' '.join(gold_sent['tokens']),
                                            gold_tokens=gold_sent['tokens'],
                                            gold_spans=gold_spans,
-                                           top_n=1)
+                                           top_n=10)
             for i in range(len(sent_preds['spans'])):
+                embedding_tokens = []
+                embedding_tokens.extend(gold_sent['tokens'][:sent_preds['spans'][i]['start']])
+                embedding_tokens.append('[M_s]')
+                embedding_tokens.extend(gold_sent['tokens'][sent_preds['spans'][i]['start']:sent_preds['spans'][i]['end']])
+                embedding_tokens.append('[M_e]')
+                embedding_tokens.extend(gold_sent['tokens'][sent_preds['spans'][i]['end']:])
+                print(embedding_tokens)
+
                 span_count += 1
                 pred_entities = [entry[0] for entry in sent_preds['spans'][i]['cui']]
                 gold_entity = gold_sent['spans'][i]['cui'].lstrip('UMLS:')
