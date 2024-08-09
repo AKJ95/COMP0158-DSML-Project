@@ -130,15 +130,16 @@ if __name__ == '__main__':
 
                 span_count += 1
 
-                for pred_cui in sent_preds['spans'][i]['cui']:
-                    span_count += 1
-                    pred_entity_kb = umls_kb.get_entity_by_cui(pred_cui[0])
+                for j in range(4):
+                    pred_entity_kb = umls_kb.get_entity_by_cui(sent_preds['spans'][i]['cui'][j][0])
                     pred_entity_name = pred_entity_kb['Name'] if pred_entity_kb else ''
-                    if pred_entity_kb and pred_entity_kb['DEF']:
-                        pred_entity_def = pred_entity_kb['DEF'][0]
-                    else:
-                        skip_count += 1
-                        pred_entity_def = ''
+                    if pred_entity_name != gold_entity_name:
+                        span_count += 1
+                        if pred_entity_kb and pred_entity_kb['DEF']:
+                            pred_entity_def = pred_entity_kb['DEF'][0]
+                        else:
+                            skip_count += 1
+                            pred_entity_def = ''
 
                 pred_entities = [entry[0] for entry in sent_preds['spans'][i]['cui']]
                 gold_entity = gold_sent['spans'][i]['cui'].lstrip('UMLS:')
