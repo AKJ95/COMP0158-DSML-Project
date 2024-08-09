@@ -86,7 +86,7 @@ if __name__ == '__main__':
     perf_cui = {'tp': 0, 'fp': 0, 'fn': 0}
 
     logging.info('Loading MedMentions ...')
-    mm_docs = read_mm_converted('data/processed/mm_converted.train.json')
+    mm_docs = read_mm_converted('data/processed/mm_converted.test.json')
 
     logging.info('Processing Instances ...')
     span_count = 0
@@ -113,7 +113,6 @@ if __name__ == '__main__':
                 pred_entities = [entry[0] for entry in sent_preds['spans'][i]['cui']]
                 gold_entity = gold_sent['spans'][i]['cui'].lstrip('UMLS:')
                 if gold_entity in pred_entities:
-                    pred_ents.add(gold_entity)
                     in_top_n_count += 1
             for pred_span in sent_preds['spans']:
                 for pred_cui in pred_span['cui']:
