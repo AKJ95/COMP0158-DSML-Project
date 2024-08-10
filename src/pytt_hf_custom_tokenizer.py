@@ -41,11 +41,11 @@ def toks2vecs(tokens, layers=None, subword_op='avg', layer_op='sum', return_toke
     output = pytt_model(input_ids)
     all_hidden_states, all_attentions = output[-2:]
 
-    print(len(all_hidden_states))
+    # print(len(all_hidden_states))
     all_hidden_states = sum([all_hidden_states[i] for i in layers])
-    print(len(all_hidden_states))
+    # print(len(all_hidden_states))
     all_hidden_states = all_hidden_states[0]  # batch size 1
-    print(len(all_hidden_states))
+    # print(len(all_hidden_states))
     cls_hidden_states = all_hidden_states[0]
 
     return cls_hidden_states.detach().cpu().numpy()
