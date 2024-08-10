@@ -88,7 +88,7 @@ print('# CUIs:', len(cui_data))
 
 if NO_DEFS is False:
     print('Collecting info from \'MRDEF\' table ...')
-    for row_idx, row in enumerate(c.execute('SELECT * FROM MRDEF')):
+    for row_idx, row in enumerate(c.execute('SELECT * FROM MRDEF WHERE SAB = "MSH"')):
         CUI, AUI, ATUI, SATUI, SAB, DEF, SUPPRESS, CVF = row
 
         if CUI in cui_data:
