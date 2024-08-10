@@ -5,7 +5,7 @@ import spacy
 
 from NERComponent import NERComponent
 from medlinker import MedLinker
-from umls import umls_kb_st21pv as umls_kb
+from umls import umls_kb_full as umls_kb
 
 sci_nlp = spacy.load('en_core_sci_md', disable=['tagger', 'parser', 'ner'])
 
