@@ -51,7 +51,7 @@ def get_english_sources():
             if english_sources != "(":
                 english_sources += ", "
             english_sources += f"\"{line[0]}\""
-        english_sources += ")"
+    english_sources += ")"
     return english_sources
 
 
