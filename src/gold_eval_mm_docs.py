@@ -125,12 +125,20 @@ if __name__ == '__main__':
 
                 gold_entity_cui = gold_sent['spans'][i]['cui'].lstrip('UMLS:')
                 gold_entity_kb = umls_kb.get_entity_by_cui(gold_sent['spans'][i]['cui'].lstrip('UMLS:'))
-                gold_entity_name = gold_entity_kb['Name'] if gold_entity_kb else ''
+                gold_entity_name = gold_entity_kb['Name'] if gold_entity_kb else ' '.join(gold_sent['tokens'][sent_preds['spans'][i]['start']:sent_preds['spans'][i]['end']])
                 if gold_entity_kb and gold_entity_kb['DEF']:
                     gold_entity_def = gold_entity_kb['DEF'][0]
+
                 else:
+                    gold_entity_def = gold_entity_name
                     skip_count += 1
                     x_encoder_skipped_count += 1
+
+                gold_entity_tokens = [t.text.lower() for t in sci_nlp(gold_entity_name)] + ['[ENT]'] + [t.text.lower()
+                                                                                                        for t in
+                                                                                                        sci_nlp(
+                                                                                                            gold_entity_def)]
+                gold_toy_token = toks2vecs((embedding_tokens + gold_entity_tokens)[:128])
 
                 span_count += 1
                 x_encoder_example_count += 1
