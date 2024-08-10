@@ -149,8 +149,6 @@ if __name__ == '__main__':
                 gold_entity = gold_sent['spans'][i]['cui'].lstrip('UMLS:')
                 if gold_entity in pred_entities:
                     in_top_n_count += 1
-                    print(gold_entity)
-                    print(pred_entities)
             for pred_span in sent_preds['spans']:
                 for pred_cui in pred_span['cui']:
                     pred_ents.add(pred_cui[0])
