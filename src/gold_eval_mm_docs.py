@@ -134,7 +134,7 @@ if __name__ == '__main__':
                 span_count += 1
                 x_encoder_example_count += 1
 
-                for j in range(4):
+                for j in range(min(4, len(sent_preds['spans'][i]['cui']))):
                     pred_entity_kb = umls_kb.get_entity_by_cui(sent_preds['spans'][i]['cui'][j][0])
                     pred_entity_name = pred_entity_kb['Name'] if pred_entity_kb else ''
                     if pred_entity_name != gold_entity_name:
