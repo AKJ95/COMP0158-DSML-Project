@@ -139,11 +139,16 @@ if __name__ == '__main__':
                     pred_entity_name = pred_entity_kb['Name'] if pred_entity_kb else ''
                     if pred_entity_name != gold_entity_name:
                         x_encoder_example_count += 1
+                        pred_entity_name_tokens = [t.text.lower() for t in sci_nlp(pred_entity_name)]
+                        pred_entity_tokens = []
                         if pred_entity_kb and pred_entity_kb['DEF']:
                             pred_entity_def = pred_entity_kb['DEF'][0]
+                            pred_entity_def_tokens = [t.text.lower() for t in sci_nlp(pred_entity_def)]
+                            pred_entity_tokens = pred_entity_name_tokens + ['[ENT]'] + pred_entity_def_tokens
                         else:
                             x_encoder_skipped_count += 1
-                            pred_entity_def = ''
+                            pred_entity_tokens = pred_entity_name_tokens + ['[ENT]'] + pred_entity_name_tokens
+                        print(' '.join(pred_entity_tokens))
 
                 pred_entities = [entry[0] for entry in sent_preds['spans'][i]['cui']]
                 gold_entity = gold_sent['spans'][i]['cui'].lstrip('UMLS:')
