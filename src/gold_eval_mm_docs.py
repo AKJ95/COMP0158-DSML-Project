@@ -95,6 +95,8 @@ if __name__ == '__main__':
     span_count = 0
     in_top_n_count = 0
     skip_count = 0
+    x_encoder_example_count = 0
+    x_encoder_skipped_count = 0
     for doc_idx, doc in enumerate(mm_docs):
         perf_stats['n_docs'] += 1
 
@@ -127,18 +129,20 @@ if __name__ == '__main__':
                     gold_entity_def = gold_entity_kb['DEF'][0]
                 else:
                     skip_count += 1
+                    x_encoder_skipped_count += 1
 
                 span_count += 1
+                x_encoder_example_count += 1
 
                 for j in range(4):
                     pred_entity_kb = umls_kb.get_entity_by_cui(sent_preds['spans'][i]['cui'][j][0])
                     pred_entity_name = pred_entity_kb['Name'] if pred_entity_kb else ''
                     if pred_entity_name != gold_entity_name:
-                        span_count += 1
+                        x_encoder_example_count += 1
                         if pred_entity_kb and pred_entity_kb['DEF']:
                             pred_entity_def = pred_entity_kb['DEF'][0]
                         else:
-                            skip_count += 1
+                            x_encoder_skipped_count += 1
                             pred_entity_def = ''
 
                 pred_entities = [entry[0] for entry in sent_preds['spans'][i]['cui']]
