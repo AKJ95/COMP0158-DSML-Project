@@ -48,11 +48,10 @@ def get_english_sources():
         cells = rows[i].find_all("th") if i == 0 else rows[i].find_all("td")
         line = [cell.text.strip() for cell in cells]
         if line[3] == "ENG":
+            if english_sources != "(":
+                english_sources += ", "
             english_sources += f"\"{line[0]}\""
-        if i != len(rows) - 1:
-            english_sources += ", "
-        else:
-            english_sources += ")"
+        english_sources += ")"
     return english_sources
 
 
