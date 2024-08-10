@@ -15,13 +15,13 @@ device = 'cuda' if th.cuda.is_available() else 'cpu'
 pytt_model.eval()
 pytt_model.to(device)
 pytt_tokenizer.add_special_tokens({'additional_special_tokens': ['[M_s]', '[M_e]', '[ENT]']})
-print(pytt_tokenizer.all_special_tokens)
-toy_default_tokens = ["Hello", "World", "!"]
-toy_tokens = ["[M_s]", "Hello", "World", "!", "[M_e]"]
-output_1 = [pytt_tokenizer.encode(toy_token) for toy_token in toy_tokens]
-output_2 = [pytt_tokenizer.encode(toy_default_token) for toy_default_token in toy_default_tokens]
-print("output_1:", output_1)
-print("output_2:", output_2)
+# print(pytt_tokenizer.all_special_tokens)
+# toy_default_tokens = ["Hello", "World", "!"]
+# toy_tokens = ["[M_s]", "Hello", "World", "!", "[M_e]"]
+# output_1 = [pytt_tokenizer.encode(toy_token) for toy_token in toy_tokens]
+# output_2 = [pytt_tokenizer.encode(toy_default_token) for toy_default_token in toy_default_tokens]
+# print("output_1:", output_1)
+# print("output_2:", output_2)
 
 
 def get_num_features(tokens):
@@ -46,32 +46,13 @@ def toks2vecs(tokens, layers=None, subword_op='avg', layer_op='sum', return_toke
     print(len(all_hidden_states))
     all_hidden_states = all_hidden_states[0]  # batch size 1
     print(len(all_hidden_states))
-    # all_hidden_states = all_hidden_states[1:-1]  # ignoring CLS and SEP
     cls_hidden_states = all_hidden_states[0]
 
-#     # align and merge subword embeddings (average)
-#     tok_embeddings = []
-#     encoding_idx = 0
-#     for tok, tok_encodings in zip(tokens, encoding_map):
-#         tok_embedding = th.zeros(pytt_model.config.hidden_size).to(device)
-#         for tok_encoding in tok_encodings:
-#             tok_embedding += all_hidden_states[encoding_idx]
-#             encoding_idx += 1
-#         tok_embedding = tok_embedding / len(tok_encodings)  # avg of subword embs
-#         tok_embedding = tok_embedding.detach().cpu().numpy()
-#
-#         if return_tokens:
-#             tok_embeddings.append((tok, tok_embedding))
-#         else:
-#             tok_embeddings.append(tok_embedding)
-
-#     print(type(cls_hidden_states))
-#     print(cls_hidden_states)
-#
     return cls_hidden_states.detach().cpu().numpy()
-#
-#
+
+
 if __name__ == '__main__':
     # sent = "Hello World !"
-    sent_embeddings = toks2vecs(toy_tokens)
-    print(sent_embeddings)
+    # sent_embeddings = toks2vecs(toy_tokens)
+    # print(sent_embeddings)
+    pass

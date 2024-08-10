@@ -1,12 +1,11 @@
 import json
 import logging
 
-import bs4
-import requests
 import spacy
 
 from NERComponent import NERComponent
 from medlinker import MedLinker
+from pytt_hf_custom_tokenizer import toks2vecs
 from umls import umls_kb_full as umls_kb
 
 sci_nlp = spacy.load('en_core_sci_md', disable=['tagger', 'parser', 'ner'])
@@ -122,6 +121,7 @@ if __name__ == '__main__':
                 embedding_tokens.extend(gold_sent['tokens'][sent_preds['spans'][i]['start']:sent_preds['spans'][i]['end']])
                 embedding_tokens.append('[M_e]')
                 embedding_tokens.extend(gold_sent['tokens'][sent_preds['spans'][i]['end']:])
+                embedding_tokens.append('[SEP]')
 
                 gold_entity_cui = gold_sent['spans'][i]['cui'].lstrip('UMLS:')
                 gold_entity_kb = umls_kb.get_entity_by_cui(gold_sent['spans'][i]['cui'].lstrip('UMLS:'))
@@ -149,6 +149,7 @@ if __name__ == '__main__':
                         else:
                             x_encoder_skipped_count += 1
                             pred_entity_tokens = pred_entity_name_tokens + ['[ENT]'] + pred_entity_name_tokens
+                        toy_vec = toks2vecs(embedding_tokens + pred_entity_tokens)
 
                 pred_entities = [entry[0] for entry in sent_preds['spans'][i]['cui']]
                 gold_entity = gold_sent['spans'][i]['cui'].lstrip('UMLS:')
@@ -172,4 +173,4 @@ if __name__ == '__main__':
         counts_str = '\t'.join(['%s:%d' % (l.upper(), c) for l, c in counts.items()])
         print('[CUI]\tP:%.2f\tR:%.2f\tF1:%.2f\tACC:%.2f - %s' % (p, r, f, a, counts_str))
         print(f"Recall per span: {in_top_n_count}/{span_count} ({in_top_n_count / span_count * 100:.2f}%)")
-        print(f"Skipped: {x_encoder_skipped_count}/{x_encoder_example_count} ({x_encoder_skipped_count / x_encoder_example_count * 100:.2f}%)")
+        print(f"Training examples without official definitions: {x_encoder_skipped_count}/{x_encoder_example_count} ({x_encoder_skipped_count / x_encoder_example_count * 100:.2f}%)")
