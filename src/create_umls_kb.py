@@ -6,6 +6,8 @@ import json
 from collections import Counter
 import sqlite3
 
+import bs4
+import requests
 from scispacy.umls_semantic_type_tree import construct_umls_tree_from_tsv
 
 umls_tree = construct_umls_tree_from_tsv('data/umls_semantic_type_tree.tsv')  # change to your location
@@ -32,6 +34,29 @@ for st in st21pv_types:
 
 RESTRICT_ST21PV = False
 NO_DEFS = False
+
+
+# Retrieve list of sources that are written in English:
+def get_english_sources():
+    UMLS_VOCABULARY_URL = "https://www.nlm.nih.gov/research/umls/sourcereleasedocs/index.html"
+    req = requests.get(UMLS_VOCABULARY_URL)
+    soup = bs4.BeautifulSoup(req.text, "html.parser")
+    table = soup.find_all('table')[0]
+    rows = table.find_all("tr")
+    english_sources = "("
+    for i in range(len(rows)):
+        cells = rows[i].find_all("th") if i == 0 else rows[i].find_all("td")
+        line = [cell.text.strip() for cell in cells]
+        if line[3] == "ENG":
+            english_sources += f"\"{line[0]}\""
+        if i != len(rows) - 1:
+            english_sources += ", "
+        else:
+            english_sources += ")"
+    return english_sources
+
+
+print(get_english_sources())
 
 print('Collecting info from \'descriptions\' table ...')
 for row_idx, row in enumerate(c.execute('SELECT * FROM descriptions')):

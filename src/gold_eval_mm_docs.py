@@ -1,6 +1,8 @@
 import json
 import logging
 
+import bs4
+import requests
 import spacy
 
 from NERComponent import NERComponent
@@ -84,7 +86,6 @@ def stringify_metrics(metrics):
 
 
 if __name__ == '__main__':
-
     perf_stats = {'n_gold_spans': 0, 'n_pred_spans': 0, 'n_sents': 0, 'n_docs': 0}
     perf_cui = {'tp': 0, 'fp': 0, 'fn': 0}
 
