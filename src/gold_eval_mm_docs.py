@@ -6,7 +6,7 @@ import spacy
 
 from NERComponent import NERComponent
 from medlinker import MedLinker
-from pytt_hf_custom_tokenizer import toks2vecs
+from pytt_hf import toks2vecs
 from umls import umls_kb_full as umls_kb
 
 sci_nlp = spacy.load('en_core_sci_md', disable=['tagger', 'parser', 'ner'])
