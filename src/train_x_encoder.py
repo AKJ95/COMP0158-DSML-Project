@@ -42,6 +42,8 @@ if __name__ == '__main__':
     x_encoder_labels = torch.from_numpy(x_encoder_labels).float()
     x_encoder_labels = torch.unsqueeze(x_encoder_labels, 1)
 
+    print(x_encoder_labels[:10])
+
     dataset = EncoderDataset(x_encoder_vectors, x_encoder_labels)
 
     # Create DataLoader for the dataset
@@ -60,7 +62,7 @@ if __name__ == '__main__':
 
     # Define the loss function and the optimizer
     criterion = nn.BCELoss()
-    optimizer = optim.Adam(model.parameters(), lr=0.0001)
+    optimizer = optim.Adam(model.parameters(), lr=0.001)
 
     # Define the number of epochs
     n_epochs = 10
@@ -80,9 +82,9 @@ if __name__ == '__main__':
             loss = criterion(outputs, labels)
 
             # Print model outputs for the first 5 instances
-            if instance_counter < 5:
+            if instance_counter < 10:
                 for j in range(vectors.size(0)):
-                    if instance_counter < 5:
+                    if instance_counter < 10:
                         print(f'Model outputs for instance {instance_counter + 1}: {outputs[j]}')
                         instance_counter += 1
                     else:
