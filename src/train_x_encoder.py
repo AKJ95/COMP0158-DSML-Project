@@ -36,3 +36,4 @@ if __name__ == '__main__':
     x_encoder_vectors = torch.from_numpy(x_encoder_vectors)
     x_encoder_labels = torch.from_numpy(x_encoder_labels)
     dataset = EncoderDataset(x_encoder_vectors, x_encoder_labels)
+    print(dataset[0][:20])
