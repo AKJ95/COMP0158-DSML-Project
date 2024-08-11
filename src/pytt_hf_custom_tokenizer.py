@@ -3,9 +3,9 @@ import logging
 import torch as th
 from pytorch_transformers import BertModel, BertTokenizer
 
-logging.basicConfig(level=logging.DEBUG,
-                    format='%(asctime)s - %(levelname)s - %(message)s',
-                    datefmt='%d-%b-%y %H:%M:%S')
+# logging.basicConfig(level=logging.DEBUG,
+#                     format='%(asctime)s - %(levelname)s - %(message)s',
+#                     datefmt='%d-%b-%y %H:%M:%S')
 
 PYTT_CONFIG = {'external': True, 'lower_case': True, 'name': 'scibert_scivocab_uncased',
                'path': 'models/BERT/scibert_scivocab_uncased'}
