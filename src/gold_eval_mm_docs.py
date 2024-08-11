@@ -138,6 +138,8 @@ if __name__ == '__main__':
                                                                                                         for t in
                                                                                                         sci_nlp(
                                                                                                             gold_entity_def)]
+                print(gold_entity_tokens)
+                print(gold_entity_name)
                 gold_toy_token = toks2vecs((embedding_tokens + gold_entity_tokens)[:128])
 
                 span_count += 1
@@ -157,6 +159,7 @@ if __name__ == '__main__':
                         else:
                             x_encoder_skipped_count += 1
                             pred_entity_tokens = pred_entity_name_tokens + ['[ENT]'] + pred_entity_name_tokens
+                        print(pred_entity_tokens)
                         toy_vec = toks2vecs((embedding_tokens + pred_entity_tokens)[:128])
 
                 pred_entities = [entry[0] for entry in sent_preds['spans'][i]['cui']]
