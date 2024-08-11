@@ -67,6 +67,7 @@ if __name__ == '__main__':
 
     # Training loop
     for epoch in range(n_epochs):
+        instance_counter = 0
         model.train()
         train_loss = 0.0
         for i, (vectors, labels) in enumerate(data_loader):
@@ -77,6 +78,15 @@ if __name__ == '__main__':
             # Forward pass
             outputs = model(vectors)
             loss = criterion(outputs, labels)
+
+            # Print model outputs for the first 5 instances
+            if instance_counter < 5:
+                for j in range(vectors.size(0)):
+                    if instance_counter < 5:
+                        print(f'Model outputs for instance {instance_counter + 1}: {outputs[j]}')
+                        instance_counter += 1
+                    else:
+                        break
 
             # Backward pass and optimization
             optimizer.zero_grad()
@@ -94,3 +104,5 @@ if __name__ == '__main__':
 
         # Print training statistics
         print('Epoch: {} \tTraining Loss: {:.6f}'.format(epoch + 1, train_loss))
+
+
