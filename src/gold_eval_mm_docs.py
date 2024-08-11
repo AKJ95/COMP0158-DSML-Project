@@ -1,6 +1,7 @@
 import json
 import logging
 
+import numpy as np
 import spacy
 
 from NERComponent import NERComponent
@@ -97,6 +98,8 @@ if __name__ == '__main__':
     skip_count = 0
     x_encoder_example_count = 0
     x_encoder_skipped_count = 0
+    vectors = []
+    labels = []
     for doc_idx, doc in enumerate(mm_docs):
         perf_stats['n_docs'] += 1
 
@@ -128,7 +131,6 @@ if __name__ == '__main__':
                 gold_entity_name = gold_entity_kb['Name'] if gold_entity_kb else ' '.join(gold_sent['tokens'][sent_preds['spans'][i]['start']:sent_preds['spans'][i]['end']])
                 if gold_entity_kb and gold_entity_kb['DEF']:
                     gold_entity_def = gold_entity_kb['DEF'][0]
-
                 else:
                     gold_entity_def = gold_entity_name
                     skip_count += 1
@@ -139,10 +141,12 @@ if __name__ == '__main__':
                                                                                                         sci_nlp(
                                                                                                             gold_entity_def)]
 
-                print(gold_entity_name)
-                print(gold_sent['spans'][i]['cui'].lstrip('UMLS:'))
-                print(gold_entity_tokens)
-                gold_toy_token = toks2vecs((embedding_tokens + gold_entity_tokens)[:128])
+                # print(gold_entity_name)
+                # print(gold_sent['spans'][i]['cui'].lstrip('UMLS:'))
+                # print(gold_entity_tokens)
+                gold_toy_vec = toks2vecs((embedding_tokens + gold_entity_tokens)[:128])
+                vectors.append(gold_toy_vec)
+                labels.append(1)
 
                 span_count += 1
                 x_encoder_example_count += 1
@@ -161,7 +165,7 @@ if __name__ == '__main__':
                         else:
                             x_encoder_skipped_count += 1
                             pred_entity_tokens = pred_entity_name_tokens + ['[ENT]'] + pred_entity_name_tokens
-                        print(pred_entity_tokens)
+                        # print(pred_entity_tokens)
                         toy_vec = toks2vecs((embedding_tokens + pred_entity_tokens)[:128])
 
                 pred_entities = [entry[0] for entry in sent_preds['spans'][i]['cui']]
@@ -187,3 +191,14 @@ if __name__ == '__main__':
         print('[CUI]\tP:%.2f\tR:%.2f\tF1:%.2f\tACC:%.2f - %s' % (p, r, f, a, counts_str))
         print(f"Recall per span: {in_top_n_count}/{span_count} ({in_top_n_count / span_count * 100:.2f}%)")
         print(f"Training examples without official definitions: {x_encoder_skipped_count}/{x_encoder_example_count} ({x_encoder_skipped_count / x_encoder_example_count * 100:.2f}%)")
+
+        if doc_idx >= 100:
+            break
+
+    # Store the vectors and labels
+    vector_np = np.vstack(vectors)
+    labels_np = np.array(labels)
+    print(vector_np.shape)
+    print(labels_np.shape)
+    np.save('data/processed/x_encoder_vectors.npy', vector_np)
+    np.save('data/processed/x_encoder_labels.npy', labels_np)
