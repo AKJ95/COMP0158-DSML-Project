@@ -192,8 +192,8 @@ if __name__ == '__main__':
         print(f"Recall per span: {in_top_n_count}/{span_count} ({in_top_n_count / span_count * 100:.2f}%)")
         print(f"Training examples without official definitions: {x_encoder_skipped_count}/{x_encoder_example_count} ({x_encoder_skipped_count / x_encoder_example_count * 100:.2f}%)")
 
-        if doc_idx >= 100:
-            break
+        # if doc_idx >= 100:
+        #     break
 
     # Store the vectors and labels
     vector_np = np.vstack(vectors)
