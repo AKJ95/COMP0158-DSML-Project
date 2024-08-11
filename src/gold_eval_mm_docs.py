@@ -138,8 +138,10 @@ if __name__ == '__main__':
                                                                                                         for t in
                                                                                                         sci_nlp(
                                                                                                             gold_entity_def)]
-                print(gold_entity_tokens)
+
                 print(gold_entity_name)
+                print(gold_sent['spans'][i]['cui'].lstrip('UMLS:'))
+                print(gold_entity_tokens)
                 gold_toy_token = toks2vecs((embedding_tokens + gold_entity_tokens)[:128])
 
                 span_count += 1
