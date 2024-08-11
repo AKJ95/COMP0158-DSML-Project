@@ -38,6 +38,7 @@ if __name__ == '__main__':
     # Convert numpy arrays to PyTorch tensors
     x_encoder_vectors = torch.from_numpy(x_encoder_vectors)
     x_encoder_labels = torch.from_numpy(x_encoder_labels)
+    x_encoder_labels = torch.unsqueeze(x_encoder_labels, 1)
 
     dataset = EncoderDataset(x_encoder_vectors, x_encoder_labels)
 
