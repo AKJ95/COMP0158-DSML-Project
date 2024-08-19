@@ -87,7 +87,7 @@ if __name__ == '__main__':
             if instance_counter < 10:
                 for j in range(vectors.size(0)):
                     if instance_counter < 10:
-                        print(f'Model outputs for instance {instance_counter + 1}: {outputs[j]}')
+                        print(f'Model outputs for instance {instance_counter + 1}: {outputs[j]}; Actual label: {labels[j]}')
                         instance_counter += 1
                     else:
                         break
