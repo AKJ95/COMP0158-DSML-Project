@@ -73,11 +73,12 @@ if __name__ == '__main__':
     # Define the number of epochs
     n_epochs = 100
     train_losses = []
-    dev_labels = np.array([])
-    dev_preds = np.array([])
+
 
     # Training loop
     for epoch in range(n_epochs):
+        dev_labels = np.array([])
+        dev_preds = np.array([])
         instance_counter = 0
         model.train()
         train_loss = 0.0
