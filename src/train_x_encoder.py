@@ -135,6 +135,7 @@ if __name__ == '__main__':
         dev_loss = dev_loss / len(dev_loader.dataset)
         print(f'Validation Loss: {dev_loss}')
         print(f"Validation Accuracy: {accuracy_score(dev_labels, dev_preds)}")
+        print(dev_labels[:10])
 
     plt.figure()
     plt.plot(range(n_epochs), train_losses)
