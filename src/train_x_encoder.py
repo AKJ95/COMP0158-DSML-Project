@@ -37,18 +37,23 @@ class MLP(nn.Module):
 if __name__ == '__main__':
     x_encoder_vectors = np.load('data/processed/x_encoder_vectors.npy')
     x_encoder_labels = np.load('data/processed/x_encoder_labels.npy')
+    x_encoder_vectors_dev = np.load('data/processed/x_encoder_vectors_dev.npy')
+    x_encoder_labels_dev = np.load('data/processed/x_encoder_labels_dev.npy')
 
     # Convert numpy arrays to PyTorch tensors
     x_encoder_vectors = torch.from_numpy(x_encoder_vectors).float()
     x_encoder_labels = torch.from_numpy(x_encoder_labels).float()
     x_encoder_labels = torch.unsqueeze(x_encoder_labels, 1)
-
-    print(x_encoder_labels[:10])
+    x_encoder_vectors_dev = torch.from_numpy(x_encoder_vectors_dev).float()
+    x_encoder_labels_dev = torch.from_numpy(x_encoder_labels_dev).float()
+    x_encoder_labels_dev = torch.unsqueeze(x_encoder_labels_dev, 1)
 
     dataset = EncoderDataset(x_encoder_vectors, x_encoder_labels)
+    dataset_dev = EncoderDataset(x_encoder_vectors_dev, x_encoder_labels_dev)
 
     # Create DataLoader for the dataset
     data_loader = DataLoader(dataset, batch_size=64, shuffle=True)
+    dev_loader = DataLoader(dataset_dev, batch_size=64, shuffle=True)
 
     # Instantiate the MLP
     model = MLP()
@@ -110,6 +115,19 @@ if __name__ == '__main__':
 
         # Print training statistics
         print('Epoch: {} \tTraining Loss: {:.6f}'.format(epoch + 1, train_loss))
+
+        # Validate on the dev set
+        model.eval()
+        dev_loss = 0.0
+        for i, (vectors, labels) in enumerate(dev_loader):
+            vectors = vectors.to(device)
+            labels = labels.to(device)
+
+            outputs = model(vectors)
+            loss = criterion(outputs, labels)
+            dev_loss += loss.item() * vectors.size(0)
+        dev_loss = dev_loss / len(dev_loader.dataset)
+        print(f'Validation Loss: {dev_loss}')
 
     plt.figure()
     plt.plot(range(n_epochs), train_losses)
