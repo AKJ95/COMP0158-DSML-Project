@@ -86,7 +86,7 @@ if __name__ == '__main__':
     perf_cui = {'tp': 0, 'fp': 0, 'fn': 0}
 
     logging.info('Loading MedMentions ...')
-    mm_docs = read_mm_converted('data/processed/mm_converted.train.json')
+    mm_docs = read_mm_converted('data/processed/mm_converted.dev.json')
 
     logging.info('Processing Instances ...')
     span_count = 0
@@ -199,5 +199,5 @@ if __name__ == '__main__':
     labels_np = np.array(labels)
     print(vector_np.shape)
     print(labels_np.shape)
-    np.save('data/processed/x_encoder_vectors.npy', vector_np)
-    np.save('data/processed/x_encoder_labels.npy', labels_np)
+    np.save('data/processed/x_encoder_vectors_dev.npy', vector_np)
+    np.save('data/processed/x_encoder_labels_dev.npy', labels_np)
