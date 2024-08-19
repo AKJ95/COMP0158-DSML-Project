@@ -27,7 +27,7 @@ class MLP(nn.Module):
             nn.Linear(768, 128),
             nn.ReLU(),
             nn.Linear(128, 1),
-            nn.Sigmoid()
+            # nn.Sigmoid()
         )
 
     def forward(self, x):
@@ -62,7 +62,7 @@ if __name__ == '__main__':
     model.train()
 
     # Define the loss function and the optimizer
-    criterion = nn.BCELoss()
+    criterion = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([4.0]))
     optimizer = optim.Adam(model.parameters(), lr=0.001)
 
     # Define the number of epochs
