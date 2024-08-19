@@ -73,8 +73,8 @@ if __name__ == '__main__':
     # Define the number of epochs
     n_epochs = 100
     train_losses = []
-    dev_labels = []
-    dev_preds = []
+    dev_labels = np.array([])
+    dev_preds = np.array([])
 
     # Training loop
     for epoch in range(n_epochs):
@@ -91,13 +91,13 @@ if __name__ == '__main__':
             loss = criterion(outputs, labels)
 
             # Print model outputs for the first 5 instances
-            if instance_counter < 10:
-                for j in range(vectors.size(0)):
-                    if instance_counter < 10:
-                        print(f'Model outputs for instance {instance_counter + 1}: {torch.sigmoid(outputs[j]).item()}; Actual label: {labels[j].item()}')
-                        instance_counter += 1
-                    else:
-                        break
+            # if instance_counter < 10:
+            #     for j in range(vectors.size(0)):
+            #         if instance_counter < 10:
+            #             print(f'Model outputs for instance {instance_counter + 1}: {torch.sigmoid(outputs[j]).item()}; Actual label: {labels[j].item()}')
+            #             instance_counter += 1
+            #         else:
+            #             break
 
             # Backward pass and optimization
             optimizer.zero_grad()
@@ -130,14 +130,9 @@ if __name__ == '__main__':
             outputs = model(vectors)
             loss = criterion(outputs, labels)
             dev_loss += loss.item() * vectors.size(0)
-            dev_preds.extend(torch.sigmoid(outputs).cpu().detach().numpy())
-            dev_labels.extend(labels.cpu().detach().numpy().astype(int))
+            dev_preds = np.append(dev_preds, torch.sigmoid(outputs).cpu().detach().numpy())
+            dev_labels = np.append(dev_labels, labels.cpu().detach().numpy().astype(int))
         dev_loss = dev_loss / len(dev_loader.dataset)
-        print(dev_preds[:10])
-        print(dev_labels[:10])
-        print(len(dev_labels))
-        print(len(dev_loader.dataset))
-        print(len(data_loader.dataset))
         print(f'Validation Loss: {dev_loss}')
         print(f"Validation Accuracy: {accuracy_score(dev_labels, dev_preds)}")
 
