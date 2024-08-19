@@ -136,7 +136,7 @@ if __name__ == '__main__':
         dev_preds = torch.from_numpy(dev_preds).float()
         dev_labels = torch.from_numpy(dev_labels).float()
         accuracy = BinaryAccuracy(threshold=0.5)
-        accuracy.update((dev_preds, dev_labels))
+        accuracy.update(dev_preds, dev_labels)
         print(f'Validation Accuracy: {accuracy.compute()}')
         print(f'Validation Loss: {dev_loss}')
 
