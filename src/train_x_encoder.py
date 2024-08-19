@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
-
+from sklearn.metrics import accuracy_score
 import torch
 from torch import nn
 from torch.utils.data import Dataset
@@ -73,6 +73,8 @@ if __name__ == '__main__':
     # Define the number of epochs
     n_epochs = 100
     train_losses = []
+    dev_labels = []
+    dev_preds = []
 
     # Training loop
     for epoch in range(n_epochs):
@@ -113,6 +115,8 @@ if __name__ == '__main__':
         # Calculate average losses
         train_loss = train_loss / len(data_loader.dataset)
 
+        # Record accuracy with scikit-learn
+
         # Print training statistics
         print('Epoch: {} \tTraining Loss: {:.6f}'.format(epoch + 1, train_loss))
 
@@ -126,8 +130,11 @@ if __name__ == '__main__':
             outputs = model(vectors)
             loss = criterion(outputs, labels)
             dev_loss += loss.item() * vectors.size(0)
+            dev_preds.extend(torch.sigmoid(outputs).cpu().detach().numpy())
+            dev_labels.extend(labels.cpu().detach().numpy())
         dev_loss = dev_loss / len(dev_loader.dataset)
         print(f'Validation Loss: {dev_loss}')
+        print(f"Validation Accuracy: {accuracy_score(dev_labels, dev_preds)}")
 
     plt.figure()
     plt.plot(range(n_epochs), train_losses)
