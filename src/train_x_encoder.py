@@ -131,7 +131,7 @@ if __name__ == '__main__':
             loss = criterion(outputs, labels)
             dev_loss += loss.item() * vectors.size(0)
             dev_preds.extend(torch.sigmoid(outputs).cpu().detach().numpy())
-            dev_labels.extend(labels.cpu().detach().numpy())
+            dev_labels.extend(labels.cpu().detach().numpy().astype(int))
         dev_loss = dev_loss / len(dev_loader.dataset)
         print(f'Validation Loss: {dev_loss}')
         print(f"Validation Accuracy: {accuracy_score(dev_labels, dev_preds)}")
