@@ -111,9 +111,9 @@ if __name__ == '__main__':
         # Print training statistics
         print('Epoch: {} \tTraining Loss: {:.6f}'.format(epoch + 1, train_loss))
 
-        plt.figure()
-        plt.plot(range(n_epochs), train_losses)
-        plt.xlabel('Epoch')
-        plt.ylabel('Training Loss')
-        plt.title('Training Loss over Time')
-        plt.savefig('data/processed/x_encoder_training_loss.png')
+    plt.figure()
+    plt.plot(range(n_epochs), train_losses)
+    plt.xlabel('Epoch')
+    plt.ylabel('Training Loss')
+    plt.title('Training Loss over Time')
+    plt.savefig('data/processed/x_encoder_training_loss.png')
