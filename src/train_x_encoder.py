@@ -135,6 +135,8 @@ if __name__ == '__main__':
         dev_loss = dev_loss / len(dev_loader.dataset)
         print(dev_preds[:10])
         print(dev_labels[:10])
+        print(len(dev_labels))
+        print(len(dev_loader.dataset))
         print(f'Validation Loss: {dev_loss}')
         print(f"Validation Accuracy: {accuracy_score(dev_labels, dev_preds)}")
 
