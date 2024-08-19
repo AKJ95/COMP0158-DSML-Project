@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 import numpy as np
 
 import torch
@@ -62,10 +63,11 @@ if __name__ == '__main__':
 
     # Define the loss function and the optimizer
     criterion = nn.BCELoss()
-    optimizer = optim.Adam(model.parameters(), lr=0.00001)
+    optimizer = optim.Adam(model.parameters(), lr=0.1)
 
     # Define the number of epochs
-    n_epochs = 10
+    n_epochs = 100
+    train_losses = []
 
     # Training loop
     for epoch in range(n_epochs):
@@ -98,8 +100,10 @@ if __name__ == '__main__':
             train_loss += loss.item() * vectors.size(0)
 
             # Print loss every 100 batches
-            if i % 100 == 0:
+            if i % 500 == 0:
                 print(f'Epoch {epoch + 1}/{n_epochs}, Step {i}/{len(data_loader)}, Loss: {loss.item()}')
+        train_losses.append(train_loss / len(data_loader.dataset))
+
 
         # Calculate average losses
         train_loss = train_loss / len(data_loader.dataset)
@@ -107,4 +111,9 @@ if __name__ == '__main__':
         # Print training statistics
         print('Epoch: {} \tTraining Loss: {:.6f}'.format(epoch + 1, train_loss))
 
-
+        plt.figure()
+        plt.plot(range(n_epochs), train_losses)
+        plt.xlabel('Epoch')
+        plt.ylabel('Training Loss')
+        plt.title('Training Loss over Time')
+        plt.savefig('data/processed/x_encoder_training_loss.png')
