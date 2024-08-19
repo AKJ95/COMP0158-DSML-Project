@@ -133,9 +133,9 @@ if __name__ == '__main__':
             dev_preds = np.append(dev_preds, torch.sigmoid(outputs).cpu().detach().numpy())
             dev_labels = np.append(dev_labels, labels.cpu().detach().numpy().astype(int))
         dev_loss = dev_loss / len(dev_loader.dataset)
+        print(dev_labels[:10])
         print(f'Validation Loss: {dev_loss}')
         print(f"Validation Accuracy: {accuracy_score(dev_labels, dev_preds)}")
-        print(dev_labels[:10])
 
     plt.figure()
     plt.plot(range(n_epochs), train_losses)
