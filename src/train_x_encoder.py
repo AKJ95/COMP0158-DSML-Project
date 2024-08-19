@@ -5,7 +5,7 @@ from torch import nn
 from torch.utils.data import Dataset
 from torch.utils.data import DataLoader
 from torch import optim
-from torcheval.metrics import BinaryAccuracy
+from torcheval.metrics import BinaryAccuracy, BinaryPrecision, BinaryRecall
 
 
 class EncoderDataset(Dataset):
@@ -136,9 +136,16 @@ if __name__ == '__main__':
         dev_loss = dev_loss / len(dev_loader.dataset)
         dev_preds = torch.from_numpy(dev_preds).float()
         dev_labels = torch.from_numpy(dev_labels).float()
-        accuracy = BinaryAccuracy(threshold=0.7)
+        threshold = 0.7
+        accuracy = BinaryAccuracy(threshold=threshold)
+        precision = BinaryPrecision(threshold=threshold)
+        recall = BinaryRecall(threshold=threshold)
         accuracy.update(dev_preds, dev_labels)
+        precision.update(dev_preds, dev_labels)
+        recall.update(dev_preds, dev_labels)
         print(f'Validation Accuracy: {accuracy.compute()}')
+        print(f'Validation Precision: {precision.compute()}')
+        print(f'Validation Recall: {recall.compute()}')
         print(f'Validation Loss: {dev_loss}')
         print(f'Label distribution: {1 - torch.sum(dev_labels)/len(dev_labels)}% are negative')
 
