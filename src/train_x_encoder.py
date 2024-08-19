@@ -140,7 +140,7 @@ if __name__ == '__main__':
         accuracy.update(dev_preds, dev_labels)
         print(f'Validation Accuracy: {accuracy.compute()}')
         print(f'Validation Loss: {dev_loss}')
-        print(f'Label distribution: {torch.sum(dev_labels)}/{len(dev_labels)}')
+        print(f'Label distribution: {1 - torch.sum(dev_labels)/len(dev_labels)}% are negative')
 
     plt.figure()
     plt.plot(range(n_epochs), train_losses)
