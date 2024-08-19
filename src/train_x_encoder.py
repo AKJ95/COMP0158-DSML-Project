@@ -53,7 +53,7 @@ if __name__ == '__main__':
 
     # Create DataLoader for the dataset
     data_loader = DataLoader(dataset, batch_size=64, shuffle=True)
-    dev_loader = DataLoader(dataset_dev, batch_size=64, shuffle=True)
+    dev_loader = DataLoader(dataset_dev, batch_size=64, shuffle=False)
 
     # Instantiate the MLP
     model = MLP()
@@ -131,6 +131,11 @@ if __name__ == '__main__':
             outputs = model(vectors)
             loss = criterion(outputs, labels)
             dev_loss += loss.item() * vectors.size(0)
+            if i == 0:
+                dev_preds = torch.sigmoid(outputs).cpu().detach().numpy()
+                dev_labels = labels.cpu().detach().numpy().astype(int)
+                print(f'Predictions: {dev_preds}')
+                print(f'Labels: {dev_labels}')
             dev_preds = np.append(dev_preds, torch.sigmoid(outputs).cpu().detach().numpy())
             dev_labels = np.append(dev_labels, labels.cpu().detach().numpy().astype(int))
         dev_loss = dev_loss / len(dev_loader.dataset)
