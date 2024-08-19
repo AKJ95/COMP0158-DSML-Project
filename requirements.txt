@@ -102,6 +102,7 @@ thinc==8.2.3
 threadpoolctl==3.5.0
 tokenizers==0.19.1
 torch==2.2.2
+torcheval==0.0.7
 torchmetrics==1.4.0.post0
 tqdm==4.66.4
 transformers==4.41.2

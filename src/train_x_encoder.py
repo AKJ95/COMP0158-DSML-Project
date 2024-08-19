@@ -1,11 +1,11 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from sklearn.metrics import accuracy_score
 import torch
 from torch import nn
 from torch.utils.data import Dataset
 from torch.utils.data import DataLoader
 from torch import optim
+from torcheval.metrics import BinaryAccuracy
 
 
 class EncoderDataset(Dataset):
@@ -133,9 +133,12 @@ if __name__ == '__main__':
             dev_preds = np.append(dev_preds, torch.sigmoid(outputs).cpu().detach().numpy())
             dev_labels = np.append(dev_labels, labels.cpu().detach().numpy().astype(int))
         dev_loss = dev_loss / len(dev_loader.dataset)
-        print(dev_labels[:10])
+        dev_preds = torch.from_numpy(dev_preds).float()
+        dev_labels = torch.from_numpy(dev_labels).float()
+        accuracy = BinaryAccuracy(threshold=0.5)
+        accuracy.update((dev_preds, dev_labels))
+        print(f'Validation Accuracy: {accuracy.compute()}')
         print(f'Validation Loss: {dev_loss}')
-        print(f"Validation Accuracy: {accuracy_score(dev_labels, dev_preds)}")
 
     plt.figure()
     plt.plot(range(n_epochs), train_losses)
