@@ -63,7 +63,7 @@ if __name__ == '__main__':
 
     # Define the loss function and the optimizer
     criterion = nn.BCELoss()
-    optimizer = optim.Adam(model.parameters(), lr=0.1)
+    optimizer = optim.Adam(model.parameters(), lr=0.001)
 
     # Define the number of epochs
     n_epochs = 100
