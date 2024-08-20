@@ -114,8 +114,8 @@ class MedLinker(object):
             tokens = ner_prediction.tokens
             spans = []
             for span in ner_prediction.spans:
-                print(span.start, span.end)
                 spans.append((span.start, span.end))
+            print(spans)
 
             # Uncomment to log NER predictions
             # print(ner_prediction)
