@@ -68,7 +68,7 @@ if __name__ == '__main__':
 
     # Define the loss function and the optimizer
     criterion = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([4.0]).to(device))
-    optimizer = optim.Adam(model.parameters(), lr=0.001)
+    optimizer = optim.Adam(model.parameters(), lr=0.0001)
 
     # Define the number of epochs
     n_epochs = 100
@@ -134,8 +134,6 @@ if __name__ == '__main__':
             if i == 0:
                 dev_preds = torch.sigmoid(outputs).cpu().detach().numpy()
                 dev_labels = labels.cpu().detach().numpy().astype(int)
-                print(f'Predictions: {dev_preds}')
-                print(f'Labels: {dev_labels}')
             dev_preds = np.append(dev_preds, torch.sigmoid(outputs).cpu().detach().numpy())
             dev_labels = np.append(dev_labels, labels.cpu().detach().numpy().astype(int))
 
