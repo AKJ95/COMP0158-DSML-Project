@@ -129,11 +129,11 @@ class MedLinker(object):
         # for span_start, span_end, span_vec in doc.get_spans(include_vectors=True, normalize=True):
         for span_start, span_end, span_vec in doc.get_spans(include_vectors=True, normalize=False):
             span_str = ' '.join(doc.tokens[span_start:span_end])
-            print(span_str)
             span_info = {'start': span_start, 'end': span_end, 'text': span_str, 'st': None, 'cui': []}
 
             if predict_cui:
                 span_cuis = self.match_cui(span_str, span_vec)
+                print(span_cuis)
 
                 if span_cuis is not None:
                     # span_info['cui'] = span_cuis[0]
