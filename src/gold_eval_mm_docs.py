@@ -96,6 +96,7 @@ if __name__ == '__main__':
     x_encoder_skipped_count = 0
     vectors = []
     labels = []
+    correct_count = 0
     for doc_idx, doc in enumerate(mm_docs):
         perf_stats['n_docs'] += 1
 
@@ -151,6 +152,8 @@ if __name__ == '__main__':
                 for j in range(min(4, len(sent_preds['spans'][i]['cui']))):
                     pred_entity_kb = umls_kb.get_entity_by_cui(sent_preds['spans'][i]['cui'][j][0])
                     pred_entity_name = pred_entity_kb['Name'] if pred_entity_kb else ''
+                    if j == 0 and pred_entity_name == gold_entity_name:
+                        correct_count += 1
                     if pred_entity_name != gold_entity_name:
                         x_encoder_example_count += 1
                         pred_entity_name_tokens = [t.text.lower() for t in sci_nlp(pred_entity_name)]
@@ -187,6 +190,7 @@ if __name__ == '__main__':
 
         counts = calc_counts(perf_cui)
         counts_str = '\t'.join(['%s:%d' % (l.upper(), c) for l, c in counts.items()])
+        print(f"Percentage of correct: {correct_count}/{span_count} ({correct_count / span_count * 100:.2f}%)")
         print('[CUI]\tP:%.2f\tR:%.2f\tF1:%.2f\tACC:%.2f - %s' % (p, r, f, a, counts_str))
         print(f"Recall per span: {in_top_n_count}/{span_count} ({in_top_n_count / span_count * 100:.2f}%)")
         print(f"Training examples without official definitions: {x_encoder_skipped_count}/{x_encoder_example_count} ({x_encoder_skipped_count / x_encoder_example_count * 100:.2f}%)")
