@@ -138,6 +138,22 @@ if __name__ == '__main__':
                 print(f'Labels: {dev_labels}')
             dev_preds = np.append(dev_preds, torch.sigmoid(outputs).cpu().detach().numpy())
             dev_labels = np.append(dev_labels, labels.cpu().detach().numpy().astype(int))
+
+        mention_count = 0
+        correct_count = 0
+        current_correct_prob = 0.0
+        for i in range(len(dev_preds)):
+            correct_flag = True
+            if dev_labels[i] == 1:
+                mention_count += 1
+                current_correct_prob = dev_preds[i]
+            else:
+                if dev_preds[i] > current_correct_prob:
+                    correct_flag = False
+            if correct_flag and (i == len(dev_preds) - 1 or dev_labels[i+1] == 1):
+                correct_count += 1
+
+        print(f'Correct count: {correct_count}/{mention_count} = {correct_count/mention_count*100}%')
         dev_loss = dev_loss / len(dev_loader.dataset)
         dev_preds = torch.from_numpy(dev_preds).float()
         dev_labels = torch.from_numpy(dev_labels).float()
