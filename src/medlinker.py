@@ -113,6 +113,7 @@ class MedLinker(object):
             ner_prediction = self.medner.predict(sentence)
             tokens = ner_prediction.tokens
             spans = []
+            print(ner_prediction.spans)
             for span in ner_prediction.spans:
                 spans.append((span.start, span.end))
 
