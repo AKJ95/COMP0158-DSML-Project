@@ -113,8 +113,8 @@ class MedLinker(object):
             ner_prediction = self.medner.predict(sentence)
             tokens = ner_prediction.tokens
             spans = []
-            print(ner_prediction.spans)
             for span in ner_prediction.spans:
+                print(span.start, span.end)
                 spans.append((span.start, span.end))
 
             # Uncomment to log NER predictions
@@ -321,5 +321,5 @@ if __name__ == '__main__':
     # medlinker.load_cui_validator(cui_val_path, validator_thresh=0.70)
 
     s = 'Since 9/11, military service in the United States has been characterized by wartime deployments and reintegration challenges that contribute to a context of stress for military families.'
-    r = medlinker.predict(s, predict_sty=False)
+    r = medlinker.predict(s, predict_cui=True, predict_sty=False)
     print(r)
