@@ -73,7 +73,6 @@ def update_obs(doc_idx, sent_idx, gold_spans, pred_spans, perf_ner, perf_st, per
         for gold_span in gold_spans:
             gold_start, gold_end = gold_span['start'], gold_span['end']
             gold_info = (doc_idx, sent_idx, gold_start, gold_end)
-            print(gold_span)
 
 
             if (pred_start == gold_start) and (pred_end == gold_end):
@@ -84,8 +83,6 @@ def update_obs(doc_idx, sent_idx, gold_spans, pred_spans, perf_ner, perf_st, per
                         matched_st = True  # matched st & NER
 
                 if pred_span['cui'] is not None:
-                    print(gold_span['cui'])
-                    print(pred_span['cui'])
                     gold_span['cui'] = gold_span['cui'].lstrip('UMLS:')  # maybe fix in dataset...
                     if pred_span['cui'][0][0] == gold_span['cui']:
                         matched_cui = True  # matched cui & NER
