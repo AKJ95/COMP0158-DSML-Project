@@ -319,6 +319,6 @@ if __name__ == '__main__':
     # medlinker.load_cui_clf(cui_clf_path)
     # medlinker.load_cui_validator(cui_val_path, validator_thresh=0.70)
 
-    s = 'Research indicates the negative impact of wartime deployment on the well being of service members, military spouses, and children.'
+    s = 'Since 9/11, military service in the United States has been characterized by wartime deployments and reintegration challenges that contribute to a context of stress for military families.'
     r = medlinker.predict(s, predict_sty=False)
     print(r)
