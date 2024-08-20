@@ -85,7 +85,7 @@ def update_obs(doc_idx, sent_idx, gold_spans, pred_spans, perf_ner, perf_st, per
                     print(gold_span['cui'])
                     print(pred_span['cui'])
                     gold_span['cui'] = gold_span['cui'].lstrip('UMLS:')  # maybe fix in dataset...
-                    if pred_span['cui'][0] == gold_span['cui']:
+                    if pred_span['cui'][0][0] == gold_span['cui']:
                         matched_cui = True  # matched cui & NER
 
         if matched_ner:
