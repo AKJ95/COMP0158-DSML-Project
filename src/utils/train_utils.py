@@ -179,5 +179,6 @@ def valid(model, testing_loader, device, id2label) -> Tuple[list, list, list, li
     toy_performance = compute_entity_level_performance([nervaluate_labels[0][:50]], [nervaluate_preds[0][:50]])
     entity_level_performance = compute_entity_level_performance(nervaluate_labels, nervaluate_preds)
     print("Entity level performance: ", entity_level_performance)
+    print("Toy performance: ", toy_performance)
 
     return labels, predictions, nervaluate_labels, nervaluate_preds, entity_level_performance
