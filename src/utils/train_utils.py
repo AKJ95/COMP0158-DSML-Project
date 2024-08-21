@@ -161,7 +161,7 @@ def valid(model, testing_loader, device, id2label) -> Tuple[list, list, list, li
                     word_level_targets.append(targets[index])
                     actual_words.append(tokens[index])
             if idx == 0:
-                print(actual_words[:123])
+                print(actual_words[:130])
             # print(word_level_predictions[:50])
             # print(word_level_targets[:50])
             nervaluate_labels.append([id2label[tag_id.item()] for tag_id in word_level_targets])
