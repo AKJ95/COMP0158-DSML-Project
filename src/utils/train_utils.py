@@ -159,8 +159,6 @@ def valid(model, testing_loader, device, id2label) -> Tuple[list, list, list, li
                     word_level_targets.append(targets[index])
             # print(word_level_predictions[:50])
             # print(word_level_targets[:50])
-            print(len(nervaluate_labels))
-            print(len(nervaluate_labels[0]))
             nervaluate_labels.append([id2label[tag_id.item()] for tag_id in word_level_targets])
             nervaluate_preds.append([id2label[tag_id.item()] for tag_id in word_level_predictions])
 
@@ -170,6 +168,8 @@ def valid(model, testing_loader, device, id2label) -> Tuple[list, list, list, li
 
     labels = [id2label[tag_id.item()] for tag_id in eval_labels]
     predictions = [id2label[tag_id.item()] for tag_id in eval_preds]
+    print(len(nervaluate_labels))
+    print(len(nervaluate_labels[0]))
 
     eval_loss = eval_loss / nb_eval_steps
     eval_accuracy = eval_accuracy / nb_eval_steps
