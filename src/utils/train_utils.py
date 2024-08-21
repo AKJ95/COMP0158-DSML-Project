@@ -136,7 +136,7 @@ def valid(model, testing_loader, device, id2label) -> Tuple[list, list, list, li
             nb_eval_steps += 1
             nb_eval_examples += targets.size(0)
 
-            if idx == 0:
+            if idx < 7:
                 print(ids)
 
             # if idx % 100 == 0:
