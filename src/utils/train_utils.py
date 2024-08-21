@@ -154,8 +154,8 @@ def valid(model, testing_loader, device, id2label) -> Tuple[list, list, list, li
             for index in range(len(wp_preds)):
                 if (wp_preds[index][0].startswith("##")) or (wp_preds[index][0] in ['[CLS]', '[SEP]', '[PAD]']):
                     # skip prediction
-
-                    actual_words[-1] += tokens[index].replace("##", "")
+                    if wp_preds[index][0].startswith("##"):
+                        actual_words[-1] += tokens[index].replace("##", "")
                 else:
                     word_level_predictions.append(wp_preds[index][1])
                     word_level_targets.append(targets[index])
