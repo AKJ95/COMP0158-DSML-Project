@@ -126,7 +126,7 @@ if __name__ == "__main__":
         model, optimizer = train(model, training_loader, optimizer, device, config.max_grad_norm, id2label)
         labels, predictions, ner_labels, ner_preds, entity_level_performance = valid(model, dev_loader, device, id2label)
         if entity_level_performance["exact"]["f1"] > best_exact_f1:
-            # torch.save(model.state_dict(), config.model_path)
+            torch.save(model.state_dict(), config.model_path)
             best_exact_f1 = entity_level_performance["exact"]["f1"]
             best_epoch = epoch + 1
     print("-" * 100)
