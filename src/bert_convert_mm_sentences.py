@@ -3,6 +3,7 @@ import logging
 from time import time
 
 import spacy
+from transformers import AutoTokenizer
 
 from mm_reader import read_full_med_mentions
 from mm_reader import get_sent_boundaries
@@ -20,6 +21,8 @@ logging.basicConfig(level=logging.DEBUG,
 # Read in raw MedMentions data.
 mm_contents = read_full_med_mentions('data/raw/MedMentions-master/st21pv/data/')
 mm_splits = {'train': mm_contents[0], 'dev': mm_contents[1], 'test': mm_contents[2]}
+
+tokenizer = AutoTokenizer.from_pretrained('allenai/scibert_scivocab_uncased')
 
 
 logging.info('Processing Instances ...')
@@ -51,6 +54,7 @@ for split_label in ['dev', 'test', 'train']:
 
             sent_text = ex.text[sent_start:sent_end + 1]
             sent_tokens = [tok.text.strip() for tok in sci_nlp(sent_text)]
+            print(tokenizer.tokenize(sent_text))
             sent_tokens = [tok for tok in sent_tokens if tok != '']  # ensure no ws
 
             sent['text'] = sent_text
