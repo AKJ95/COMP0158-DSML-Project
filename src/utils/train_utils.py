@@ -32,8 +32,8 @@ def compute_accuracy(model, targets, logits, mask) -> Tuple[torch.Tensor, torch.
 
 def compute_entity_level_performance(labels: list[list[str]], predictions: list[list[str]]) -> dict:
     evaluator = Evaluator(labels, predictions, tags=["Entity"], loader="list")
-    print(labels[:50])
-    print(predictions[:50])
+    print(labels[:1])
+    print(predictions[:1])
     performance_dict, _, _, _ = evaluator.evaluate()
     return performance_dict
 
