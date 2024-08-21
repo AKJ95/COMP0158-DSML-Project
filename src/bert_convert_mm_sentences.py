@@ -53,8 +53,14 @@ for split_label in ['dev', 'test', 'train']:
             sent = {}
 
             sent_text = ex.text[sent_start:sent_end + 1]
-            sent_tokens = [tok.text.strip() for tok in sci_nlp(sent_text)]
-            print(tokenizer.tokenize(sent_text))
+            # sent_tokens = [tok.text.strip() for tok in sci_nlp(sent_text)]
+            sent_tokens_raw = tokenizer.tokenize(sent_text)
+            sent_tokens = []
+            for tok in sent_tokens_raw:
+                if tok.startswith('##'):
+                    sent_tokens[-1] += tok[2:]
+                else:
+                    sent_tokens.append(tok)
             sent_tokens = [tok for tok in sent_tokens if tok != '']  # ensure no ws
 
             sent['text'] = sent_text
