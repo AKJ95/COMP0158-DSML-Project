@@ -120,7 +120,11 @@ if __name__ == '__main__':
 
         pred_ents = set()
         for gold_sent in doc['sentences']:
-            sent_preds = medlinker.predict(' '.join(gold_sent['tokens']))
+            gold_spans = [(span['start'], span['end']) for span in gold_sent['spans']]
+            sent_preds = medlinker.predict(' '.join(gold_sent['tokens']),
+                                           gold_tokens=gold_sent['tokens'],
+                                           gold_spans=gold_spans,
+                                           top_n=1)
             for pred_span in sent_preds['spans']:
                 # if pred_span['cui'] is not None:
                 #     pred_ents.add(pred_span['cui'][0])
