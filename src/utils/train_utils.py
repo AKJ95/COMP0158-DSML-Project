@@ -178,10 +178,10 @@ def valid(model, testing_loader, device, id2label) -> Tuple[list, list, list, li
 
     labels = [id2label[tag_id.item()] for tag_id in eval_labels]
     predictions = [id2label[tag_id.item()] for tag_id in eval_preds]
-    # print(len(nervaluate_labels))
-    # print(len(nervaluate_labels[0]))
-    # print(nervaluate_labels[0][:123])
-    # print(nervaluate_preds[0][:123])
+    print(len(nervaluate_labels))
+    print(len(nervaluate_labels[4]))
+    print(nervaluate_labels[4])
+    print(nervaluate_preds[4])
     eval_loss = eval_loss / nb_eval_steps
     eval_accuracy = eval_accuracy / nb_eval_steps
     print(f"Validation Loss: {eval_loss}")
