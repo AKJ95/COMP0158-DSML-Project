@@ -107,8 +107,8 @@ def update_obs(doc_idx, sent_idx, gold_spans, pred_spans, perf_ner, perf_st, per
         gold_start, gold_end = gold_span['start'], gold_span['end']
         gold_info = (doc_idx, sent_idx, gold_start, gold_end)
 
-        print(gold_info)
-        print(perf_cui['tp'].union(perf_cui['fp']))
+        # print(gold_info)
+        # print(perf_cui['tp'].union(perf_cui['fp']))
         if gold_info not in perf_ner['tp'].union(perf_ner['fp']):
             perf_ner['fn'].add(gold_info)
 
