@@ -43,8 +43,8 @@ print('Loading MedLinker ...')
 medlinker = MedLinker(medner, umls_kb)
 # medlinker.load_st_VSM(st_vsm_path)
 medlinker.load_string_matcher(ngram_db_path, ngram_map_path)
-# medlinker.load_cui_softmax_pt()
-medlinker.load_cui_VSM(cui_vsm_path)
+medlinker.load_cui_softmax_pt()
+# medlinker.load_cui_VSM(cui_vsm_path)
 
 
 # input('...')
