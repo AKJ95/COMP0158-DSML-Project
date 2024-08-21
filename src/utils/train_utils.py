@@ -176,6 +176,7 @@ def valid(model, testing_loader, device, id2label) -> Tuple[list, list, list, li
     eval_accuracy = eval_accuracy / nb_eval_steps
     print(f"Validation Loss: {eval_loss}")
     print(f"Validation Accuracy: {eval_accuracy}")
+    toy_performance = compute_entity_level_performance([nervaluate_labels[0][:50]], [nervaluate_preds[0][:50]])
     entity_level_performance = compute_entity_level_performance(nervaluate_labels, nervaluate_preds)
     print("Entity level performance: ", entity_level_performance)
 
