@@ -74,8 +74,7 @@ class NERComponent:
 
     def predict(self, texts: str) -> NERResult:
         # Tokenize and make predictions.
-        inputs = self.tokenizer(texts, padding=True, truncation=True, max_length=512, return_tensors="pt")
-        print(inputs)
+        inputs = self.tokenizer(texts, padding=True, truncation=True, max_length=128, return_tensors="pt")
         ids = inputs["input_ids"].to(self.device)
         mask = inputs["attention_mask"].to(self.device)
         with torch.no_grad():
@@ -83,6 +82,7 @@ class NERComponent:
         logits = outputs.logits
         predictions = torch.argmax(logits, dim=2).cpu().numpy()
         texts_tokenized = [self.tokenizer.convert_ids_to_tokens(input_ids) for input_ids in inputs["input_ids"]]
+        print(texts_tokenized)
         tokens_processed = []
         sentence_prediction_processed = []
         for j in range(len(texts_tokenized[0])):
