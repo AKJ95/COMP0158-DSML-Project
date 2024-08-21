@@ -136,9 +136,12 @@ def valid(model, testing_loader, device, id2label) -> Tuple[list, list, list, li
             nb_eval_steps += 1
             nb_eval_examples += targets.size(0)
 
-            if idx % 100 == 0:
-                loss_step = eval_loss / nb_eval_steps
-                print(f"Validation loss per 100 evaluation steps at step {idx}: {loss_step}")
+            if idx == 0:
+                print(ids)
+
+            # if idx % 100 == 0:
+            #     loss_step = eval_loss / nb_eval_steps
+            #     print(f"Validation loss per 100 evaluation steps at step {idx}: {loss_step}")
 
             # compute evaluation accuracy
             targets, predictions = compute_accuracy(model, targets, eval_logits, mask)

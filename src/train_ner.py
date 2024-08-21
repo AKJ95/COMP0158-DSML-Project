@@ -100,12 +100,12 @@ if __name__ == "__main__":
                     'num_workers': config.num_workers
                     }
 
-    dev_params = {'batch_size': config.batch_size,
+    dev_params = {'batch_size': 1,
                   'shuffle': False,
                   'num_workers': config.num_workers
                   }
 
-    test_params = {'batch_size': 1,
+    test_params = {'batch_size': config.batch_size,
                    'shuffle': False,
                    'num_workers': config.num_workers
                    }
