@@ -157,8 +157,8 @@ def valid(model, testing_loader, device, id2label) -> Tuple[list, list, list, li
                 else:
                     word_level_predictions.append(wp_preds[index][1])
                     word_level_targets.append(targets[index])
-            print(len(word_level_predictions))
-            print(len(word_level_targets))
+            print(word_level_predictions[:50])
+            print(word_level_targets[:50])
             nervaluate_labels.append([id2label[tag_id.item()] for tag_id in word_level_targets])
             nervaluate_preds.append([id2label[tag_id.item()] for tag_id in word_level_predictions])
 
