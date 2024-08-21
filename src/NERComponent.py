@@ -74,15 +74,32 @@ class NERComponent:
 
     def predict(self, texts: str) -> NERResult:
         # Tokenize and make predictions.
-        inputs = self.tokenizer(texts, padding=True, truncation=True, max_length=128, return_tensors="pt")
-        ids = inputs["input_ids"].to(self.device)
-        mask = inputs["attention_mask"].to(self.device)
+        # inputs = self.tokenizer(texts, padding=True, truncation=True, max_length=128, return_tensors="pt")
+        # ids = inputs["input_ids"].to(self.device)
+        # mask = inputs["attention_mask"].to(self.device)
+
+        # new code
+        tokenized_sentence = []
+        for word in texts.split():
+            tokenized_word = self.tokenizer.tokenize(word)
+            tokenized_sentence.extend(tokenized_word)
+        tokenized_sentence = ["[CLS]"] + tokenized_sentence + ["[SEP]"]
+        maxlen = 128
+        if len(tokenized_sentence) > maxlen:
+            tokenized_sentence = tokenized_sentence[:maxlen]
+        else:
+            tokenized_sentence = tokenized_sentence + ['[PAD]' for _ in range(maxlen - len(tokenized_sentence))]
+
+        attn_mask = [1 if tok != '[PAD]' else 0 for tok in tokenized_sentence]
+        ids = self.tokenizer.convert_tokens_to_ids(tokenized_sentence)
+        ids = torch.tensor(ids, dtype=torch.long).to(self.device)
+        mask = torch.tensor(attn_mask, dtype=torch.long).to(self.device)
+
         with torch.no_grad():
             outputs = self.model(ids, mask)
         logits = outputs.logits
         predictions = torch.argmax(logits, dim=2).cpu().numpy()
         texts_tokenized = [self.tokenizer.convert_ids_to_tokens(input_ids) for input_ids in inputs["input_ids"]]
-        print(texts_tokenized)
         tokens_processed = []
         sentence_prediction_processed = []
         for j in range(len(texts_tokenized[0])):
