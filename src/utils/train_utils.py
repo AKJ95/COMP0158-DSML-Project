@@ -147,6 +147,7 @@ def valid(model, testing_loader, device, id2label) -> Tuple[list, list, list, li
             eval_preds.extend(predictions)
 
             tokens = transpose_and_flatten_2d_list(batch['tokens'])
+            print(tokens[:50])
             word_level_predictions = []
             word_level_targets = []
             wp_preds = list(zip(tokens, predictions))
