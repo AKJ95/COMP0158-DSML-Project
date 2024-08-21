@@ -92,8 +92,8 @@ class NERComponent:
 
         attn_mask = [1 if tok != '[PAD]' else 0 for tok in tokenized_sentence]
         ids = self.tokenizer.convert_tokens_to_ids(tokenized_sentence)
-        ids = torch.tensor(ids, dtype=torch.long).to(self.device)
-        mask = torch.tensor(attn_mask, dtype=torch.long).to(self.device)
+        ids = torch.tensor(ids, dtype=torch.long).unsqueeze(0).to(self.device)
+        mask = torch.tensor(attn_mask, dtype=torch.long).unsqueeze(0).to(self.device)
         # end of new code
 
         with torch.no_grad():
