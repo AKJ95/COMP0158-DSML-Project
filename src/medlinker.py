@@ -120,7 +120,7 @@ class MedLinker(object):
             print(ner_prediction)
             print(tokens)
             print(spans)
-            tokens, spans = self.medner.predict(sentence)
+            # tokens, spans = self.medner.predict(sentence)
 
         doc = MedLinkerDoc(sentence, tokens, spans)
         doc.set_contextual_vectors()
