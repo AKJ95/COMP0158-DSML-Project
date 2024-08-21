@@ -92,7 +92,7 @@ class NERComponent:
         ids = self.tokenizer.convert_tokens_to_ids(tokenized_sentence)
         ids = torch.tensor(ids, dtype=torch.long).unsqueeze(0).to(self.device)
         mask = torch.tensor(attn_mask, dtype=torch.long).unsqueeze(0).to(self.device)
-        print(ids)
+        # print(ids)
         # end of new code
 
         with torch.no_grad():
