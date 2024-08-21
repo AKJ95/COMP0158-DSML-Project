@@ -121,7 +121,7 @@ def update_obs(doc_idx, sent_idx, gold_spans, pred_spans, perf_ner, perf_st, per
 
 if __name__ == '__main__':
 
-    use_gold_spans = True
+    use_gold_spans = False
     # mm_ann = 'sty'
     mm_ann = 'cui'
     # mm_ann = ''
@@ -174,7 +174,7 @@ if __name__ == '__main__':
     perf_st = {'tp': set(), 'fp': set(), 'fn': set()}
 
     logging.info('Loading MedMentions ...')
-    mm_docs = read_mm_converted('data/processed/mm_converted.dev.json')
+    mm_docs = read_mm_converted('data/processed/bert_mm_converted.dev.json')
 
     logging.info('Processing Instances ...')
     for doc_idx, doc in enumerate(mm_docs):
