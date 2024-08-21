@@ -17,6 +17,8 @@ def bio_tags_to_spans(tokens: list[str], bio_tags: list[str]) -> list[Span]:
     spans = []
     start_idx = None
     current_entity = None
+    print(tokens)
+    print(bio_tags)
 
     for idx, tag in enumerate(bio_tags):
         if tag.startswith('B-'):
