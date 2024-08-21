@@ -147,17 +147,21 @@ def valid(model, testing_loader, device, id2label) -> Tuple[list, list, list, li
             eval_preds.extend(predictions)
 
             tokens = transpose_and_flatten_2d_list(batch['tokens'])
-            print(tokens[:50])
+            actual_words = []
             word_level_predictions = []
             word_level_targets = []
             wp_preds = list(zip(tokens, predictions))
             for index in range(len(wp_preds)):
                 if (wp_preds[index][0].startswith("##")) or (wp_preds[index][0] in ['[CLS]', '[SEP]', '[PAD]']):
                     # skip prediction
-                    continue
+
+                    actual_words[-1] += tokens[index].replace("##", "")
                 else:
                     word_level_predictions.append(wp_preds[index][1])
                     word_level_targets.append(targets[index])
+                    actual_words.append(tokens[index])
+            if idx == 0:
+                print(actual_words[:250])
             # print(word_level_predictions[:50])
             # print(word_level_targets[:50])
             nervaluate_labels.append([id2label[tag_id.item()] for tag_id in word_level_targets])
