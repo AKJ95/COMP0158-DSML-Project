@@ -117,9 +117,9 @@ class MedLinker(object):
                 spans.append((span.start, span.end))
 
             # Uncomment to log NER predictions
-            print(ner_prediction)
-            print(tokens)
-            print(spans)
+            # print(ner_prediction)
+            # print(tokens)
+            # print(spans)
             # tokens, spans = self.medner.predict(sentence)
 
         doc = MedLinkerDoc(sentence, tokens, spans)
