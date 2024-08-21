@@ -161,7 +161,7 @@ def valid(model, testing_loader, device, id2label) -> Tuple[list, list, list, li
                     word_level_targets.append(targets[index])
                     actual_words.append(tokens[index])
             if idx == 0:
-                print(actual_words[:250])
+                print(actual_words[:67])
             # print(word_level_predictions[:50])
             # print(word_level_targets[:50])
             nervaluate_labels.append([id2label[tag_id.item()] for tag_id in word_level_targets])
@@ -175,13 +175,13 @@ def valid(model, testing_loader, device, id2label) -> Tuple[list, list, list, li
     predictions = [id2label[tag_id.item()] for tag_id in eval_preds]
     print(len(nervaluate_labels))
     print(len(nervaluate_labels[0]))
-    print(nervaluate_labels[0][:205])
-    print(nervaluate_preds[0][:205])
+    print(nervaluate_labels[0][:67])
+    print(nervaluate_preds[0][:67])
     eval_loss = eval_loss / nb_eval_steps
     eval_accuracy = eval_accuracy / nb_eval_steps
     print(f"Validation Loss: {eval_loss}")
     print(f"Validation Accuracy: {eval_accuracy}")
-    toy_performance = compute_entity_level_performance([nervaluate_labels[0][:50]], [nervaluate_preds[0][:50]])
+    toy_performance = compute_entity_level_performance([nervaluate_labels[0][:67]], [nervaluate_preds[0][:67]])
     entity_level_performance = compute_entity_level_performance(nervaluate_labels, nervaluate_preds)
     print("Entity level performance: ", entity_level_performance)
     print("Toy performance: ", toy_performance)
