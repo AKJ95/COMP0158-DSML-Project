@@ -74,7 +74,8 @@ def update_obs(doc_idx, sent_idx, gold_spans, pred_spans, perf_ner, perf_st, per
             gold_start, gold_end = gold_span['start'], gold_span['end']
             gold_info = (doc_idx, sent_idx, gold_start, gold_end)
 
-
+            print(pred_start, pred_end)
+            print(gold_start, gold_end)
             if (pred_start == gold_start) and (pred_end == gold_end):
                 matched_ner = True
 
