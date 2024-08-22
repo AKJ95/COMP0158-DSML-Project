@@ -73,7 +73,7 @@ if __name__ == '__main__':
     dev_preds = np.array([])
     model.eval()
     dev_loss = 0.0
-    for i, (vectors, labels) in enumerate(dev_loader):
+    for i, (vectors, labels) in enumerate(test_loader):
         vectors = vectors.to(device)
         labels = labels.to(device)
 
