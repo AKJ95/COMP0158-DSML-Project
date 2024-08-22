@@ -25,8 +25,8 @@ class MLP(nn.Module):
         super(MLP, self).__init__()
         self.layers = nn.Sequential(
             nn.Linear(768, 128),
-            nn.ReLU(),
-            nn.Linear(128, 1),
+            # nn.ReLU(),
+            # nn.Linear(128, 1),
             # nn.Sigmoid()
         )
 
@@ -67,13 +67,14 @@ if __name__ == '__main__':
     model.train()
 
     # Define the loss function and the optimizer
-    criterion = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([1.0]).to(device))
+    criterion = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([4.0]).to(device))
     optimizer = optim.Adam(model.parameters(), lr=0.0001)
 
     # Define the number of epochs
     n_epochs = 100
     train_losses = []
 
+    best_dev_loss = np.inf
 
     # Training loop
     for epoch in range(n_epochs):
@@ -167,10 +168,13 @@ if __name__ == '__main__':
         print(f'Validation Recall: {recall.compute()}')
         print(f'Validation Loss: {dev_loss}')
         print(f'Label distribution: {1 - torch.sum(dev_labels)/len(dev_labels)}% are negative')
+        if dev_loss < best_dev_loss:
+            best_dev_loss = dev_loss
+            torch.save(model.state_dict(), 'models/xencoder/x_encoder_model.pt')
 
-    plt.figure()
-    plt.plot(range(n_epochs), train_losses)
-    plt.xlabel('Epoch')
-    plt.ylabel('Training Loss')
-    plt.title('Training Loss over Time')
-    plt.savefig('data/processed/x_encoder_training_loss.png')
+    # plt.figure()
+    # plt.plot(range(n_epochs), train_losses)
+    # plt.xlabel('Epoch')
+    # plt.ylabel('Training Loss')
+    # plt.title('Training Loss over Time')
+    # plt.savefig('data/processed/x_encoder_training_loss.png')
