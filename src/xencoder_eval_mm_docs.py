@@ -122,7 +122,7 @@ if __name__ == '__main__':
             sent_preds = medlinker.predict(' '.join(gold_sent['tokens']),
                                            gold_tokens=gold_sent['tokens'],
                                            gold_spans=gold_spans,
-                                           top_n=4)
+                                           top_n=3)
             for i in range(len(sent_preds['spans'])):
                 embedding_tokens = []
                 embedding_tokens.extend(gold_sent['tokens'][:sent_preds['spans'][i]['start']])
