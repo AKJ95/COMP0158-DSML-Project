@@ -165,6 +165,7 @@ if __name__ == '__main__':
                     toy_vec = toks2vecs((embedding_tokens + pred_entity_tokens)[:128])
                     toy_vec.to(device)
                     pred = model(toy_vec)
+                    print(pred)
 
                     vectors.append(toy_vec)
 
