@@ -105,7 +105,7 @@ if __name__ == '__main__':
     logging.info('Loading MedMentions ...')
     # mm_docs = read_mm_converted('data/MedMentions/full/custom/mm_converted.dev.json')
     # mm_docs = read_mm_converted('data/MedMentions/st21pv/custom/mm_converted.dev.json')
-    mm_docs = read_mm_converted('data/processed/mm_converted.test.json')
+    mm_docs = read_mm_converted('data/processed/mm_converted.dev.json')
 
     logging.info('Processing Instances ...')
     for doc_idx, doc in enumerate(mm_docs):
@@ -124,7 +124,7 @@ if __name__ == '__main__':
             sent_preds = medlinker.predict(' '.join(gold_sent['tokens']),
                                            gold_tokens=gold_sent['tokens'],
                                            gold_spans=gold_spans,
-                                           top_n=1)
+                                           top_n=5)
             for pred_span in sent_preds['spans']:
                 # if pred_span['cui'] is not None:
                 #     pred_ents.add(pred_span['cui'][0])
