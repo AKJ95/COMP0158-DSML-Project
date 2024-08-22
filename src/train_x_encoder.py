@@ -132,9 +132,9 @@ if __name__ == '__main__':
             outputs = model(vectors)
             loss = criterion(outputs, labels)
             dev_loss += loss.item() * vectors.size(0)
-            if i == 0:
-                dev_preds = torch.sigmoid(outputs).cpu().detach().numpy()
-                dev_labels = labels.cpu().detach().numpy().astype(int)
+            # if i == 0:
+            #     dev_preds = torch.sigmoid(outputs).cpu().detach().numpy()
+            #     dev_labels = labels.cpu().detach().numpy().astype(int)
             dev_preds = np.append(dev_preds, torch.sigmoid(outputs).cpu().detach().numpy())
             dev_labels = np.append(dev_labels, labels.cpu().detach().numpy().astype(int))
 
