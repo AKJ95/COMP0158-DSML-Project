@@ -54,7 +54,6 @@ if __name__ == '__main__':
     # Create DataLoader for the dataset
     data_loader = DataLoader(dataset, batch_size=64, shuffle=True)
     dev_loader = DataLoader(dataset_dev, batch_size=64, shuffle=False)
-    test_loader = DataLoader(dataset_dev, batch_size=1, shuffle=False)
 
     # Instantiate the MLP
     model = MLP()
@@ -74,7 +73,7 @@ if __name__ == '__main__':
     dev_preds = np.array([])
     model.eval()
     dev_loss = 0.0
-    for i, (vectors, labels) in enumerate(test_loader):
+    for i, (vectors, labels) in enumerate(dev_loader):
         vectors = vectors.to(device)
         labels = labels.to(device)
 
