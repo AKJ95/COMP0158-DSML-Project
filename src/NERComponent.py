@@ -99,7 +99,7 @@ class NERComponent:
             outputs = self.model(ids, mask)
         logits = outputs.logits
         predictions = torch.argmax(logits, dim=2).cpu().numpy()
-        print(logits)
+        print(torch.softmax(logits, dim=2).cpu().numpy())
         texts_tokenized = [self.tokenizer.convert_ids_to_tokens(input_ids) for input_ids in ids]
         tokens_processed = []
         sentence_prediction_processed = []
