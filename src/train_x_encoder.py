@@ -161,10 +161,10 @@ if __name__ == '__main__':
         recall = BinaryRecall(threshold=threshold)
         accuracy.update(dev_preds, dev_labels)
         precision.update(dev_preds, dev_labels)
-        # recall.update(dev_preds, dev_labels)
+        recall.update(dev_preds, dev_labels)
         print(f'Validation Accuracy: {accuracy.compute()}')
         print(f'Validation Precision: {precision.compute()}')
-        # print(f'Validation Recall: {recall.compute()}')
+        print(f'Validation Recall: {recall.compute()}')
         print(f'Validation Loss: {dev_loss}')
         print(f'Label distribution: {1 - torch.sum(dev_labels)/len(dev_labels)}% are negative')
 
