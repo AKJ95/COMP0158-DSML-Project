@@ -176,9 +176,10 @@ if __name__ == '__main__':
 
                 pred_entities = [entry[0] for entry in sent_preds['spans'][i]['cui']]
                 gold_entity = gold_sent['spans'][i]['cui'].lstrip('UMLS:')
-                print(gold_entity)
-                print(max_entity)
-
+                # print(gold_entity)
+                # print(max_entity)
+                if gold_entity == max_entity:
+                    correct_count += 1
                 if gold_entity in pred_entities:
                     in_top_n_count += 1
             for pred_span in sent_preds['spans']:
