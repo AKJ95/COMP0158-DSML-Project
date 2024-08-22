@@ -153,8 +153,8 @@ if __name__ == '__main__':
 
         print(f'Correct count: {correct_count}/{mention_count} = {correct_count/mention_count*100}%')
         dev_loss = dev_loss / len(dev_loader.dataset)
-        dev_preds = torch.from_numpy(dev_preds).float()
-        dev_labels = torch.from_numpy(dev_labels).float()
+        dev_preds = torch.from_numpy(dev_preds)
+        dev_labels = torch.from_numpy(dev_labels)
         threshold = 0.7
         accuracy = BinaryAccuracy(threshold=threshold)
         precision = BinaryPrecision(threshold=threshold)
