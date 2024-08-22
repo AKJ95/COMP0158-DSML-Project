@@ -144,7 +144,8 @@ if __name__ == '__main__':
 
                 span_count += 1
                 x_encoder_example_count += 1
-
+                max_score = 0.0
+                max_entity = None
                 for j in range(min(4, len(sent_preds['spans'][i]['cui']))):
                     pred_entity_kb = umls_kb.get_entity_by_cui(sent_preds['spans'][i]['cui'][j][0])
                     pred_entity_name = pred_entity_kb['Name'] if pred_entity_kb else ''
@@ -166,13 +167,18 @@ if __name__ == '__main__':
                     toy_vec = torch.from_numpy(toy_vec).float().unsqueeze(0)
                     toy_vec = toy_vec.to(device)
                     pred = model(toy_vec)
-                    print(torch.sigmoid(pred).item())
+                    score = torch.sigmoid(pred).item()
+                    if score > max_score:
+                        max_score = score
+                        max_entity = sent_preds['spans'][i]['cui'][j][0]
 
-                    vectors.append(toy_vec)
 
 
                 pred_entities = [entry[0] for entry in sent_preds['spans'][i]['cui']]
                 gold_entity = gold_sent['spans'][i]['cui'].lstrip('UMLS:')
+                print(gold_entity)
+                print(max_entity)
+
                 if gold_entity in pred_entities:
                     in_top_n_count += 1
             for pred_span in sent_preds['spans']:
