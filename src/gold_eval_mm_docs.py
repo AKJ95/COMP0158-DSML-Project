@@ -141,6 +141,8 @@ if __name__ == '__main__':
                 # print(gold_entity_name)
                 # print(gold_sent['spans'][i]['cui'].lstrip('UMLS:'))
                 # print(gold_entity_tokens)
+                print("This is gold embedding")
+                print(embedding_tokens + gold_entity_tokens)
                 gold_toy_vec = toks2vecs((embedding_tokens + gold_entity_tokens)[:128])
                 vectors.append(gold_toy_vec)
                 labels.append(1)
@@ -166,6 +168,8 @@ if __name__ == '__main__':
                             x_encoder_skipped_count += 1
                             pred_entity_tokens = pred_entity_name_tokens + ['[ENT]'] + pred_entity_name_tokens
                         # print(pred_entity_tokens)
+                        print("This is counterexample embeddings")
+                        print(embedding_tokens + pred_entity_tokens)
                         toy_vec = toks2vecs((embedding_tokens + pred_entity_tokens)[:128])
                         vectors.append(toy_vec)
                         labels.append(0)
