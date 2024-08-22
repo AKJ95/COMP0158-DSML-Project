@@ -166,7 +166,7 @@ if __name__ == '__main__':
                     toy_vec = torch.from_numpy(toy_vec).float().unsqueeze(0)
                     toy_vec = toy_vec.to(device)
                     pred = model(toy_vec)
-                    print(pred)
+                    print(torch.sigmoid(pred).item())
 
                     vectors.append(toy_vec)
 
