@@ -54,6 +54,7 @@ if __name__ == '__main__':
     # Create DataLoader for the dataset
     data_loader = DataLoader(dataset, batch_size=64, shuffle=True)
     dev_loader = DataLoader(dataset_dev, batch_size=64, shuffle=False)
+    test_loader = DataLoader(dataset_dev, batch_size=1, shuffle=False)
 
     # Instantiate the MLP
     model = MLP()
