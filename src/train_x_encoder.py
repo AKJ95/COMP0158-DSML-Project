@@ -136,7 +136,9 @@ if __name__ == '__main__':
             #     dev_preds = torch.sigmoid(outputs).cpu().detach().numpy()
             #     dev_labels = labels.cpu().detach().numpy().astype(int)
             dev_preds = np.append(dev_preds, torch.sigmoid(outputs).cpu().detach().numpy())
-            dev_labels = np.append(dev_labels, labels.cpu().detach().numpy().astype(int))
+            dev_labels = np.append(dev_labels, labels.cpu().detach().numpy())
+        print(len(dev_preds))
+        print(len(dev_labels))
 
         mention_count = 0
         correct_count = 0
