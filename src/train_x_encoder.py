@@ -158,10 +158,10 @@ if __name__ == '__main__':
             if i == len(dev_preds) - 1 or dev_labels[i+1] == 1:
                 if entity_example_count == 4:
                     top_n_count += 1
-                if correct_flag:
-                    correct_count += 1
+                    if correct_flag:
+                        correct_count += 1
 
-        print(f'Correct count: {correct_count}/{mention_count} = {correct_count/mention_count*100}%')
+        # print(f'Correct count: {correct_count}/{mention_count} = {correct_count/mention_count*100}%')
         print(f"Realistic Top N count: {correct_count}/{top_n_count} = {correct_count/top_n_count*100}%")
         dev_loss = dev_loss / len(dev_loader.dataset)
         dev_preds = torch.from_numpy(dev_preds)
