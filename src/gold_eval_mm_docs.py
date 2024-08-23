@@ -144,8 +144,8 @@ if __name__ == '__main__':
                 # print("This is gold embedding")
                 # print(embedding_tokens + gold_entity_tokens)
                 gold_toy_vec = toks2vecs((embedding_tokens + gold_entity_tokens)[:128])
-                # vectors.append(gold_toy_vec)
-                # labels.append(1)
+                vectors.append(gold_toy_vec)
+                labels.append(1)
                 # print(gold_toy_vec[:20])
 
                 span_count += 1
@@ -156,7 +156,7 @@ if __name__ == '__main__':
                     pred_entity_name = pred_entity_kb['Name'] if pred_entity_kb else ''
                     if j == 0 and pred_entity_name == gold_entity_name:
                         correct_count += 1
-                    if True: # pred_entity_name != gold_entity_name:
+                    if pred_entity_name != gold_entity_name:
                         x_encoder_example_count += 1
                         pred_entity_name_tokens = [t.text.lower() for t in sci_nlp(pred_entity_name)]
                         pred_entity_tokens = []
@@ -173,10 +173,7 @@ if __name__ == '__main__':
                         toy_vec = toks2vecs((embedding_tokens + pred_entity_tokens)[:128])
                         # print(toy_vec[:5])
                         vectors.append(toy_vec)
-                        if gold_entity_name == pred_entity_name:
-                            labels.append(1)
-                        else:
-                            labels.append(0)
+                        labels.append(0)
 
                 pred_entities = [entry[0] for entry in sent_preds['spans'][i]['cui']]
                 gold_entity = gold_sent['spans'][i]['cui'].lstrip('UMLS:')
@@ -211,5 +208,5 @@ if __name__ == '__main__':
     labels_np = np.array(labels)
     print(vector_np.shape)
     print(labels_np.shape)
-    np.save('data/processed/ordered_x_encoder_vectors_dev.npy', vector_np)
-    np.save('data/processed/ordered_x_encoder_labels_dev.npy', labels_np)
+    np.save('data/processed/x_encoder_vectors_dev.npy', vector_np)
+    np.save('data/processed/x_encoder_labels_dev.npy', labels_np)
