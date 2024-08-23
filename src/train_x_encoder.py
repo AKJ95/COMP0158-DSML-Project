@@ -145,21 +145,26 @@ if __name__ == '__main__':
         correct_count = 0
         current_correct_prob = 0.0
         entity_example_count = 0
+        max_score = 0
         for i in range(len(dev_preds)):
             correct_flag = True
             if dev_labels[i] == 1:
                 entity_example_count = 1
                 mention_count += 1
                 current_correct_prob = dev_preds[i]
+                max_score = 0
             elif dev_labels[i] == 0:
                 entity_example_count += 1
                 if dev_preds[i] >= current_correct_prob:
                     correct_flag = False
+                    max_score = dev_preds[i]
             if i == len(dev_preds) - 1 or dev_labels[i+1] == 1:
+                print(max_score)
                 if entity_example_count == 4:
                     top_n_count += 1
                     if correct_flag:
                         correct_count += 1
+
 
         # print(f'Correct count: {correct_count}/{mention_count} = {correct_count/mention_count*100}%')
         print(f"Realistic Top N count: {correct_count}/{top_n_count} = {correct_count/top_n_count*100}%")
