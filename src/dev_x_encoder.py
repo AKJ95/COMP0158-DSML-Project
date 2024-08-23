@@ -90,16 +90,18 @@ if __name__ == '__main__':
     mention_count = 0
     correct_count = 0
     current_correct_prob = 0.0
+    max_probability = 0.0
     for i in range(len(dev_preds)):
-        correct_flag = True
+        if dev_preds[i] > max_probability:
+            max_probability = dev_preds[i]
         if dev_labels[i] == 1:
-            mention_count += 1
             current_correct_prob = dev_preds[i]
-        else:
-            if dev_preds[i] > current_correct_prob:
-                correct_flag = False
-        if correct_flag and (i == len(dev_preds) - 1 or dev_labels[i+1] == 1):
-            correct_count += 1
+        if i % 4 == 3:
+            mention_count += 1
+            if current_correct_prob == max_probability:
+                correct_count += 1
+            current_correct_prob = 0.0
+            max_probability = 0.0
 
     print(f'Correct count: {correct_count}/{mention_count} = {correct_count/mention_count*100}%')
     dev_loss = dev_loss / len(dev_loader.dataset)
