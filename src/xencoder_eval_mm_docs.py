@@ -168,6 +168,7 @@ if __name__ == '__main__':
                     toy_vec = toy_vec.to(device)
                     pred = model(toy_vec)
                     score = torch.sigmoid(pred).item()
+                    print(score)
                     if score > max_score:
                         max_score = score
                         max_entity = sent_preds['spans'][i]['cui'][j][0]
