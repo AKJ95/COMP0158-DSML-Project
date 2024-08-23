@@ -152,7 +152,7 @@ if __name__ == '__main__':
                 entity_example_count = 1
                 mention_count += 1
                 current_correct_prob = dev_preds[i]
-                max_score = 0
+                max_score = dev_preds[i]
             elif dev_labels[i] == 0:
                 entity_example_count += 1
                 if dev_preds[i] >= current_correct_prob:
