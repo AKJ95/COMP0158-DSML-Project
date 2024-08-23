@@ -64,7 +64,7 @@ if __name__ == '__main__':
     # Move the model to the device
     model = model.to(device)
 
-    model.load_state_dict(torch.load('models/xencoder/x_encoder_model.pt'))
+    model.load_state_dict(torch.load('models/xencoder/ordered_x_encoder_model.pt'))
 
     best_dev_loss = np.inf
 
@@ -83,6 +83,7 @@ if __name__ == '__main__':
         #     dev_labels = labels.cpu().detach().numpy().astype(int)
         dev_preds = np.append(dev_preds, torch.sigmoid(outputs).cpu().detach().numpy())
         dev_labels = np.append(dev_labels, labels.cpu().detach().numpy())
+    print(dev_preds[:10])
     print(len(dev_preds))
     print(len(dev_labels))
 

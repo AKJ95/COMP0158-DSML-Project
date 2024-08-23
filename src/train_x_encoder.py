@@ -40,7 +40,7 @@ if __name__ == '__main__':
     x_encoder_vectors_dev = np.load('data/processed/ordered_x_encoder_vectors_dev.npy')
     x_encoder_labels_dev = np.load('data/processed/ordered_x_encoder_labels_dev.npy')
 
-    print(x_encoder_vectors_dev[:4, :5])
+
 
     # Convert numpy arrays to PyTorch tensors
     x_encoder_vectors = torch.from_numpy(x_encoder_vectors).float()
