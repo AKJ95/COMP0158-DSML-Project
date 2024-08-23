@@ -40,6 +40,8 @@ if __name__ == '__main__':
     x_encoder_vectors_dev = np.load('data/processed/x_encoder_vectors_dev.npy')
     x_encoder_labels_dev = np.load('data/processed/x_encoder_labels_dev.npy')
 
+    print(x_encoder_vectors_dev[:4, :5])
+
     # Convert numpy arrays to PyTorch tensors
     x_encoder_vectors = torch.from_numpy(x_encoder_vectors).float()
     x_encoder_labels = torch.from_numpy(x_encoder_labels).float()
@@ -50,6 +52,7 @@ if __name__ == '__main__':
 
     dataset = EncoderDataset(x_encoder_vectors, x_encoder_labels)
     dataset_dev = EncoderDataset(x_encoder_vectors_dev, x_encoder_labels_dev)
+
 
     # Create DataLoader for the dataset
     data_loader = DataLoader(dataset, batch_size=64, shuffle=True)
@@ -159,8 +162,8 @@ if __name__ == '__main__':
                     correct_flag = False
                     max_score = dev_preds[i]
             if i == len(dev_preds) - 1 or dev_labels[i+1] == 1:
-                if mention_count < 10:
-                    print(max_score)
+                # if mention_count < 10:
+                #     print(max_score)
                 if entity_example_count == 4:
                     top_n_count += 1
                     if correct_flag:
