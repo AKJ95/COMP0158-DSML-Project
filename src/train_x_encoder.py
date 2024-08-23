@@ -151,7 +151,7 @@ if __name__ == '__main__':
                 entity_example_count = 1
                 mention_count += 1
                 current_correct_prob = dev_preds[i]
-            if dev_labels[i] == 0:
+            elif dev_labels[i] == 0:
                 entity_example_count += 1
                 if dev_preds[i] >= current_correct_prob:
                     correct_flag = False
