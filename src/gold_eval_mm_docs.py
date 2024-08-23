@@ -169,9 +169,9 @@ if __name__ == '__main__':
                             pred_entity_tokens = pred_entity_name_tokens + ['[ENT]'] + pred_entity_name_tokens
                         # print(pred_entity_tokens)
                         # print("This is counterexample embeddings")
-                        print(embedding_tokens + pred_entity_tokens)
+                        # print(embedding_tokens + pred_entity_tokens)
                         toy_vec = toks2vecs((embedding_tokens + pred_entity_tokens)[:128])
-                        print(toy_vec[:5])
+                        # print(toy_vec[:5])
                         vectors.append(toy_vec)
                         if gold_entity_name == pred_entity_name:
                             labels.append(1)
