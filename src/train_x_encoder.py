@@ -156,7 +156,8 @@ if __name__ == '__main__':
                 if dev_preds[i] > current_correct_prob:
                     correct_flag = False
             if i == len(dev_preds) - 1 or dev_labels[i+1] == 1:
-                top_n_count += 1
+                if entity_example_count == 4:
+                    top_n_count += 1
                 if correct_flag:
                     correct_count += 1
 
