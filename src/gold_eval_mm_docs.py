@@ -172,7 +172,10 @@ if __name__ == '__main__':
                         print(embedding_tokens + pred_entity_tokens)
                         toy_vec = toks2vecs((embedding_tokens + pred_entity_tokens)[:128])
                         vectors.append(toy_vec)
-                        labels.append(0)
+                        if gold_entity_name == pred_entity_name:
+                            labels.append(1)
+                        else:
+                            labels.append(0)
 
                 pred_entities = [entry[0] for entry in sent_preds['spans'][i]['cui']]
                 gold_entity = gold_sent['spans'][i]['cui'].lstrip('UMLS:')
