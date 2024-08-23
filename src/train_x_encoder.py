@@ -159,7 +159,8 @@ if __name__ == '__main__':
                     correct_flag = False
                     max_score = dev_preds[i]
             if i == len(dev_preds) - 1 or dev_labels[i+1] == 1:
-                print(max_score)
+                if mention_count < 10:
+                    print(max_score)
                 if entity_example_count == 4:
                     top_n_count += 1
                     if correct_flag:
