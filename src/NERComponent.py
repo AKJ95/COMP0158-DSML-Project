@@ -100,14 +100,17 @@ class NERComponent:
         logits = outputs.logits
 
         probabilities = torch.softmax(logits, dim=2).cpu()
-        for i in range(probabilities.shape[0]):
-            for j in range(probabilities.shape[1]):
-                if probabilities[i, j, 0] > 0.90:
-                    probabilities[i, j, 0] = float('inf')
-                elif probabilities[i, j, 2] > 0.90:
-                    probabilities[i, j, 2] = float('inf')
-                else:
-                    probabilities[i, j, 1] = float('inf')
+
+        # Manually adjusting the probabilities
+        # for i in range(probabilities.shape[0]):
+        #     for j in range(probabilities.shape[1]):
+        #         if probabilities[i, j, 0] > 0.90:
+        #             probabilities[i, j, 0] = float('inf')
+        #         elif probabilities[i, j, 2] > 0.90:
+        #             probabilities[i, j, 2] = float('inf')
+        #         else:
+        #             probabilities[i, j, 1] = float('inf')
+
         predictions = torch.argmax(probabilities, dim=2).cpu().numpy()
         texts_tokenized = [self.tokenizer.convert_ids_to_tokens(input_ids) for input_ids in ids]
         tokens_processed = []
