@@ -124,10 +124,10 @@ if __name__ == "__main__":
     for epoch in range(config.num_epochs):
         print(f"Training epoch: {epoch + 1}")
         model, optimizer = train(model, training_loader, optimizer, device, config.max_grad_norm, id2label)
-        labels, predictions, ner_labels, ner_preds, entity_level_performance = valid(model, dev_loader, device, id2label)
-        if entity_level_performance["exact"]["f1"] > best_exact_f1:
+        labels, predictions, ner_labels, ner_preds, entity_level_performance, valid_loss = valid(model, dev_loader, device, id2label)
+        if valid_loss < best_loss:
             torch.save(model.state_dict(), config.model_path)
-            best_exact_f1 = entity_level_performance["exact"]["f1"]
+            best_loss = valid_loss
             best_epoch = epoch + 1
     print("-" * 100)
     model.load_state_dict(torch.load(config.model_path))

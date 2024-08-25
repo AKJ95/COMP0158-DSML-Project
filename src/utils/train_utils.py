@@ -115,7 +115,7 @@ def train(model, training_loader, optimizer, device, max_grad_norm, id2label) ->
     return model, optimizer
 
 
-def valid(model, testing_loader, device, id2label) -> Tuple[list, list, list, list, dict]:
+def valid(model, testing_loader, device, id2label) -> Tuple[list, list, list, list, dict, float]:
     """
     Function to evaluate the model on the dataset
     """
@@ -191,4 +191,4 @@ def valid(model, testing_loader, device, id2label) -> Tuple[list, list, list, li
     print("Entity level performance: ", entity_level_performance)
     print("Toy performance: ", toy_performance)
 
-    return labels, predictions, nervaluate_labels, nervaluate_preds, entity_level_performance
+    return labels, predictions, nervaluate_labels, nervaluate_preds, entity_level_performance, eval_loss
