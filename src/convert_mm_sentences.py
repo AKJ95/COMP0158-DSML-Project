@@ -77,6 +77,7 @@ for split_label in ['dev', 'test', 'train']:
             doc['sentences'].append(sent)
 
         split_data['docs'].append(doc)
+        print(f"Located mentions: {split_data['n_located_mentions']}; Unlocated mentions: {split_data['n_unlocated_mentions']} sentences.")
 
     logging.info('[%s] Writing converted MedMentions ...' % split_label)
     with open('data/processed/mm_converted.%s.json' % split_label, 'w') as json_f:
