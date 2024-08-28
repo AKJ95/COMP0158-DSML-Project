@@ -12,7 +12,7 @@ from scispacy.umls_semantic_type_tree import construct_umls_tree_from_tsv
 
 umls_tree = construct_umls_tree_from_tsv('data/umls_semantic_type_tree.tsv')  # change to your location
 
-umls_db_path = '../py-umls/databases/umls.db'  # change to your location
+umls_db_path = '../py-umls-2017/databases/umls.db'  # change to your location
 conn = sqlite3.connect(umls_db_path)
 c = conn.cursor()
 
@@ -127,7 +127,7 @@ for cui in cui_data.keys():
 
 print('Storing data as JSON ...')
 
-fn = 'data/processed/umls.2024AA.active'
+fn = 'data/processed/umls.2017AA.active'
 if RESTRICT_ST21PV:
     fn += '.st21pv'
 else:
