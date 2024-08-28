@@ -132,8 +132,8 @@ if __name__ == '__main__':
     em_ner_path = 'models/ExactMatchNER/umls.2017AA.active.st21pv.nerfed_nlp_and_matcher.max3.p'
     # ngram_db_path = 'models/SimString/umls.2017AA.active.st21pv.aliases.3gram.5toks.db'
     # ngram_map_path = 'models/SimString/umls.2017AA.active.st21pv.aliases.5toks.map'
-    ngram_db_path = 'data/processed/umls.2024AA.active.st21pv.aliases.3gram.5toks.db'
-    ngram_map_path = 'data/processed/umls.2024AA.active.st21pv.aliases.5toks.map'
+    ngram_db_path = 'data/processed/umls.2017AA.active.st21pv.aliases.3gram.5toks.db'
+    ngram_map_path = 'data/processed/umls.2017AA.active.st21pv.aliases.5toks.map'
     st_vsm_path = 'models/VSMs/mm_st21pv.sts_anns.scibert_scivocab_uncased.vecs'
     # cui_vsm_path = 'models/VSMs/mm_st21pv.cuis.scibert_scivocab_uncased.vecs'
     # 1-NN Classifier
@@ -156,7 +156,8 @@ if __name__ == '__main__':
     predict_sty, require_sty = False, False
     if mm_ann == 'cui':
         print("Predicting for CUIs...")
-        medlinker.load_cui_VSM(cui_vsm_path)
+        # medlinker.load_cui_VSM(cui_vsm_path)
+        medlinker.load_cui_softmax_pt()
         # medlinker.load_cui_clf(cui_clf_path)
         # cui_val_path = 'models/Validators/mm_st21pv.lr_clf_cui.dev.joblib'
         # medlinker.load_cui_validator(cui_val_path, validator_thresh=0.70)
