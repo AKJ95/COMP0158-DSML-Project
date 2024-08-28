@@ -122,7 +122,7 @@ def update_obs(doc_idx, sent_idx, gold_spans, pred_spans, perf_ner, perf_st, per
 
 if __name__ == '__main__':
 
-    use_gold_spans = False
+    use_gold_spans = True
     # mm_ann = 'sty'
     mm_ann = 'cui'
     # mm_ann = ''
@@ -132,10 +132,11 @@ if __name__ == '__main__':
     em_ner_path = 'models/ExactMatchNER/umls.2017AA.active.st21pv.nerfed_nlp_and_matcher.max3.p'
     # ngram_db_path = 'models/SimString/umls.2017AA.active.st21pv.aliases.3gram.5toks.db'
     # ngram_map_path = 'models/SimString/umls.2017AA.active.st21pv.aliases.5toks.map'
-    ngram_db_path = 'data/processed/umls.2024AA.active.st21pv.aliases.3gram.5toks.db'
-    ngram_map_path = 'data/processed/umls.2024AA.active.st21pv.aliases.5toks.map'
+    ngram_db_path = 'data/processed/umls.2017AA.active.st21pv.aliases.3gram.5toks.db'
+    ngram_map_path = 'data/processed/umls.2017AA.active.st21pv.aliases.5toks.map'
     st_vsm_path = 'models/VSMs/mm_st21pv.sts_anns.scibert_scivocab_uncased.vecs'
     # cui_vsm_path = 'models/VSMs/mm_st21pv.cuis.scibert_scivocab_uncased.vecs'
+    # 1-NN Classifier
     cui_vsm_path = 'data/processed/mm_st21pv.cuis.scibert_scivocab_uncased.vecs'
     cui_def_vsm_path = 'data/processed/umls.2024AA.active.st21pv.scibert_scivocab_uncased.cuis.vecs'
     cui_idx_path = 'models/VSMs/umls.2017AA.active.st21pv.scibert_scivocab_uncased.cuis.index'
@@ -154,7 +155,8 @@ if __name__ == '__main__':
     predict_cui, require_cui = False, False
     predict_sty, require_sty = False, False
     if mm_ann == 'cui':
-        medlinker.load_cui_VSM(cui_vsm_path)
+        print("Predicting for CUIs...")
+        # medlinker.load_cui_VSM(cui_vsm_path)
         # medlinker.load_cui_clf(cui_clf_path)
         # cui_val_path = 'models/Validators/mm_st21pv.lr_clf_cui.dev.joblib'
         # medlinker.load_cui_validator(cui_val_path, validator_thresh=0.70)
