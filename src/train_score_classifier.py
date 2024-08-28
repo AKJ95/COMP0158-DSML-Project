@@ -22,11 +22,8 @@ logging.info('Loading MedLinker ...')
 # st21pv
 from umls import umls_kb_st21pv as umls_kb
 
-# cx_ner_path = 'models/ContextualNER/mm_st21pv_SCIBERT_uncased/'
-# em_ner_path = 'models/ExactMatchNER/umls.2024AA.active.st21pv.nerfed_nlp_and_matcher.max3.p'
-ngram_db_path = 'data/processed/umls.2024AA.active.st21pv.aliases.3gram.5toks.db'
-ngram_map_path = 'data/processed/umls.2024AA.active.st21pv.aliases.5toks.map'
-# st_vsm_path = 'models/VSMs/mm_st21pv.sts_anns.scibert_scivocab_uncased.vecs'
+ngram_db_path = 'data/processed/umls.2017AA.active.st21pv.aliases.3gram.5toks.db'
+ngram_map_path = 'data/processed/umls.2017AA.active.st21pv.aliases.5toks.map'
 cui_vsm_path = 'models/VSMs/mm_st21pv.cuis.scibert_scivocab_uncased.vecs'
 # cui_idx_path = 'models/VSMs/umls.2024AA.active.st21pv.scibert_scivocab_uncased.cuis.index'
 # cui_lbs_path = 'models/VSMs/umls.2024AA.active.st21pv.scibert_scivocab_uncased.cuis.labels'
@@ -35,14 +32,11 @@ cui_vsm_path = 'models/VSMs/mm_st21pv.cuis.scibert_scivocab_uncased.vecs'
 
 print('Loading MedNER ...')
 medner = NERComponent()
-# medner.load_contextual_ner(cx_ner_path, ws_tokenizer=True)
 
 print('Loading MedLinker ...')
 medlinker = MedLinker(medner, umls_kb)
 medlinker.load_string_matcher(ngram_db_path, ngram_map_path)
-# medlinker.load_st_VSM(st_vsm_path)
 medlinker.load_cui_VSM(cui_vsm_path)
-# medlinker.load_sty_clf(sty_clf_path)
 medlinker.load_cui_softmax_pt()
 
 
