@@ -32,7 +32,7 @@ for st in st21pv_types:
     st_children = set([ch.type_id for ch in umls_tree.get_children(st_node)])
     st21pv_types_children[st] = st_children
 
-RESTRICT_ST21PV = False
+RESTRICT_ST21PV = True
 NO_DEFS = False
 
 
