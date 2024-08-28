@@ -144,6 +144,6 @@ if __name__ == '__main__':
     # umls_string_matcher = SimString_UMLS(ngram_db_path, ngram_map_path)
     # r = umls_string_matcher.match('apoptosis')
 
-    from umls import umls_kb_st21pv as umls_kb
+    from umls import umls_kb_st21pv_2017 as umls_kb
 
     create_umls_ss_db(umls_kb, char_ngram_len=3, n_max_tokens=5)
