@@ -141,6 +141,7 @@ if __name__ == '__main__':
     cui_def_vsm_path = 'data/processed/umls.2024AA.active.st21pv.scibert_scivocab_uncased.cuis.vecs'
     cui_idx_path = 'models/VSMs/umls.2017AA.active.st21pv.scibert_scivocab_uncased.cuis.index'
     cui_lbs_path = 'models/VSMs/umls.2017AA.active.st21pv.scibert_scivocab_uncased.cuis.labels'
+    cui_val_path = 'models/Validators/mm_st21pv.lr_clf_cui.final.joblib'
 
     print('Loading MedNER ...')
     medner = NERComponent()
@@ -160,7 +161,7 @@ if __name__ == '__main__':
         medlinker.load_cui_softmax_pt()
         # medlinker.load_cui_clf(cui_clf_path)
         # cui_val_path = 'models/Validators/mm_st21pv.lr_clf_cui.dev.joblib'
-        # medlinker.load_cui_validator(cui_val_path, validator_thresh=0.70)
+        medlinker.load_cui_validator(cui_val_path, validator_thresh=0.70)
 
         predict_cui, require_cui = True, True
 
