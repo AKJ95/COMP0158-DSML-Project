@@ -136,4 +136,4 @@ if __name__ == '__main__':
     cui_lr_clf.fit(X_cui, y_cui)
 
     logging.info('Saving CUI Classifier ...')
-    joblib.dump(cui_lr_clf, 'models/Validators/mm_st21pv.lr_clf_cui.train2.new_sklearn.joblib')
+    joblib.dump(cui_lr_clf, 'models/Validators/mm_st21pv.lr_clf_cui.final.joblib')
