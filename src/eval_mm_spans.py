@@ -117,6 +117,7 @@ def update_obs(doc_idx, sent_idx, gold_spans, pred_spans, perf_ner, perf_st, per
             perf_st['fn'].add(gold_info)
 
         if gold_info not in perf_cui['tp'].union(perf_cui['fp']):
+            print(gold_info)
             perf_cui['fn'].add(gold_info)
 
 
@@ -213,10 +214,6 @@ if __name__ == '__main__':
             perf_stats['n_pred_spans'] += len(pred_spans)
 
             update_obs(doc_idx, sent_idx, gold_spans, pred_spans, perf_ner, perf_st, perf_cui)
-
-            if doc_idx == 25:
-                print(pred_spans)
-                print(gold_spans)
 
         # in-progress performance metrics
         for pred_type, type_obs in [('NER', perf_ner), ('STY', perf_st), ('CUI', perf_cui)]:
