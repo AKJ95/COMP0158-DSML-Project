@@ -103,7 +103,7 @@ class MedLinker(object):
 
     def predict(self, sentence,
                 gold_tokens=None, gold_spans=None,
-                predict_cui=True, predict_sty=True,
+                predict_cui=True, predict_sty=False,
                 require_cui=True, require_sty=False,
                 top_n=1):
         #
