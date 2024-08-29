@@ -99,7 +99,7 @@ if __name__ == '__main__':
 
     logging.info('Processing Instances ...')
     span_count = 0
-    recalled_count = 0
+    gold_span_count = 0
     in_top_n_count = 0
     skip_count = 0
     x_encoder_example_count = 0
@@ -176,8 +176,8 @@ if __name__ == '__main__':
                         max_entity = sent_preds['spans'][i]['cui'][j][0]
                 # print(max_score)
 
-                if len(sent_preds['spans'][i]['cui']) > 0:
-                    recalled_count += 1
+
+                gold_span_count += len(gold_spans)
 
 
                 pred_entities = [entry[0] for entry in sent_preds['spans'][i]['cui']]
@@ -206,6 +206,6 @@ if __name__ == '__main__':
         counts = calc_counts(perf_cui)
         counts_str = '\t'.join(['%s:%d' % (l.upper(), c) for l, c in counts.items()])
         print(f"Percentage of correct: {correct_count}/{span_count} ({correct_count / span_count * 100:.2f}%)")
-        print(f"Recall span-level: {recalled_count}/{span_count} ({recalled_count / span_count * 100:.2f}%)")
+        print(f"Recall span-level: {span_count}/{gold_span_count} ({span_count / gold_span_count * 100:.2f}%)")
         print('[CUI]\tP:%.2f\tR:%.2f\tF1:%.2f\tACC:%.2f - %s' % (p, r, f, a, counts_str))
         print(f"Recall per span: {in_top_n_count}/{span_count} ({in_top_n_count / span_count * 100:.2f}%)")
