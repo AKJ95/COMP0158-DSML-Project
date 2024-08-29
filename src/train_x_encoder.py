@@ -24,9 +24,9 @@ class MLP(nn.Module):
     def __init__(self):
         super(MLP, self).__init__()
         self.layers = nn.Sequential(
-            nn.Linear(768, 1),
-            # nn.ReLU(),
-            # nn.Linear(128, 1),
+            nn.Linear(768, 128),
+            nn.ReLU(),
+            nn.Linear(128, 1),
             # nn.Sigmoid()
         )
 
@@ -74,7 +74,7 @@ if __name__ == '__main__':
     optimizer = optim.Adam(model.parameters(), lr=0.0001)
 
     # Define the number of epochs
-    n_epochs = 100
+    n_epochs = 30
     train_losses = []
 
     best_dev_loss = np.inf
