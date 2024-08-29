@@ -177,7 +177,7 @@ if __name__ == '__main__':
                 # print(max_score)
 
 
-                gold_span_count += len(gold_spans)
+
 
 
                 pred_entities = [entry[0] for entry in sent_preds['spans'][i]['cui']]
@@ -193,6 +193,7 @@ if __name__ == '__main__':
                 for pred_cui in pred_span['cui']:
                     pred_ents.add(pred_cui[0])
 
+            gold_span_count += len(gold_spans)
         perf_cui['tp'] += len(gold_ents.intersection(pred_ents))
         perf_cui['fp'] += len([pred_ent for pred_ent in pred_ents if pred_ent not in gold_ents])
         perf_cui['fn'] += len([gold_ent for gold_ent in gold_ents if gold_ent not in pred_ents])
