@@ -207,6 +207,6 @@ if __name__ == '__main__':
         counts = calc_counts(perf_cui)
         counts_str = '\t'.join(['%s:%d' % (l.upper(), c) for l, c in counts.items()])
         print(f"Percentage of correct: {correct_count}/{span_count} ({correct_count / span_count * 100:.2f}%)")
-        print(f"Recall span-level: {span_count}/{gold_span_count} ({span_count / gold_span_count * 100:.2f}%)")
+        print(f"Recall span-level: {correct_count}/{correct_count + gold_span_count - span_count} ({correct_count / (correct_count + gold_span_count - span_count) * 100:.2f}%)")
         print('[CUI]\tP:%.2f\tR:%.2f\tF1:%.2f\tACC:%.2f - %s' % (p, r, f, a, counts_str))
         print(f"Recall per span: {in_top_n_count}/{span_count} ({in_top_n_count / span_count * 100:.2f}%)")
