@@ -205,14 +205,3 @@ if __name__ == '__main__':
         print('[CUI]\tP:%.2f\tR:%.2f\tF1:%.2f\tACC:%.2f - %s' % (p, r, f, a, counts_str))
         print(f"Recall per span: {in_top_n_count}/{span_count} ({in_top_n_count / span_count * 100:.2f}%)")
         print(f"Training examples without official definitions: {x_encoder_skipped_count}/{x_encoder_example_count} ({x_encoder_skipped_count / x_encoder_example_count * 100:.2f}%)")
-
-        # if doc_idx >= 100:
-        #     break
-
-    # Store the vectors and labels
-    vector_np = np.vstack(vectors)
-    labels_np = np.array(labels)
-    print(vector_np.shape)
-    print(labels_np.shape)
-    np.save('data/processed/x_encoder_vectors_dev.npy', vector_np)
-    np.save('data/processed/x_encoder_labels_dev.npy', labels_np)
