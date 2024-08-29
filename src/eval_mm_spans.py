@@ -198,7 +198,6 @@ if __name__ == '__main__':
                                           gold_tokens=gold_tokens, gold_spans=gold_spans,
                                           predict_cui=predict_cui, predict_sty=predict_sty,
                                           require_cui=require_cui, require_sty=require_sty)
-                print(preds)
                 # assert len(gold_sent['spans']) == len(preds['spans'])
 
             else:
