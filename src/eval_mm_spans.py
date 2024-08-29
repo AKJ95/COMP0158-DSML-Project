@@ -214,6 +214,10 @@ if __name__ == '__main__':
 
             update_obs(doc_idx, sent_idx, gold_spans, pred_spans, perf_ner, perf_st, perf_cui)
 
+            if doc_idx == 25:
+                print(pred_spans)
+                print(gold_spans)
+
         # in-progress performance metrics
         for pred_type, type_obs in [('NER', perf_ner), ('STY', perf_st), ('CUI', perf_cui)]:
             p, r, f1, acc = calc_metrics(type_obs)
