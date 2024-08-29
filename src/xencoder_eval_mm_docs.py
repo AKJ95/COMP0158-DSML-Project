@@ -21,8 +21,8 @@ logging.basicConfig(level=logging.DEBUG,
 logging.info('Loading MedLinker ...')
 
 
-ngram_db_path = 'data/processed/umls.2024AA.active.st21pv.aliases.3gram.5toks.db'
-ngram_map_path = 'data/processed/umls.2024AA.active.st21pv.aliases.5toks.map'
+ngram_db_path = 'data/processed/umls.2017AA.active.st21pv.aliases.3gram.5toks.db'
+ngram_map_path = 'data/processed/umls.2017AA.active.st21pv.aliases.5toks.map'
 cui_vsm_path = 'data/processed/mm_st21pv.cuis.scibert_scivocab_uncased.vecs'
 
 
