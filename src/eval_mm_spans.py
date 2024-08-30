@@ -126,14 +126,15 @@ def update_obs(doc_idx, sent_idx, gold_spans, pred_spans, perf_ner, perf_st, per
         store_results = True
         if use_gold_spans and store_results:
             found_pred = False
+            gold_labels.append(gold_span['cui'])
             for pred_span in pred_spans:
                 pred_start, pred_end = pred_span['start'], pred_span['end']
                 pred_info = (doc_idx, sent_idx, pred_start, pred_end)
                 if gold_info == pred_info:
-                    gold_labels.append(gold_span['cui'])
                     pred_labels.append(pred_span['cui'][0][0])
+                    found_pred = True
+                    break
             if not found_pred:
-                gold_labels.append(gold_span['cui'])
                 pred_labels.append(None)
 
     print(len(gold_labels), len(pred_labels))
