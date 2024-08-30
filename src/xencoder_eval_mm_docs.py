@@ -228,11 +228,20 @@ if __name__ == '__main__':
         f = calc_f1(perf_cui) * 100
         a = calc_acc(perf_cui) * 100
 
-        counts = calc_counts(perf_cui)
-        counts_str = '\t'.join(['%s:%d' % (l.upper(), c) for l, c in counts.items()])
-        print(f"Percentage of correct: {correct_count}/{span_count} ({correct_count / span_count * 100:.2f}%)")
-        print(f"Recall span-level: {correct_count}/{correct_count + gold_span_count - span_count} ({correct_count / (correct_count + gold_span_count - span_count) * 100:.2f}%)")
-        print('[CUI]\tP:%.2f\tR:%.2f\tF1:%.2f\tACC:%.2f - %s' % (p, r, f, a, counts_str))
-        print(f"Recall per span: {in_top_n_count}/{span_count} ({in_top_n_count / span_count * 100:.2f}%)")
+        # Span-level metrics
+        precision = correct_count / span_count * 100
+        recall = correct_count / (correct_count + gold_span_count - span_count) * 100
+        f1 = 2 * ((precision * recall) / (precision + recall))
+        tp = correct_count
+        fp = span_count - correct_count
+        fn = gold_span_count - span_count
+
+        # counts = calc_counts(perf_cui)
+        # counts_str = '\t'.join(['%s:%d' % (l.upper(), c) for l, c in counts.items()])
+        # print(f"Percentage of correct: {correct_count}/{span_count} ({correct_count / span_count * 100:.2f}%)")
+        # print(f"Recall span-level: {correct_count}/{correct_count + gold_span_count - span_count} ({correct_count / (correct_count + gold_span_count - span_count) * 100:.2f}%)")
+        # print('[CUI]\tP:%.2f\tR:%.2f\tF1:%.2f\tACC:%.2f - %s' % (p, r, f, a, counts_str))
+        print(f"[CUI]\tP:{precision:.2f}\tR:{recall:.2f}\tF1:{f1:.2f}\tTP:{tp}\tFP:{fp}\tFN:{fn}")
+        # print(f"Recall per span: {in_top_n_count}/{span_count} ({in_top_n_count / span_count * 100:.2f}%)")
         print(len(gold_labels))
         print(len(pred_labels))
