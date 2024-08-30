@@ -26,6 +26,9 @@ ngram_map_path = 'data/processed/umls.2017AA.active.st21pv.aliases.5toks.map'
 cui_vsm_path = 'data/processed/mm_st21pv.cuis.scibert_scivocab_uncased.vecs'
 
 
+gold_labels = []
+pred_labels = []
+
 print('Loading MedNER ...')
 medner = NERComponent()
 
@@ -197,6 +200,23 @@ if __name__ == '__main__':
 
             print(gold_sent['spans'][:2])
             print(sent_preds['spans'][:2])
+            for gold_span in gold_sent['spans']:
+                gold_span_start = gold_span['start']
+                gold_span_end = gold_span['end']
+                gold_span_cui = gold_span['cui'].lstrip('UMLS:')
+                found_pred = False
+                for pred_span in sent_preds['spans']:
+                    pred_span_start = pred_span['start']
+                    pred_span_end = pred_span['end']
+                    pred_span_cui = pred_span['cui'][0][0]
+                    gold_labels.append(gold_span_cui)
+                    if gold_span_start == pred_span_start and gold_span_end == pred_span_end:
+                        pred_labels.append(pred_span_cui)
+                        found_pred = True
+                        break
+                if not found_pred:
+                    pred_labels.append(None)
+
 
         perf_cui['tp'] += len(gold_ents.intersection(pred_ents))
         perf_cui['fp'] += len([pred_ent for pred_ent in pred_ents if pred_ent not in gold_ents])
@@ -214,3 +234,5 @@ if __name__ == '__main__':
         print(f"Recall span-level: {correct_count}/{correct_count + gold_span_count - span_count} ({correct_count / (correct_count + gold_span_count - span_count) * 100:.2f}%)")
         print('[CUI]\tP:%.2f\tR:%.2f\tF1:%.2f\tACC:%.2f - %s' % (p, r, f, a, counts_str))
         print(f"Recall per span: {in_top_n_count}/{span_count} ({in_top_n_count / span_count * 100:.2f}%)")
+        print(len(gold_labels))
+        print(len(pred_labels))
