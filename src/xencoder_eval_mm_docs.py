@@ -217,6 +217,25 @@ if __name__ == '__main__':
                 if not found_pred:
                     pred_labels.append(None)
 
+            tp = 0
+            fp = 0
+            fn = pred_labels.count(None)
+            for i in range(len(pred_labels)):
+                if pred_labels[i] is not None:
+                    if pred_labels[i] == gold_labels[i]:
+                        tp += 1
+                    else:
+                        fp += 1
+            print("TP:", tp)
+            print("FP:", fp)
+            print("FN:", fn)
+            p = tp / (tp + fp)
+            r = tp / (tp + fn)
+            f1 = 2 * ((p * r) / (p + r))
+            print("P:", p)
+            print("R:", r)
+            print("F1:", f1)
+
 
         perf_cui['tp'] += len(gold_ents.intersection(pred_ents))
         perf_cui['fp'] += len([pred_ent for pred_ent in pred_ents if pred_ent not in gold_ents])
