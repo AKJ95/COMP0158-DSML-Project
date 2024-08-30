@@ -205,11 +205,11 @@ if __name__ == '__main__':
                 gold_span_end = gold_span['end']
                 gold_span_cui = gold_span['cui'].lstrip('UMLS:')
                 found_pred = False
+                gold_labels.append(gold_span_cui)
                 for pred_span in sent_preds['spans']:
                     pred_span_start = pred_span['start']
                     pred_span_end = pred_span['end']
                     pred_span_cui = pred_span['cui'][0][0]
-                    gold_labels.append(gold_span_cui)
                     if gold_span_start == pred_span_start and gold_span_end == pred_span_end:
                         pred_labels.append(pred_span_cui)
                         found_pred = True
