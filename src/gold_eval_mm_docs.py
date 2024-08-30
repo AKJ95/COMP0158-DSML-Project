@@ -7,7 +7,7 @@ import spacy
 from NERComponent import NERComponent
 from medlinker import MedLinker
 from pytt_hf_custom_tokenizer import toks2vecs
-from umls import umls_kb_full as umls_kb
+from umls import umls_kb_full_2017 as umls_kb
 
 sci_nlp = spacy.load('en_core_sci_md', disable=['tagger', 'parser', 'ner'])
 
@@ -18,8 +18,8 @@ logging.basicConfig(level=logging.DEBUG,
 logging.info('Loading MedLinker ...')
 
 
-ngram_db_path = 'data/processed/umls.2024AA.active.st21pv.aliases.3gram.5toks.db'
-ngram_map_path = 'data/processed/umls.2024AA.active.st21pv.aliases.5toks.map'
+ngram_db_path = 'data/processed/umls.2017AA.active.st21pv.aliases.3gram.5toks.db'
+ngram_map_path = 'data/processed/umls.2017AA.active.st21pv.aliases.5toks.map'
 cui_vsm_path = 'data/processed/mm_st21pv.cuis.scibert_scivocab_uncased.vecs'
 
 
@@ -208,5 +208,5 @@ if __name__ == '__main__':
     labels_np = np.array(labels)
     print(vector_np.shape)
     print(labels_np.shape)
-    np.save('data/processed/x_encoder_vectors.npy', vector_np)
-    np.save('data/processed/x_encoder_labels.npy', labels_np)
+    np.save('data/processed/x_encoder_vectors_2017.npy', vector_np)
+    np.save('data/processed/x_encoder_labels_2017.npy', labels_np)
