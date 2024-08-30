@@ -195,8 +195,8 @@ if __name__ == '__main__':
 
             gold_span_count += len(gold_spans)
 
-            print(len(gold_spans))
-            print(len(sent_preds['spans']))
+            print(gold_spans[:2])
+            print(sent_preds['spans'][:2])
 
         perf_cui['tp'] += len(gold_ents.intersection(pred_ents))
         perf_cui['fp'] += len([pred_ent for pred_ent in pred_ents if pred_ent not in gold_ents])
