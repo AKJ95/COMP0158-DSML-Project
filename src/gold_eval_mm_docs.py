@@ -171,7 +171,7 @@ if __name__ == '__main__':
                         # print("This is counterexample embeddings")
                         # print(embedding_tokens + pred_entity_tokens)
                         toy_vec = toks2vecs((embedding_tokens + pred_entity_tokens)[:128])
-                        print(toy_vec[:10])
+                        # print(toy_vec[:10])
                         vectors.append(toy_vec)
                         labels.append(0)
 
