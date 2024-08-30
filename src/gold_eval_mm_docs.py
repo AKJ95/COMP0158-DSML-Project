@@ -146,7 +146,7 @@ if __name__ == '__main__':
                 gold_toy_vec = toks2vecs((embedding_tokens + gold_entity_tokens)[:128])
                 vectors.append(gold_toy_vec)
                 labels.append(1)
-                print(gold_toy_vec[:10])
+                # print(gold_toy_vec[:10])
 
                 span_count += 1
                 x_encoder_example_count += 1
