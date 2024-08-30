@@ -198,8 +198,8 @@ if __name__ == '__main__':
 
             gold_span_count += len(gold_spans)
 
-            print(gold_sent['spans'][:2])
-            print(sent_preds['spans'][:2])
+            # print(gold_sent['spans'][:2])
+            # print(sent_preds['spans'][:2])
             for gold_span in gold_sent['spans']:
                 gold_span_start = gold_span['start']
                 gold_span_end = gold_span['end']
