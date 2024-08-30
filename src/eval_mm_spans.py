@@ -263,3 +263,11 @@ if __name__ == '__main__':
     print("R:", r)
     print("F1:", f1)
 
+    if gold_labels and pred_labels:
+        # Convert the list to a JSON string
+        results = {"gold_labels": gold_labels, "pred_labels": pred_labels}
+        results_str = json.dumps(results)
+        # Write the string to a file
+        with open('results/str_1nn.txt', 'w') as file:
+            file.write(results_str)
+
