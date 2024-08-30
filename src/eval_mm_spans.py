@@ -137,7 +137,7 @@ def update_obs(doc_idx, sent_idx, gold_spans, pred_spans, perf_ner, perf_st, per
             if not found_pred:
                 pred_labels.append(None)
 
-    print(len(gold_labels), len(pred_labels))
+    # print(len(gold_labels), len(pred_labels))
 
 
 
@@ -242,3 +242,24 @@ if __name__ == '__main__':
             print('[%s] P:%.2f R:%.2f F1:%.2f ACC:%.2f - %s' % (pred_type, p, r, f1, acc, obs_str))
         print(perf_stats)
         print()
+
+    print("Analysing from stored results...")
+    tp = 0
+    fp = 0
+    fn = pred_labels.count(None)
+    for i in range(len(pred_labels)):
+        if pred_labels[i] is not None:
+            if pred_labels[i] == gold_labels[i]:
+                tp += 1
+            else:
+                fp += 1
+    print("TP:", tp)
+    print("FP:", fp)
+    print("FN:", fn)
+    p = tp / (tp + fp)
+    r = tp / (tp + fn)
+    f1 = 2 * ((p * r) / (p + r))
+    print("P:", p)
+    print("R:", r)
+    print("F1:", f1)
+
