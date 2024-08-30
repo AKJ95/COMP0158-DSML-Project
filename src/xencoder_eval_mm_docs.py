@@ -243,5 +243,5 @@ if __name__ == '__main__':
         # print('[CUI]\tP:%.2f\tR:%.2f\tF1:%.2f\tACC:%.2f - %s' % (p, r, f, a, counts_str))
         print(f"[CUI]\tP:{precision:.2f}\tR:{recall:.2f}\tF1:{f1:.2f}\tTP:{tp}\tFP:{fp}\tFN:{fn}")
         # print(f"Recall per span: {in_top_n_count}/{span_count} ({in_top_n_count / span_count * 100:.2f}%)")
-        print(len(gold_labels))
-        print(len(pred_labels))
+        # print(len(gold_labels))
+        # print(len(pred_labels))
