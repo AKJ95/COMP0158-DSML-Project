@@ -98,7 +98,7 @@ if __name__ == '__main__':
     perf_cui = {'tp': 0, 'fp': 0, 'fn': 0}
 
     logging.info('Loading MedMentions ...')
-    mm_docs = read_mm_converted('data/processed/mm_converted.dev.json')
+    mm_docs = read_mm_converted('data/processed/mm_converted.train.json')
 
     logging.info('Processing Instances ...')
     span_count = 0
