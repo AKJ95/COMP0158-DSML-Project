@@ -37,7 +37,12 @@ print("P:", p)
 print("R:", r)
 print("F1:", f1)
 
+num_spans = 0
 mm_docs = read_mm_converted('data/processed/mm_converted.test.json')
 print(type(mm_docs))
 print(len(mm_docs))
 print(mm_docs[0])
+for doc in mm_docs:
+    for sentence in doc['sentences']:
+        num_spans += len(sentence['spans'])
+print("Number of spans in test set:", num_spans)
