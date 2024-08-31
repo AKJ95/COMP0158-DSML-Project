@@ -37,8 +37,8 @@ class MLP(nn.Module):
 
 
 if __name__ == '__main__':
-    x_encoder_vectors = np.load('data/processed/x_encoder_vectors.npy')
-    x_encoder_labels = np.load('data/processed/x_encoder_labels.npy')
+    x_encoder_vectors = np.load('data/processed/x_encoder_vectors_2017.npy')
+    x_encoder_labels = np.load('data/processed/x_encoder_labels_2017.npy')
     x_encoder_vectors_dev = np.load('data/processed/x_encoder_vectors_dev.npy')
     x_encoder_labels_dev = np.load('data/processed/x_encoder_labels_dev.npy')
 
