@@ -200,7 +200,7 @@ if __name__ == '__main__':
     perf_st = {'tp': set(), 'fp': set(), 'fn': set()}
 
     logging.info('Loading MedMentions ...')
-    mm_docs = read_mm_converted('data/processed/mm_converted.dev.json')
+    mm_docs = read_mm_converted('data/processed/mm_converted.test.json')
 
     logging.info('Processing Instances ...')
     for doc_idx, doc in enumerate(mm_docs):
