@@ -34,7 +34,7 @@ medner = NERComponent()
 
 print('Loading MedLinker ...')
 medlinker = MedLinker(medner, umls_kb)
-medlinker.load_string_matcher(ngram_db_path, ngram_map_path)
+# medlinker.load_string_matcher(ngram_db_path, ngram_map_path)
 # medlinker.load_cui_softmax_pt()
 medlinker.load_cui_VSM(cui_vsm_path)
 
@@ -126,7 +126,7 @@ if __name__ == '__main__':
             sent_preds = medlinker.predict(' '.join(gold_sent['tokens']),
                                            gold_tokens=gold_sent['tokens'],
                                            gold_spans=gold_spans,
-                                           top_n=4)
+                                           top_n=1)
             pred_reranked_entities = []
             for i in range(len(sent_preds['spans'])):
                 embedding_tokens = []
@@ -220,25 +220,6 @@ if __name__ == '__main__':
                 if not found_pred:
                     pred_labels.append(None)
 
-            # tp = 0
-            # fp = 0
-            # fn = pred_labels.count(None)
-            # for i in range(len(pred_labels)):
-            #     if pred_labels[i] is not None:
-            #         if pred_labels[i] == gold_labels[i]:
-            #             tp += 1
-            #         else:
-            #             fp += 1
-            # print("TP:", tp)
-            # print("FP:", fp)
-            # print("FN:", fn)
-            # p = tp / (tp + fp)
-            # r = tp / (tp + fn)
-            # f1 = 2 * ((p * r) / (p + r))
-            # print("P:", p)
-            # print("R:", r)
-            # print("F1:", f1)
-
 
         perf_cui['tp'] += len(gold_ents.intersection(pred_ents))
         perf_cui['fp'] += len([pred_ent for pred_ent in pred_ents if pred_ent not in gold_ents])
@@ -275,5 +256,5 @@ if __name__ == '__main__':
         results = {"gold_labels": gold_labels, "pred_labels": pred_labels}
         results_str = json.dumps(results)
         # Write the string to a file
-        with open('results/str_1nn_rerank.txt', 'w') as file:
+        with open('results/1nn.txt', 'w') as file:
             file.write(results_str)
