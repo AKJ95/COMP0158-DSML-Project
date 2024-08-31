@@ -196,9 +196,8 @@ if __name__ == '__main__':
         counts = calc_counts(perf_cui)
         counts_str = '\t'.join(['%s:%d' % (l.upper(), c) for l, c in counts.items()])
         print(f"Percentage of correct: {correct_count}/{span_count} ({correct_count / span_count * 100:.2f}%)")
-        print('[CUI]\tP:%.2f\tR:%.2f\tF1:%.2f\tACC:%.2f - %s' % (p, r, f, a, counts_str))
-        print(f"Recall per span: {in_top_n_count}/{span_count} ({in_top_n_count / span_count * 100:.2f}%)")
-        print(f"Training examples without official definitions: {x_encoder_skipped_count}/{x_encoder_example_count} ({x_encoder_skipped_count / x_encoder_example_count * 100:.2f}%)")
+        print(f"Top k Recall per span: {in_top_n_count}/{span_count} ({in_top_n_count / span_count * 100:.2f}%)")
+        print(f"Examples without official definitions: {x_encoder_skipped_count}/{x_encoder_example_count} ({x_encoder_skipped_count / x_encoder_example_count * 100:.2f}%)")
 
         # if doc_idx >= 100:
         #     break
