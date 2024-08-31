@@ -270,4 +270,3 @@ if __name__ == '__main__':
         # Write the string to a file
         with open('results/str_1nn.txt', 'w') as file:
             file.write(results_str)
-

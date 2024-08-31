@@ -265,3 +265,12 @@ if __name__ == '__main__':
         # print(f"Recall per span: {in_top_n_count}/{span_count} ({in_top_n_count / span_count * 100:.2f}%)")
         # print(len(gold_labels))
         # print(len(pred_labels))
+
+    print("Saving results...")
+    if gold_labels and pred_labels:
+        # Convert the list to a JSON string
+        results = {"gold_labels": gold_labels, "pred_labels": pred_labels}
+        results_str = json.dumps(results)
+        # Write the string to a file
+        with open('results/str_1nn_rerank.txt', 'w') as file:
+            file.write(results_str)
