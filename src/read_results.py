@@ -37,12 +37,14 @@ print("P:", p)
 print("R:", r)
 print("F1:", f1)
 
-num_spans = 0
-mm_docs = read_mm_converted('data/processed/mm_converted.test.json')
-print(type(mm_docs))
-print(len(mm_docs))
-print(mm_docs[0])
+num_spans_train = 0
+gold_labels_train = []
+mm_docs = read_mm_converted('data/processed/mm_converted.train.json')
 for doc in mm_docs:
     for sentence in doc['sentences']:
-        num_spans += len(sentence['spans'])
-print("Number of spans in test set:", num_spans)
+        num_spans_train += len(sentence['spans'])
+        for span in sentence['spans']:
+            gold_labels_train.append(span['cui'])
+print("Number of spans in train set:", num_spans_train)
+assert len(gold_labels) == num_spans_train
+print(gold_labels_train[:10])
