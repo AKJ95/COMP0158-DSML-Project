@@ -1,5 +1,12 @@
 import json
 
+
+def read_mm_converted(mm_set_path):
+    with open(mm_set_path, 'r') as json_f:
+        mm_set = json.load(json_f)
+
+    return list(mm_set['docs'])
+
 # Open the file
 with open('results/str_1nn_rerank.txt', 'r') as f:
     # Parse the JSON string
@@ -29,3 +36,8 @@ f1 = 2 * ((p * r) / (p + r))
 print("P:", p)
 print("R:", r)
 print("F1:", f1)
+
+mm_docs = read_mm_converted('data/processed/mm_converted.test.json')
+print(type(mm_docs))
+print(len(mm_docs))
+print(mm_docs[0])
