@@ -208,5 +208,5 @@ if __name__ == '__main__':
     labels_np = np.array(labels)
     print(vector_np.shape)
     print(labels_np.shape)
-    np.save('data/processed/x_encoder_vectors_2017.npy', vector_np)
-    np.save('data/processed/x_encoder_labels_2017.npy', labels_np)
+    np.save('data/processed/x_encoder_vectors_2017_dev.npy', vector_np)
+    np.save('data/processed/x_encoder_labels_2017_dev.npy', labels_np)
