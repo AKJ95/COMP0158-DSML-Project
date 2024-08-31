@@ -98,7 +98,7 @@ if __name__ == '__main__':
     perf_cui = {'tp': 0, 'fp': 0, 'fn': 0}
 
     logging.info('Loading MedMentions ...')
-    mm_docs = read_mm_converted('data/processed/mm_converted.train.json')
+    mm_docs = read_mm_converted('data/processed/mm_converted.test.json')
 
     logging.info('Processing Instances ...')
     span_count = 0
@@ -261,6 +261,7 @@ if __name__ == '__main__':
         # print(f"Recall span-level: {correct_count}/{correct_count + gold_span_count - span_count} ({correct_count / (correct_count + gold_span_count - span_count) * 100:.2f}%)")
         # print('[CUI]\tP:%.2f\tR:%.2f\tF1:%.2f\tACC:%.2f - %s' % (p, r, f, a, counts_str))
         print(f"[CUI]\tP:{precision:.2f}\tR:{recall:.2f}\tF1:{f1:.2f}\tTP:{tp}\tFP:{fp}\tFN:{fn}")
+        print(f"Span-level top k recall: {in_top_n_count}/{gold_span_count} ({in_top_n_count / gold_span_count * 100:.2f}%)")
         # print(f"Recall per span: {in_top_n_count}/{span_count} ({in_top_n_count / span_count * 100:.2f}%)")
         # print(len(gold_labels))
         # print(len(pred_labels))
