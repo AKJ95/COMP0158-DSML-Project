@@ -35,8 +35,8 @@ medner = NERComponent()
 print('Loading MedLinker ...')
 medlinker = MedLinker(medner, umls_kb)
 # medlinker.load_string_matcher(ngram_db_path, ngram_map_path)
-# medlinker.load_cui_softmax_pt()
-medlinker.load_cui_VSM(cui_vsm_path)
+medlinker.load_cui_softmax_pt()
+# medlinker.load_cui_VSM(cui_vsm_path)
 
 model = MLP()
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -256,5 +256,5 @@ if __name__ == '__main__':
         results = {"gold_labels": gold_labels, "pred_labels": pred_labels}
         results_str = json.dumps(results)
         # Write the string to a file
-        with open('results/1nn.txt', 'w') as file:
+        with open('results/clf.txt', 'w') as file:
             file.write(results_str)
