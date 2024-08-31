@@ -127,6 +127,7 @@ if __name__ == '__main__':
                                            gold_tokens=gold_sent['tokens'],
                                            gold_spans=gold_spans,
                                            top_n=4)
+            pred_reranked_entities = []
             for i in range(len(sent_preds['spans'])):
                 embedding_tokens = []
                 embedding_tokens.extend(gold_sent['tokens'][:sent_preds['spans'][i]['start']])
@@ -187,6 +188,7 @@ if __name__ == '__main__':
                 gold_entity = gold_sent['spans'][i]['cui'].lstrip('UMLS:')
                 # print(gold_entity)
                 # print(max_entity)
+                pred_reranked_entities.append(max_entity)
                 if gold_entity == max_entity:
                     correct_count += 1
                 if gold_entity in pred_entities:
@@ -200,16 +202,17 @@ if __name__ == '__main__':
 
             # print(gold_sent['spans'][:2])
             # print(sent_preds['spans'][:2])
+            assert len(pred_reranked_entities) == len(sent_preds['spans'])
             for gold_span in gold_sent['spans']:
                 gold_span_start = gold_span['start']
                 gold_span_end = gold_span['end']
                 gold_span_cui = gold_span['cui'].lstrip('UMLS:')
                 found_pred = False
                 gold_labels.append(gold_span_cui)
-                for pred_span in sent_preds['spans']:
-                    pred_span_start = pred_span['start']
-                    pred_span_end = pred_span['end']
-                    pred_span_cui = pred_span['cui'][0][0]
+                for i in range(len(sent_preds['spans'])):
+                    pred_span_start = sent_preds['spans'][i]['start']
+                    pred_span_end = sent_preds['spans'][i]['end']
+                    pred_span_cui = pred_reranked_entities[i]
                     if gold_span_start == pred_span_start and gold_span_end == pred_span_end:
                         pred_labels.append(pred_span_cui)
                         found_pred = True
