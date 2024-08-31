@@ -44,7 +44,7 @@ for doc in mm_docs:
     for sentence in doc['sentences']:
         num_spans_train += len(sentence['spans'])
         for span in sentence['spans']:
-            gold_labels_train.append(span['cui'])
+            gold_labels_train.append(span['cui'].lstrip('UMLS:'))
 print("Number of spans in train set:", num_spans_train)
 assert len(gold_labels_train) == num_spans_train
 print(gold_labels_train[:10])
