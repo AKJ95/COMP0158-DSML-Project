@@ -168,7 +168,7 @@ if __name__ == '__main__':
                     # print("This is counterexample embeddings")
                     # print(embedding_tokens + pred_entity_tokens)
                     toy_vec = toks2vecs((embedding_tokens + pred_entity_tokens)[:128])
-                    # print(toy_vec[:5])
+                    print(toy_vec[:10])
                     toy_vec = torch.from_numpy(toy_vec).float().unsqueeze(0)
                     toy_vec = toy_vec.to(device)
                     pred = model(toy_vec)
