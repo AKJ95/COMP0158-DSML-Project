@@ -25,13 +25,14 @@ def bio_tags_to_spans(tokens: list[str], bio_tags: list[str]) -> list[Span]:
             current_entity = tag[2:]
             start_idx = idx
         elif tag.startswith('I-'):
-            if current_entity is None:
-                start_idx = idx
-                current_entity = tag[2:]
-            elif current_entity != tag[2:]:
-                spans.append(Span(start_idx, idx, " ".join(tokens[start_idx:idx])))
-                current_entity = tag[2:]
-                start_idx = idx
+            pass
+            # if current_entity is None:
+            #     start_idx = idx
+            #     current_entity = tag[2:]
+            # elif current_entity != tag[2:]:
+            #     spans.append(Span(start_idx, idx, " ".join(tokens[start_idx:idx])))
+            #     current_entity = tag[2:]
+            #     start_idx = idx
         else:
             if current_entity is not None:
                 spans.append(Span(start_idx, idx, " ".join(tokens[start_idx:idx])))
