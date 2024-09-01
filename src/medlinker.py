@@ -203,7 +203,7 @@ class MedLinker(object):
             span_ctx_vec_tensor = span_ctx_vec_tensor.to(self.device)
             matches_ctx = self.cui_clf.predict(span_ctx_vec_tensor)
 
-        elif self.cui_vsm is not None:
+        if self.cui_vsm is not None:
             span_ctx_vec = norm(span_ctx_vec)
             vsm_matches_ctx = self.cui_vsm.most_similar(span_ctx_vec, threshold=0.5, topn=100)
 
