@@ -120,7 +120,7 @@ def update_obs(doc_idx, sent_idx, gold_spans, pred_spans, perf_ner, perf_st, per
             perf_st['fn'].add(gold_info)
 
         if gold_info not in perf_cui['tp'].union(perf_cui['fp']):
-            print(gold_info)
+            # print(gold_info)
             perf_cui['fn'].add(gold_info)
 
         store_results = True
@@ -178,8 +178,8 @@ if __name__ == '__main__':
     predict_sty, require_sty = False, False
     if mm_ann == 'cui':
         print("Predicting for CUIs...")
-        medlinker.load_cui_VSM(cui_vsm_path)
-        medlinker.load_cui_softmax_pt()
+        # medlinker.load_cui_VSM(cui_vsm_path)
+        # medlinker.load_cui_softmax_pt()
         # medlinker.load_cui_clf(cui_clf_path)
         # cui_val_path = 'models/Validators/mm_st21pv.lr_clf_cui.dev.joblib'
         # medlinker.load_cui_validator(cui_val_path, validator_thresh=0.75)
