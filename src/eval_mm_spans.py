@@ -182,7 +182,7 @@ if __name__ == '__main__':
         medlinker.load_cui_softmax_pt()
         # medlinker.load_cui_clf(cui_clf_path)
         # cui_val_path = 'models/Validators/mm_st21pv.lr_clf_cui.dev.joblib'
-        # medlinker.load_cui_validator(cui_val_path, validator_thresh=0.75)
+        medlinker.load_cui_validator(cui_val_path, validator_thresh=0.75)
 
         predict_cui, require_cui = True, True
 
