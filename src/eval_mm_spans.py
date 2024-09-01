@@ -143,7 +143,7 @@ def update_obs(doc_idx, sent_idx, gold_spans, pred_spans, perf_ner, perf_st, per
 
 if __name__ == '__main__':
 
-    use_gold_spans = True
+    use_gold_spans = False
     # mm_ann = 'sty'
     mm_ann = 'cui'
     # mm_ann = ''
@@ -200,7 +200,7 @@ if __name__ == '__main__':
     perf_st = {'tp': set(), 'fp': set(), 'fn': set()}
 
     logging.info('Loading MedMentions ...')
-    mm_docs = read_mm_converted('data/processed/mm_converted.test.json')
+    mm_docs = read_mm_converted('data/processed/bert_mm_converted.test.json')
 
     logging.info('Processing Instances ...')
     for doc_idx, doc in enumerate(mm_docs):
@@ -243,30 +243,30 @@ if __name__ == '__main__':
         print(perf_stats)
         print()
 
-    print("Analysing from stored results...")
-    tp = 0
-    fp = 0
-    fn = pred_labels.count(None)
-    for i in range(len(pred_labels)):
-        if pred_labels[i] is not None:
-            if pred_labels[i] == gold_labels[i]:
-                tp += 1
-            else:
-                fp += 1
-    print("TP:", tp)
-    print("FP:", fp)
-    print("FN:", fn)
-    p = tp / (tp + fp)
-    r = tp / (tp + fn)
-    f1 = 2 * ((p * r) / (p + r))
-    print("P:", p)
-    print("R:", r)
-    print("F1:", f1)
-
-    if gold_labels and pred_labels:
-        # Convert the list to a JSON string
-        results = {"gold_labels": gold_labels, "pred_labels": pred_labels}
-        results_str = json.dumps(results)
-        # Write the string to a file
-        with open('results/str_1nn_clf_avg.txt', 'w') as file:
-            file.write(results_str)
+    # print("Analysing from stored results...")
+    # tp = 0
+    # fp = 0
+    # fn = pred_labels.count(None)
+    # for i in range(len(pred_labels)):
+    #     if pred_labels[i] is not None:
+    #         if pred_labels[i] == gold_labels[i]:
+    #             tp += 1
+    #         else:
+    #             fp += 1
+    # print("TP:", tp)
+    # print("FP:", fp)
+    # print("FN:", fn)
+    # p = tp / (tp + fp)
+    # r = tp / (tp + fn)
+    # f1 = 2 * ((p * r) / (p + r))
+    # print("P:", p)
+    # print("R:", r)
+    # print("F1:", f1)
+    #
+    # if gold_labels and pred_labels:
+    #     # Convert the list to a JSON string
+    #     results = {"gold_labels": gold_labels, "pred_labels": pred_labels}
+    #     results_str = json.dumps(results)
+    #     # Write the string to a file
+    #     with open('results/str_1nn_clf_avg.txt', 'w') as file:
+    #         file.write(results_str)
