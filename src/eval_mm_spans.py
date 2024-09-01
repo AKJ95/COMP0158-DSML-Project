@@ -171,7 +171,7 @@ if __name__ == '__main__':
 
     print('Loading MedLinker ...')
     medlinker = MedLinker(medner, umls_kb)
-    # medlinker.load_string_matcher(ngram_db_path, ngram_map_path)
+    medlinker.load_string_matcher(ngram_db_path, ngram_map_path)
     # medlinker.exact_matcher = medner.exactmatch_ner
 
     predict_cui, require_cui = False, False
