@@ -171,7 +171,7 @@ if __name__ == '__main__':
 
     print('Loading MedLinker ...')
     medlinker = MedLinker(medner, umls_kb)
-    medlinker.load_string_matcher(ngram_db_path, ngram_map_path)
+    # medlinker.load_string_matcher(ngram_db_path, ngram_map_path)
     # medlinker.exact_matcher = medner.exactmatch_ner
 
     predict_cui, require_cui = False, False
@@ -179,7 +179,7 @@ if __name__ == '__main__':
     if mm_ann == 'cui':
         print("Predicting for CUIs...")
         medlinker.load_cui_VSM(cui_vsm_path)
-        # medlinker.load_cui_softmax_pt()
+        medlinker.load_cui_softmax_pt()
         # medlinker.load_cui_clf(cui_clf_path)
         # cui_val_path = 'models/Validators/mm_st21pv.lr_clf_cui.dev.joblib'
         # medlinker.load_cui_validator(cui_val_path, validator_thresh=0.75)
