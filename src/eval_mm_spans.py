@@ -181,7 +181,7 @@ if __name__ == '__main__':
         medlinker.load_cui_VSM(cui_vsm_path)
         medlinker.load_cui_softmax_pt()
         # medlinker.load_cui_clf(cui_clf_path)
-        medlinker.load_cui_validator(cui_val_path, validator_thresh=0.5)
+        medlinker.load_cui_validator(cui_val_path, validator_thresh=0.4)
 
         predict_cui, require_cui = True, True
 
