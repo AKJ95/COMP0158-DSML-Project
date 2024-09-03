@@ -178,7 +178,7 @@ if __name__ == '__main__':
     predict_sty, require_sty = False, False
     if mm_ann == 'cui':
         print("Predicting for CUIs...")
-        # medlinker.load_cui_VSM(cui_vsm_path)
+        medlinker.load_cui_VSM(cui_vsm_path)
         medlinker.load_cui_softmax_pt()
         # medlinker.load_cui_clf(cui_clf_path)
         medlinker.load_cui_validator(cui_val_path, validator_thresh=0.5)
