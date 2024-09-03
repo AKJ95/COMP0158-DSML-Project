@@ -143,7 +143,7 @@ def update_obs(doc_idx, sent_idx, gold_spans, pred_spans, perf_ner, perf_st, per
 
 if __name__ == '__main__':
 
-    use_gold_spans = True
+    use_gold_spans = False
     # mm_ann = 'sty'
     mm_ann = 'cui'
     # mm_ann = ''
