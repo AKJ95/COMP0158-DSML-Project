@@ -143,7 +143,7 @@ def update_obs(doc_idx, sent_idx, gold_spans, pred_spans, perf_ner, perf_st, per
 
 if __name__ == '__main__':
 
-    use_gold_spans = True
+    use_gold_spans = False
     # mm_ann = 'sty'
     mm_ann = 'cui'
     # mm_ann = ''
@@ -178,7 +178,7 @@ if __name__ == '__main__':
     predict_sty, require_sty = False, False
     if mm_ann == 'cui':
         print("Predicting for CUIs...")
-        medlinker.load_cui_VSM(cui_vsm_path)
+        # medlinker.load_cui_VSM(cui_vsm_path)
         # medlinker.load_cui_softmax_pt()
         # medlinker.load_cui_clf(cui_clf_path)
         # cui_val_path = 'models/Validators/mm_st21pv.lr_clf_cui.dev.joblib'
