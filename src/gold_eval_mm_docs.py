@@ -29,7 +29,7 @@ medner = NERComponent()
 print('Loading MedLinker ...')
 medlinker = MedLinker(medner, umls_kb)
 medlinker.load_string_matcher(ngram_db_path, ngram_map_path)
-# medlinker.load_cui_softmax_pt()
+medlinker.load_cui_softmax_pt()
 medlinker.load_cui_VSM(cui_vsm_path)
 
 
@@ -86,7 +86,7 @@ if __name__ == '__main__':
     perf_cui = {'tp': 0, 'fp': 0, 'fn': 0}
 
     logging.info('Loading MedMentions ...')
-    mm_docs = read_mm_converted('data/processed/mm_converted.dev.json')
+    mm_docs = read_mm_converted('data/processed/mm_converted.train.json')
 
     logging.info('Processing Instances ...')
     span_count = 0
@@ -205,7 +205,7 @@ if __name__ == '__main__':
     # Store the vectors and labels
     vector_np = np.vstack(vectors)
     labels_np = np.array(labels)
-    print(vector_np.shape)
-    print(labels_np.shape)
-    np.save('data/processed/x_encoder_vectors_2017_dev.npy', vector_np)
-    np.save('data/processed/x_encoder_labels_2017_dev.npy', labels_np)
+    # print(vector_np.shape)
+    # print(labels_np.shape)
+    np.save('data/processed/x_encoder_vectors_ens_train.npy', vector_np)
+    np.save('data/processed/x_encoder_labels_ens_train.npy', labels_np)
