@@ -29,8 +29,8 @@ medner = NERComponent()
 print('Loading MedLinker ...')
 medlinker = MedLinker(medner, umls_kb)
 medlinker.load_string_matcher(ngram_db_path, ngram_map_path)
-# medlinker.load_cui_softmax_pt()
-medlinker.load_cui_VSM(cui_vsm_path)
+medlinker.load_cui_softmax_pt()
+# medlinker.load_cui_VSM(cui_vsm_path)
 
 
 def read_mm_converted(mm_set_path):
@@ -146,7 +146,7 @@ if __name__ == '__main__':
                 gold_toy_vec = toks2vecs((embedding_tokens + gold_entity_tokens)[:128])
                 vectors.append(gold_toy_vec)
                 labels.append(1)
-                print(gold_toy_vec[:10])
+                # print(gold_toy_vec[:10])
 
                 span_count += 1
                 x_encoder_example_count += 1
@@ -171,7 +171,7 @@ if __name__ == '__main__':
                         # print("This is counterexample embeddings")
                         # print(embedding_tokens + pred_entity_tokens)
                         toy_vec = toks2vecs((embedding_tokens + pred_entity_tokens)[:128])
-                        print(toy_vec[:10])
+                        # print(toy_vec[:10])
                         vectors.append(toy_vec)
                         labels.append(0)
 
