@@ -34,14 +34,14 @@ medner = NERComponent()
 
 print('Loading MedLinker ...')
 medlinker = MedLinker(medner, umls_kb)
-# medlinker.load_string_matcher(ngram_db_path, ngram_map_path)
+medlinker.load_string_matcher(ngram_db_path, ngram_map_path)
 medlinker.load_cui_softmax_pt()
-# medlinker.load_cui_VSM(cui_vsm_path)
+medlinker.load_cui_VSM(cui_vsm_path)
 
 model = MLP()
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model = model.to(device)
-model.load_state_dict(torch.load('models/xencoder/x_encoder_model.pt'))
+model.load_state_dict(torch.load('models/xencoder/x_encoder_model_ens.pt'))
 model.eval()
 
 
@@ -126,7 +126,7 @@ if __name__ == '__main__':
             sent_preds = medlinker.predict(' '.join(gold_sent['tokens']),
                                            gold_tokens=gold_sent['tokens'],
                                            gold_spans=gold_spans,
-                                           top_n=1)
+                                           top_n=4)
             pred_reranked_entities = []
             for i in range(len(sent_preds['spans'])):
                 embedding_tokens = []
@@ -256,5 +256,5 @@ if __name__ == '__main__':
         results = {"gold_labels": gold_labels, "pred_labels": pred_labels}
         results_str = json.dumps(results)
         # Write the string to a file
-        with open('results/clf.txt', 'w') as file:
+        with open('results/ens_rerank.txt', 'w') as file:
             file.write(results_str)
