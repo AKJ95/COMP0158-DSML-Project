@@ -35,10 +35,10 @@ class MLP(nn.Module):
 
 
 if __name__ == '__main__':
-    x_encoder_vectors = np.load('data/processed/x_encoder_vectors_2017.npy')
-    x_encoder_labels = np.load('data/processed/x_encoder_labels_2017.npy')
-    x_encoder_vectors_dev = np.load('data/processed/x_encoder_vectors_2017_dev.npy')
-    x_encoder_labels_dev = np.load('data/processed/x_encoder_labels_2017_dev.npy')
+    x_encoder_vectors = np.load('data/processed/x_encoder_vectors_ens_train.npy')
+    x_encoder_labels = np.load('data/processed/x_encoder_labels_ens_train.npy')
+    x_encoder_vectors_dev = np.load('data/processed/x_encoder_vectors_ens_dev.npy')
+    x_encoder_labels_dev = np.load('data/processed/x_encoder_labels_ens_dev.npy')
 
 
 
@@ -189,7 +189,7 @@ if __name__ == '__main__':
         print(f'Label distribution: {1 - torch.sum(dev_labels)/len(dev_labels)}% are negative')
         if dev_loss < best_dev_loss:
             best_dev_loss = dev_loss
-            torch.save(model.state_dict(), 'models/xencoder/x_encoder_model.pt')
+            torch.save(model.state_dict(), 'models/xencoder/x_encoder_model_ens.pt')
 
     # plt.figure()
     # plt.plot(range(n_epochs), train_losses)
