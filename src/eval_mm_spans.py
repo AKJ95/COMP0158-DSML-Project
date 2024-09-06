@@ -1,8 +1,5 @@
 import json
 import logging
-import numpy as np
-
-# from matcher_exactmatch import WhitespaceTokenizer  # ???
 
 from umls import umls_kb_st21pv as umls_kb
 from NERComponent import NERComponent
@@ -166,8 +163,7 @@ if __name__ == '__main__':
     if mm_ann == 'cui':
         print("Predicting for CUIs...")
         # medlinker.load_cui_VSM(cui_vsm_path)
-        # medlinker.load_cui_softmax_pt()
-        # medlinker.load_cui_clf(cui_clf_path)
+        medlinker.load_cui_softmax_pt()
         # medlinker.load_cui_validator(cui_val_path, validator_thresh=0.5)
 
         predict_cui, require_cui = True, True
