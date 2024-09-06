@@ -250,5 +250,5 @@ if __name__ == '__main__':
         results = {"gold_labels": gold_labels, "pred_labels": pred_labels}
         results_str = json.dumps(results)
         # Write the string to a file
-        with open('results/str.txt', 'w') as file:
+        with open('results/str_clf.txt', 'w') as file:
             file.write(results_str)
