@@ -164,7 +164,7 @@ if __name__ == '__main__':
         print("Predicting for CUIs...")
         # medlinker.load_cui_VSM(cui_vsm_path)
         medlinker.load_cui_softmax_pt()
-        # medlinker.load_cui_validator(cui_val_path, validator_thresh=0.5)
+        medlinker.load_cui_validator(cui_val_path, validator_thresh=0.5)
 
         predict_cui, require_cui = True, True
 
@@ -250,5 +250,5 @@ if __name__ == '__main__':
         results = {"gold_labels": gold_labels, "pred_labels": pred_labels}
         results_str = json.dumps(results)
         # Write the string to a file
-        with open('results/str_clf.txt', 'w') as file:
+        with open('results/str_clf_ml.txt', 'w') as file:
             file.write(results_str)
