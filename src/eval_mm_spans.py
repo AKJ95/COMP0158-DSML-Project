@@ -149,39 +149,26 @@ if __name__ == '__main__':
     # mm_ann = ''
 
     # st21pv
-    cx_ner_path = 'models/ContextualNER/mm_st21pv_SCIBERT_uncased/'
-    em_ner_path = 'models/ExactMatchNER/umls.2017AA.active.st21pv.nerfed_nlp_and_matcher.max3.p'
-    # ngram_db_path = 'models/SimString/umls.2017AA.active.st21pv.aliases.3gram.5toks.db'
-    # ngram_map_path = 'models/SimString/umls.2017AA.active.st21pv.aliases.5toks.map'
     ngram_db_path = 'data/processed/umls.2017AA.active.st21pv.aliases.3gram.5toks.db'
     ngram_map_path = 'data/processed/umls.2017AA.active.st21pv.aliases.5toks.map'
-    st_vsm_path = 'models/VSMs/mm_st21pv.sts_anns.scibert_scivocab_uncased.vecs'
-    # cui_vsm_path = 'models/VSMs/mm_st21pv.cuis.scibert_scivocab_uncased.vecs'
-    # 1-NN Classifier
     cui_vsm_path = 'data/processed/mm_st21pv.cuis.scibert_scivocab_uncased.vecs'
-    cui_def_vsm_path = 'data/processed/umls.2024AA.active.st21pv.scibert_scivocab_uncased.cuis.vecs'
-    cui_idx_path = 'models/VSMs/umls.2017AA.active.st21pv.scibert_scivocab_uncased.cuis.index'
-    cui_lbs_path = 'models/VSMs/umls.2017AA.active.st21pv.scibert_scivocab_uncased.cuis.labels'
     cui_val_path = 'models/Validators/mm_st21pv.lr_clf_cui.final.joblib'
 
     print('Loading MedNER ...')
     medner = NERComponent()
-    # medner.load_exactmatch_ner(em_ner_path)
-    # medner.load_contextual_ner(cx_ner_path, ws_tokenizer=True)
 
     print('Loading MedLinker ...')
     medlinker = MedLinker(medner, umls_kb)
     medlinker.load_string_matcher(ngram_db_path, ngram_map_path)
-    # medlinker.exact_matcher = medner.exactmatch_ner
 
     predict_cui, require_cui = False, False
     predict_sty, require_sty = False, False
     if mm_ann == 'cui':
         print("Predicting for CUIs...")
         # medlinker.load_cui_VSM(cui_vsm_path)
-        medlinker.load_cui_softmax_pt()
+        # medlinker.load_cui_softmax_pt()
         # medlinker.load_cui_clf(cui_clf_path)
-        medlinker.load_cui_validator(cui_val_path, validator_thresh=0.5)
+        # medlinker.load_cui_validator(cui_val_path, validator_thresh=0.5)
 
         predict_cui, require_cui = True, True
 
@@ -242,30 +229,30 @@ if __name__ == '__main__':
         print(perf_stats)
         print()
 
-    # print("Analysing from stored results...")
-    # tp = 0
-    # fp = 0
-    # fn = pred_labels.count(None)
-    # for i in range(len(pred_labels)):
-    #     if pred_labels[i] is not None:
-    #         if pred_labels[i] == gold_labels[i]:
-    #             tp += 1
-    #         else:
-    #             fp += 1
-    # print("TP:", tp)
-    # print("FP:", fp)
-    # print("FN:", fn)
-    # p = tp / (tp + fp)
-    # r = tp / (tp + fn)
-    # f1 = 2 * ((p * r) / (p + r))
-    # print("P:", p)
-    # print("R:", r)
-    # print("F1:", f1)
-    #
-    # if gold_labels and pred_labels:
-    #     # Convert the list to a JSON string
-    #     results = {"gold_labels": gold_labels, "pred_labels": pred_labels}
-    #     results_str = json.dumps(results)
-    #     # Write the string to a file
-    #     with open('results/str_1nn_clf_avg.txt', 'w') as file:
-    #         file.write(results_str)
+    print("Analysing from stored results...")
+    tp = 0
+    fp = 0
+    fn = pred_labels.count(None)
+    for i in range(len(pred_labels)):
+        if pred_labels[i] is not None:
+            if pred_labels[i] == gold_labels[i]:
+                tp += 1
+            else:
+                fp += 1
+    print("TP:", tp)
+    print("FP:", fp)
+    print("FN:", fn)
+    p = tp / (tp + fp)
+    r = tp / (tp + fn)
+    f1 = 2 * ((p * r) / (p + r))
+    print("P:", p)
+    print("R:", r)
+    print("F1:", f1)
+
+    if gold_labels and pred_labels:
+        # Convert the list to a JSON string
+        results = {"gold_labels": gold_labels, "pred_labels": pred_labels}
+        results_str = json.dumps(results)
+        # Write the string to a file
+        with open('results/str.txt', 'w') as file:
+            file.write(results_str)
