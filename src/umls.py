@@ -60,11 +60,11 @@ class UMLS_KB(object):
         s += 'Types: %s\n' % '; '.join(cui_info['STY'])
         print(s)
 
-umls_kb_st21pv = UMLS_KB('umls.2024AA.active.st21pv')
-umls_kb_full = UMLS_KB('umls.2024AA.active.full')
+# umls_kb_st21pv = UMLS_KB('umls.2024AA.active.st21pv')
+# umls_kb_full = UMLS_KB('umls.2024AA.active.full')
 umls_kb_st21pv_2017 = UMLS_KB('umls.2017AA.active.st21pv')
 umls_kb_full_2017 = UMLS_KB('umls.2017AA.active.full')
 
 
 if __name__ == '__main__':
-    umls_kb_st21pv.pprint('C0001097')
+    umls_kb_st21pv_2017.pprint('C0001097')
