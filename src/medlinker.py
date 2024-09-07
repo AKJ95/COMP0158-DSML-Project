@@ -208,10 +208,10 @@ class MedLinker(object):
             vsm_matches_ctx = self.cui_vsm.most_similar(span_ctx_vec, threshold=0.5, topn=100)
 
         scores_str, scores_ctx, scores_vsm = dict(matches_str), dict(matches_ctx), dict(vsm_matches_ctx)
-        # matches = {cui: max(scores_str.get(cui, 0), (scores_ctx.get(cui, 0) + scores_vsm.get(cui, 0)) / 2)
-        #            for cui in scores_str.keys() | scores_ctx.keys() | scores_vsm.keys()}
-        matches = {cui: max(scores_str.get(cui, 0), scores_ctx.get(cui, 0), scores_vsm.get(cui, 0))
+        matches = {cui: max(scores_str.get(cui, 0), (scores_ctx.get(cui, 0) + scores_vsm.get(cui, 0)) / 2)
                    for cui in scores_str.keys() | scores_ctx.keys() | scores_vsm.keys()}
+        # matches = {cui: max(scores_str.get(cui, 0), scores_ctx.get(cui, 0), scores_vsm.get(cui, 0))
+        #            for cui in scores_str.keys() | scores_ctx.keys() | scores_vsm.keys()}
         matches = sorted(matches.items(), key=lambda x: x[1], reverse=True)
         if (self.cui_validator is not None) and (len(matches) > 0):
             pred_valid = self.validate_cui_pred(matches_str, scores_str,
