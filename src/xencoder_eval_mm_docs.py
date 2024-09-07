@@ -1,13 +1,12 @@
 import json
 import logging
 
-import numpy as np
 import spacy
 
 from NERComponent import NERComponent
 from medlinker import MedLinker
 from pytt_hf_custom_tokenizer import toks2vecs
-from umls import umls_kb_full as umls_kb
+from umls import umls_kb_full_2017 as umls_kb
 from train_x_encoder import MLP
 import torch
 
