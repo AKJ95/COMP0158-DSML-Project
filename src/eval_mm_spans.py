@@ -84,7 +84,7 @@ def update_obs(doc_idx, sent_idx, gold_spans, pred_spans, perf_ner, perf_st, per
                         matched_st = True  # matched st & NER
 
                 if pred_span['cui'] is not None:
-                    gold_span['cui'] = gold_span['cui'].lstrip('UMLS:')  # maybe fix in dataset...
+                    gold_span['cui'] = gold_span['cui'].lstrip('UMLS:')
                     if pred_span['cui'][0][0] == gold_span['cui']:
                         matched_cui = True  # matched cui & NER
 
@@ -123,7 +123,7 @@ def update_obs(doc_idx, sent_idx, gold_spans, pred_spans, perf_ner, perf_st, per
         store_results = True
         if use_gold_spans and store_results:
             found_pred = False
-            gold_labels.append(gold_span['cui'])
+            gold_labels.append(gold_span['cui'].lstrip('UMLS:'))
             for pred_span in pred_spans:
                 pred_start, pred_end = pred_span['start'], pred_span['end']
                 pred_info = (doc_idx, sent_idx, pred_start, pred_end)
@@ -163,8 +163,8 @@ if __name__ == '__main__':
     if mm_ann == 'cui':
         print("Predicting for CUIs...")
         # medlinker.load_cui_VSM(cui_vsm_path)
-        medlinker.load_cui_softmax_pt()
-        medlinker.load_cui_validator(cui_val_path, validator_thresh=0.5)
+        # medlinker.load_cui_softmax_pt()
+        # medlinker.load_cui_validator(cui_val_path, validator_thresh=0.5)
 
         predict_cui, require_cui = True, True
 
@@ -250,5 +250,5 @@ if __name__ == '__main__':
         results = {"gold_labels": gold_labels, "pred_labels": pred_labels}
         results_str = json.dumps(results)
         # Write the string to a file
-        with open('results/str_clf_ml.txt', 'w') as file:
+        with open('results/str.txt', 'w') as file:
             file.write(results_str)
