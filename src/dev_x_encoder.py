@@ -35,8 +35,8 @@ class MLP(nn.Module):
 if __name__ == '__main__':
     x_encoder_vectors = np.load('data/processed/x_encoder_vectors_ens_train.npy')
     x_encoder_labels = np.load('data/processed/x_encoder_labels_ens_train.npy')
-    x_encoder_vectors_dev = np.load('data/processed/x_encoder_vectors_ens_dev.npy')
-    x_encoder_labels_dev = np.load('data/processed/x_encoder_labels_ens_dev.npy')
+    x_encoder_vectors_dev = np.load('data/processed/x_encoder_vectors_ens_test.npy')
+    x_encoder_labels_dev = np.load('data/processed/x_encoder_labels_ens_test.npy')
 
     # Convert numpy arrays to PyTorch tensors
     x_encoder_vectors = torch.from_numpy(x_encoder_vectors).float()
@@ -104,7 +104,7 @@ if __name__ == '__main__':
     dev_loss = dev_loss / len(dev_loader.dataset)
     dev_preds = torch.from_numpy(dev_preds)
     dev_labels = torch.from_numpy(dev_labels).int()
-    threshold = 0.7
+    threshold = 0.8
     accuracy = BinaryAccuracy(threshold=threshold)
     precision = BinaryPrecision(threshold=threshold)
     recall = BinaryRecall(threshold=threshold)
