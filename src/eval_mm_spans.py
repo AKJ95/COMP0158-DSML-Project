@@ -1,7 +1,7 @@
 import json
 import logging
 
-from umls import umls_kb_st21pv as umls_kb
+from umls import umls_kb_st21pv_2017 as umls_kb
 from NERComponent import NERComponent
 from medlinker import MedLinker
 
