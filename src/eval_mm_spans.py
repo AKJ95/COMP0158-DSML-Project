@@ -156,13 +156,13 @@ if __name__ == '__main__':
 
     print('Loading MedLinker ...')
     medlinker = MedLinker(medner, umls_kb)
-    medlinker.load_string_matcher(ngram_db_path, ngram_map_path)
+    # medlinker.load_string_matcher(ngram_db_path, ngram_map_path)
 
     predict_cui, require_cui = False, False
     predict_sty, require_sty = False, False
     if mm_ann == 'cui':
         print("Predicting for CUIs...")
-        # medlinker.load_cui_VSM(cui_vsm_path)
+        medlinker.load_cui_VSM(cui_vsm_path)
         # medlinker.load_cui_softmax_pt()
         # medlinker.load_cui_validator(cui_val_path, validator_thresh=0.5)
 
@@ -250,5 +250,5 @@ if __name__ == '__main__':
         results = {"gold_labels": gold_labels, "pred_labels": pred_labels}
         results_str = json.dumps(results)
         # Write the string to a file
-        with open('results/str.txt', 'w') as file:
+        with open('results/1nn.txt', 'w') as file:
             file.write(results_str)
