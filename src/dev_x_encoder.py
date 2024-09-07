@@ -1,10 +1,8 @@
-import matplotlib.pyplot as plt
 import numpy as np
 import torch
 from torch import nn
 from torch.utils.data import Dataset
 from torch.utils.data import DataLoader
-from torch import optim
 from torcheval.metrics import BinaryAccuracy, BinaryPrecision, BinaryRecall
 
 
@@ -35,10 +33,10 @@ class MLP(nn.Module):
 
 
 if __name__ == '__main__':
-    x_encoder_vectors = np.load('data/processed/x_encoder_vectors.npy')
-    x_encoder_labels = np.load('data/processed/x_encoder_labels.npy')
-    x_encoder_vectors_dev = np.load('data/processed/ordered_x_encoder_vectors_dev.npy')
-    x_encoder_labels_dev = np.load('data/processed/ordered_x_encoder_labels_dev.npy')
+    x_encoder_vectors = np.load('data/processed/x_encoder_vectors_ens_train.npy')
+    x_encoder_labels = np.load('data/processed/x_encoder_labels_ens_train.npy')
+    x_encoder_vectors_dev = np.load('data/processed/x_encoder_vectors_ens_dev.npy')
+    x_encoder_labels_dev = np.load('data/processed/x_encoder_labels_ens_dev.npy')
 
     # Convert numpy arrays to PyTorch tensors
     x_encoder_vectors = torch.from_numpy(x_encoder_vectors).float()
@@ -64,7 +62,7 @@ if __name__ == '__main__':
     # Move the model to the device
     model = model.to(device)
 
-    model.load_state_dict(torch.load('models/xencoder/x_encoder_model.pt'))
+    model.load_state_dict(torch.load('models/xencoder/x_encoder_model_ens.pt'))
 
     best_dev_loss = np.inf
 
@@ -103,7 +101,6 @@ if __name__ == '__main__':
             current_correct_prob = 0.0
             max_probability = 0.0
 
-    print(f'Correct count: {correct_count}/{mention_count} = {correct_count/mention_count*100}%')
     dev_loss = dev_loss / len(dev_loader.dataset)
     dev_preds = torch.from_numpy(dev_preds)
     dev_labels = torch.from_numpy(dev_labels).int()
@@ -119,13 +116,3 @@ if __name__ == '__main__':
     print(f'Validation Recall: {recall.compute()}')
     print(f'Validation Loss: {dev_loss}')
     print(f'Label distribution: {1 - torch.sum(dev_labels)/len(dev_labels)}% are negative')
-    # if dev_loss < best_dev_loss:
-    #     best_dev_loss = dev_loss
-    #     torch.save(model.state_dict(), 'models/xencoder/x_encoder_model.pt')
-
-    # plt.figure()
-    # plt.plot(range(n_epochs), train_losses)
-    # plt.xlabel('Epoch')
-    # plt.ylabel('Training Loss')
-    # plt.title('Training Loss over Time')
-    # plt.savefig('data/processed/x_encoder_training_loss.png')
