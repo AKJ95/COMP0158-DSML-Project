@@ -71,7 +71,7 @@ if __name__ == '__main__':
 
     # Define the loss function and the optimizer
     criterion = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([4.09]).to(device))
-    optimizer = optim.Adam(model.parameters(), lr=0.0001)
+    optimizer = optim.Adam(model.parameters(), lr=0.00001)
 
     # Define the number of epochs
     n_epochs = 30
@@ -175,7 +175,7 @@ if __name__ == '__main__':
         dev_loss = dev_loss / len(dev_loader.dataset)
         dev_preds = torch.from_numpy(dev_preds)
         dev_labels = torch.from_numpy(dev_labels).int()
-        threshold = 0.7
+        threshold = 0.75
         accuracy = BinaryAccuracy(threshold=threshold)
         precision = BinaryPrecision(threshold=threshold)
         recall = BinaryRecall(threshold=threshold)
