@@ -126,7 +126,7 @@ if __name__ == "__main__":
         model, optimizer = train(model, training_loader, optimizer, device, config.max_grad_norm, id2label)
         labels, predictions, ner_labels, ner_preds, entity_level_performance, valid_loss = valid(model, dev_loader, device, id2label)
         if valid_loss < best_loss:
-            torch.save(model.state_dict(), config.model_path)
+            # torch.save(model.state_dict(), config.model_path)
             best_loss = valid_loss
             best_epoch = epoch + 1
     print("-" * 100)
@@ -139,7 +139,7 @@ if __name__ == "__main__":
     _ = valid(model, test_loader, device, id2label)
     end = time.time()
     print(f"Training took {(end - start) / 60:.1f} minutes.")
-    print("Saving model and tokenizer...")
-    torch.save(model.state_dict(), config.model_path)
-    tokenizer.save_pretrained(config.tokenizer_path)
-    print("Model saved.")
+    # print("Saving model and tokenizer...")
+    # torch.save(model.state_dict(), config.model_path)
+    # tokenizer.save_pretrained(config.tokenizer_path)
+    # print("Model saved.")

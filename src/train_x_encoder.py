@@ -189,7 +189,7 @@ if __name__ == '__main__':
         print(f'Label distribution: {1 - torch.sum(dev_labels)/len(dev_labels)}% are negative')
         if dev_loss < best_dev_loss:
             best_dev_loss = dev_loss
-            torch.save(model.state_dict(), 'models/xencoder/x_encoder_model_ens.pt')
+            # torch.save(model.state_dict(), 'models/xencoder/x_encoder_model_ens.pt')
 
     # plt.figure()
     # plt.plot(range(n_epochs), train_losses)
