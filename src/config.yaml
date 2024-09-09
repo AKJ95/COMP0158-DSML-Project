@@ -25,7 +25,7 @@ ner:
   batch_size: 64
   max_len: 128
   num_epochs: 10
-  learning_rate: 0.00001
+  learning_rate: 0.0001
   max_grad_norm: 1.0
   num_workers: 24
   train_shuffle: True
