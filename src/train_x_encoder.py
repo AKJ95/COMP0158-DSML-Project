@@ -70,8 +70,8 @@ if __name__ == '__main__':
     model.train()
 
     # Define the loss function and the optimizer
-    criterion = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([4.08]).to(device))
-    optimizer = optim.Adam(model.parameters(), lr=0.0001)
+    criterion = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([4.09]).to(device))
+    optimizer = optim.Adam(model.parameters(), lr=0.001)
 
     # Define the number of epochs
     n_epochs = 30
