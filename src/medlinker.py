@@ -12,10 +12,17 @@ from NERComponent import NERComponent
 from softmax_pytorch import SoftmaxClassifier
 
 
+# Helper normalisation function
 def norm(v):
+    """
+    Normalise a vector
+    :param v: vector
+    :return: normalised vector
+    """
     return v / np.linalg.norm(v)
 
 
+# Helper class representing a document with its detected spans
 class MedLinkerDoc(object):
 
     def __init__(self, text, tokens, spans):
@@ -26,12 +33,12 @@ class MedLinkerDoc(object):
         self.vectors = []
 
     def set_contextual_vectors(self):
-        #
+        # Set contextual embeddings for all its tokens
         self.vectors = toks2vecs(self.tokens, return_tokens=False)
         assert len(self.vectors) == len(self.tokens)
 
     def get_span_vector(self, span_start, span_end, normalize=False):
-        #
+        # Get the contextual embeddings for a given span by averaging the embeddings of the tokens within the span.
         span_vecs = [self.vectors[i] for i in range(span_start, span_end)]
         span_vec = np.array(span_vecs).mean(axis=0)
 
@@ -41,7 +48,7 @@ class MedLinkerDoc(object):
         return span_vec
 
     def get_spans(self, include_vectors=True, normalize=False):
-        #
+        # Returns all spans in the document with their vectors if requested.
         output_spans = []
 
         for span_start, span_end in self.spans:
@@ -54,7 +61,11 @@ class MedLinkerDoc(object):
         return output_spans
 
 
+# Full MedLinker pipeline
 class MedLinker(object):
+    """
+    Full MedLinker pipeline
+    """
 
     def __init__(self, medner, umls_kb):
         #
@@ -78,6 +89,9 @@ class MedLinker(object):
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     def load_cui_softmax_pt(self):
+        """
+        Load the MLP classifier.
+        """
         self.cui_clf = SoftmaxClassifier(18426,
                                          'models/Classifiers/softmax.cui.map',
                                          'models/Classifiers/softmax.cui.pt')
@@ -88,27 +102,41 @@ class MedLinker(object):
         self.st_vsm = VSM(st_vsm_path)
 
     def load_cui_VSM(self, cui_vecs_path):
-        #
+        """
+        Load the 1-NN classifier.
+        :param cui_vecs_path: Filepath to the pre-computed entity embeddings.
+        """
         self.cui_vsm = VSM(cui_vecs_path)
 
     def load_cui_validator(self, clf_path, validator_thresh=0.5):
+        """
+        Load the logistic regression meta learner.
+        :param clf_path: Model checkpoint of the meta learner.
+        :param validator_thresh: Decision threshold.
+        """
         #
         self.cui_validator = joblib.load(clf_path)
         self.cui_validator_thresh = validator_thresh
 
     def load_string_matcher(self, ngram_db_path, ngram_map_path):
+        """
+        Load the string matcher.
+        :param ngram_db_path: Filepath to database matching entity aliases/synonyms to their n-gram features.
+        :param ngram_map_path: Filepath to mapping file of entity aliases/synonyms to their CUIs.
+        """
         self.string_matcher = SimString_UMLS(self.umls_kb, ngram_db_path, ngram_map_path)
-
-    def load_exact_matcher(self, em_path):
-        # TO-DO
-        pass
 
     def predict(self, sentence,
                 gold_tokens=None, gold_spans=None,
                 predict_cui=True, predict_sty=False,
                 require_cui=True, require_sty=False,
                 top_n=1):
-        #
+        """
+        Predict CUIs given a sentence with detected spans or gold spans. Can return multiple predictions depending on
+        the top_n parameter.
+        """
+
+        # Get the detected spans using the MD component or the gold spans of the sentence
         if (gold_tokens is not None) and (gold_spans is not None):
             tokens, spans = gold_tokens, gold_spans
         else:
@@ -118,21 +146,18 @@ class MedLinker(object):
             for span in ner_prediction.spans:
                 spans.append((span.start, span.end))
 
-            # Uncomment to log NER predictions
-            # print(ner_prediction)
-            # print(tokens)
-            # print(spans)
-            # tokens, spans = self.medner.predict(sentence)
-
+        # Create the helper MedLinkerDoc object, containing all sentences in the document with their spans.
         doc = MedLinkerDoc(sentence, tokens, spans)
         doc.set_contextual_vectors()
 
         r = {'sentence': sentence, 'tokens': tokens, 'spans': []}
-        # for span_start, span_end, span_vec in doc.get_spans(include_vectors=True, normalize=True):
+
+        # Iterate through each span in the document and predict their CUIs.
         for span_start, span_end, span_vec in doc.get_spans(include_vectors=True, normalize=False):
             span_str = ' '.join(doc.tokens[span_start:span_end])
             span_info = {'start': span_start, 'end': span_end, 'text': span_str, 'st': None, 'cui': []}
 
+            # Predict the CUI for the current span
             if predict_cui:
                 span_cuis = self.match_cui(span_str, span_vec)
 
@@ -190,7 +215,7 @@ class MedLinker(object):
             return None
 
     def match_cui(self, span_str, span_ctx_vec):
-        #
+        # Returns all entities matched by the string matcher with their scores. (Above the 0.5 score threshold)
         matches_str = []
         if self.string_matcher is not None:
             matches_str = self.string_matcher.match_cuis(span_str.lower())
@@ -200,20 +225,33 @@ class MedLinker(object):
 
         matches_ctx = []
         vsm_matches_ctx = []
+
+        # Returns all entities matched by the MLP classifier with their scores. (Above the 0.5 score threshold)
         if self.cui_clf is not None:
             span_ctx_vec_tensor = torch.unsqueeze(torch.from_numpy(span_ctx_vec), 0)
             span_ctx_vec_tensor = span_ctx_vec_tensor.to(self.device)
             matches_ctx = self.cui_clf.predict(span_ctx_vec_tensor)
 
+        # Returns all entities matched by the 1-NN classifier with their scores. (Above the 0.5 score threshold)
         if self.cui_vsm is not None:
             span_ctx_vec = norm(span_ctx_vec)
             vsm_matches_ctx = self.cui_vsm.most_similar(span_ctx_vec, threshold=0.5, topn=100)
 
         scores_str, scores_ctx, scores_vsm = dict(matches_str), dict(matches_ctx), dict(vsm_matches_ctx)
+
+        # Combine the scores from all three classifiers with some ensemble scheme. Comment and uncomment to choose the
+        # ensemble scheme wanted.
+
+        # This scheme is the String Matcher + 1-NN Classifier + MLP Classifier (averag method)
         # matches = {cui: max(scores_str.get(cui, 0), (scores_ctx.get(cui, 0) + scores_vsm.get(cui, 0)) / 2)
         #            for cui in scores_str.keys() | scores_ctx.keys() | scores_vsm.keys()}
+
+        # This scheme is used by all other configurations, which scores entity by the maximum score from any one of the
+        # classifiers that are used in the configuration.
         matches = {cui: max(scores_str.get(cui, 0), scores_ctx.get(cui, 0), scores_vsm.get(cui, 0))
                    for cui in scores_str.keys() | scores_ctx.keys() | scores_vsm.keys()}
+
+        # Rank all matches
         matches = sorted(matches.items(), key=lambda x: x[1], reverse=True)
         if (self.cui_validator is not None) and (len(matches) > 0):
             pred_valid = self.validate_cui_pred(matches_str, scores_str,
@@ -223,12 +261,16 @@ class MedLinker(object):
             if pred_valid == False:
                 matches = {}
 
+        # Return all matches
         if len(matches) > 0:
             return matches
         else:
             return None
 
     def validate_cui_pred(self, matches_str, scores_str, matches_vsm, scores_vsm, matches_joint):
+        """
+        Accept or reject the CUI prediction based on the meta learner.
+        """
 
         matchers_agree = False
         if len(matches_str) > 0 and len(matches_vsm) > 0:
@@ -288,41 +330,4 @@ class MedLinker(object):
 
 
 if __name__ == '__main__':
-    # from medner import MedNER
-    from umls import umls_kb_st21pv as umls_kb
-
-    # default models, best configuration from paper
-    # to experiment with different configurations, just comment/uncomment components
-
-    # cx_ner_path = 'models/ContextualNER/mm_st21pv_SCIBERT_uncased/'
-    # em_ner_path = 'models/ExactMatchNER/umls.2017AA.active.st21pv.nerfed_nlp_and_matcher.max3.p'
-    ngram_db_path = 'data/processed/umls.2024AA.active.st21pv.aliases.3gram.5toks.db'
-    ngram_map_path = 'data/processed/umls.2024AA.active.st21pv.aliases.5toks.map'
-    # st_vsm_path = 'models/VSMs/mm_st21pv.sts_anns.scibert_scivocab_uncased.vecs'
-    cui_vsm_path = 'data/processed/mm_st21pv.cuis.scibert_scivocab_uncased.vecs'
-    cui_clf_path = 'models/Classifiers/softmax.cui.h5'
-    # sty_clf_path = 'models/Classifiers/softmax.sty.h5'
-    # cui_val_path = 'models/Validators/mm_st21pv.lr_clf_cui.dev.joblib'
-    # sty_val_path = 'models/Validators/mm_st21pv.lr_clf_sty.dev.joblib'
-
-    print('Loading MedNER ...')
-    # medner = MedNER(umls_kb)
-    # medner.load_contextual_ner(cx_ner_path)
-    medner = NERComponent()
-
-    print('Loading MedLinker ...')
-    medlinker = MedLinker(medner, umls_kb)
-
-    medlinker.load_string_matcher(ngram_db_path, ngram_map_path)  # simstring approximate string matching
-
-    # medlinker.load_st_VSM(st_vsm_path)
-    # medlinker.load_sty_clf(sty_clf_path)
-    # medlinker.load_st_validator(sty_val_path, validator_thresh=0.45)
-
-    medlinker.load_cui_VSM(cui_vsm_path)
-    # medlinker.load_cui_clf(cui_clf_path)
-    # medlinker.load_cui_validator(cui_val_path, validator_thresh=0.70)
-
-    s = 'Since 9/11, military service in the United States has been characterized by wartime deployments and reintegration challenges that contribute to a context of stress for military families.'
-    r = medlinker.predict(s, predict_cui=True, predict_sty=False)
-    print(r)
+    pass
