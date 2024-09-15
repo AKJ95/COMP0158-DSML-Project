@@ -1,3 +1,5 @@
+# Code from [1] is consulted and adopted.
+
 import json
 import logging
 
@@ -56,37 +58,41 @@ def get_ctx_vec(sent_ctx_out, sent_tokens, span_idx_start, span_idx_end, normali
 
 if __name__ == '__main__':
 
-    # train_docs = list(iterate_docs_converted('data/MedMentions/full/custom/mm_converted.train.json'))
-    # train_docs = list(iterate_docs_converted('data/MedMentions/st21pv/custom/mm_converted.train.json'))
+    # Load MedMentions ST21pv training set.
     train_docs = list(iterate_docs_converted('data/processed/mm_converted.train.json'))
 
     skipped_anns = 0
     concept_vecs = {}
     st_ann_vecs = {}  # pooled over all annotations belonging to the same ST
 
+    # Iterate through MedMentions ST21pv training set.
     for doc_idx, doc in enumerate(train_docs):
 
         logging.info('#Docs:%d #Concepts:%d #Types:%d #Skipped Ann.:%d' % (
         doc_idx, len(concept_vecs), len(st_ann_vecs), skipped_anns))
 
-        # if doc_idx == 10:
-        #     break
-
+        # Iterate through each sentence
         for sent in doc['sentences']:
-            print(sent['tokens'])
+
+            # Get contextual embeddings for each token in the sentence.
             sent_ctx_out = toks2vecs(sent['tokens'])
 
+            # Iterate through the gold mention spans in the sentence.
             for ent in sent['spans']:
+
+                # Extract the entity label and the contextual embedding of the span.
                 ent['cui'] = ent['cui'].lstrip('UMLS:')
                 span_ctx_vec = get_ctx_vec(sent_ctx_out, sent['tokens'], ent['start'], ent['end'], normalize=False)
 
+                # Skip annotations if the contextual embedding is invalid.
                 if np.isnan(span_ctx_vec.sum()) or span_ctx_vec.sum() == 0:
                     continue
 
-                if np.sum(span_ctx_vec) == 0:  # beyond max_seq_len
+                if np.sum(span_ctx_vec) == 0:
                     skipped_anns += 1
                     continue
 
+                # Keep track of the contextual embedding sum for each entity and the number of spans for each entity.
                 if ent['cui'] in concept_vecs:
                     concept_vecs[ent['cui']]['vecs_sum'] += span_ctx_vec
                     concept_vecs[ent['cui']]['vecs_num'] += 1
@@ -101,11 +107,11 @@ if __name__ == '__main__':
 
     logging.info('Skipped %d annotations' % skipped_anns)
 
+    # Store pre-computed entity embeddings.
     logging.info('Writing Concept Vectors ...')
-    # vecs_path = 'mm_full.cuis.%s.vecs' % PYTT_CONFIG['name']
-    # vecs_path = 'mm_st21pv.cuis.%s.vecs' % PYTT_CONFIG['name']
     vecs_path = 'data/processed/mm_st21pv.cuis.%s.vecs' % PYTT_CONFIG['name']
     with open(vecs_path, 'w') as vecs_f:
+        # For each entity, compute the entity embedding by averaging the sum of all its embeddings.
         for cui, vecs_info in concept_vecs.items():
             vecs_info['vecs_avg'] = vecs_info['vecs_sum'] / vecs_info['vecs_num']
             vec_str = ' '.join([str(round(v, 6)) for v in vecs_info['vecs_avg'].tolist()])

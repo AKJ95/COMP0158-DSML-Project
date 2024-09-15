@@ -1,3 +1,5 @@
+# Code from [2] is consulted and adopted.
+
 # Import built-in libraries
 import csv
 from enum import Enum

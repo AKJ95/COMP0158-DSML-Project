@@ -1,3 +1,5 @@
+# Code from [1] is consulted and adopted.
+
 import logging
 
 import torch as th

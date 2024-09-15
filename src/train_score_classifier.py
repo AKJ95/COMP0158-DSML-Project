@@ -1,3 +1,6 @@
+# Code from [1] is consulted and adopted.
+
+
 import json
 import logging
 import numpy as np
@@ -20,15 +23,11 @@ logging.basicConfig(level=logging.DEBUG,
 logging.info('Loading MedLinker ...')
 
 # st21pv
-from umls import umls_kb_st21pv as umls_kb
+from umls import umls_kb_st21pv_2017 as umls_kb
 
 ngram_db_path = 'data/processed/umls.2017AA.active.st21pv.aliases.3gram.5toks.db'
 ngram_map_path = 'data/processed/umls.2017AA.active.st21pv.aliases.5toks.map'
 cui_vsm_path = 'models/VSMs/mm_st21pv.cuis.scibert_scivocab_uncased.vecs'
-# cui_idx_path = 'models/VSMs/umls.2024AA.active.st21pv.scibert_scivocab_uncased.cuis.index'
-# cui_lbs_path = 'models/VSMs/umls.2024AA.active.st21pv.scibert_scivocab_uncased.cuis.labels'
-# cui_clf_path = 'models/Classifiers/softmax.cui.h5'
-# sty_clf_path = 'models/Classifiers/softmax.sty.h5'
 
 print('Loading MedNER ...')
 medner = NERComponent()

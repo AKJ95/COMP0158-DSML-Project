@@ -1,6 +1,4 @@
-"""
-This script expects you've followed the instructions in https://github.com/chb/py-umls to install UMLS.
-"""
+# Code from [1] is consulted and adopted.
 
 import json
 from collections import Counter

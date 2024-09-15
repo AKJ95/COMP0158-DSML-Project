@@ -1,3 +1,6 @@
+# Code from [2] is consulted and adopted.
+
+
 # Load built-in libraries
 import time
 
