@@ -2,7 +2,8 @@
 This repository serves as the codebase for the COMP0158 DSML project module. The aim of the project is to
 investigate models and algorithms that facilitate named entity linking in biomedical texts.
 
-## Brief Overview of Source Code Files
+## Brief Overview of Project Files
+### Source Code Files
 All source code developed for this project is stored in the `src` directory and the `notebooks` directory. This section
 provides a brief overview of all source code files and JuPyter notebooks for inspection:
 - src
@@ -30,9 +31,27 @@ provides a brief overview of all source code files and JuPyter notebooks for ins
 - notebooks
     - `Precision_for_Infrequent_Entity_Analysis.ipynb`: Calculates the performance of MedLinker on infrequent entities.
 
+### Results Files
+In the `results` directory, there are multiple files containing the predictions made by different configurations of 
+MedLinker experimented as part of this study on the test set of MedMentions ST21pv. The name of the files is indicative
+of the specific configuration used to make these predictions.
+
+You can process the contents of these files with notebook `Precision_for_Infrequent_Entity_Analysis.ipynb` to examine
+performance of the performance of the configurations overall and on infrequent entities.
+
 ## Running the Code
 Due to the license of UMLS (that it cannot be redistributed by me), and the large sizes of the generated dataset and models used, it is not possible
 to share them in this repository. However, the logic of the code should be clear from the source code.
+
+### Installing Libraries
+In order to run all aspects of the code, please ensure all libraires specified in `requirements.txt` are installed by
+running `pip install -r requirements.txt`. In addition, please also install https://github.com/chb/py-umls, which is
+needed to process the UMLS ontology.
+
+### Storage Requirements
+In order to run all aspects of the code, it is recommended that you have at least 50GB of free storage space available.
+The full UMLS knowledge base takes up around 35GB. And the generated dataset and models of the project will take up the
+remaining space (approximately).
 
 ## References
 During the development of this project, the following resources were consulted and adapted where appropriate:
