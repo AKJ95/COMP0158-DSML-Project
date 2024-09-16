@@ -243,13 +243,13 @@ class MedLinker(object):
         # ensemble scheme wanted.
 
         # This scheme is the String Matcher + 1-NN Classifier + MLP Classifier (averag method)
-        # matches = {cui: max(scores_str.get(cui, 0), (scores_ctx.get(cui, 0) + scores_vsm.get(cui, 0)) / 2)
-        #            for cui in scores_str.keys() | scores_ctx.keys() | scores_vsm.keys()}
+        matches = {cui: max(scores_str.get(cui, 0), (scores_ctx.get(cui, 0) + scores_vsm.get(cui, 0)) / 2)
+                   for cui in scores_str.keys() | scores_ctx.keys() | scores_vsm.keys()}
 
         # This scheme is used by all other configurations, which scores entity by the maximum score from any one of the
         # classifiers that are used in the configuration.
-        matches = {cui: max(scores_str.get(cui, 0), scores_ctx.get(cui, 0), scores_vsm.get(cui, 0))
-                   for cui in scores_str.keys() | scores_ctx.keys() | scores_vsm.keys()}
+        # matches = {cui: max(scores_str.get(cui, 0), scores_ctx.get(cui, 0), scores_vsm.get(cui, 0))
+        #            for cui in scores_str.keys() | scores_ctx.keys() | scores_vsm.keys()}
 
         # Rank all matches
         matches = sorted(matches.items(), key=lambda x: x[1], reverse=True)
