@@ -49,7 +49,6 @@ model.load_state_dict(torch.load('models/xencoder/x_encoder_model_ens.pt'))
 model.eval()
 
 
-
 def read_mm_converted(mm_set_path):
     """
     Read the MedMentions dataset from a json file.
@@ -72,7 +71,7 @@ if __name__ == '__main__':
 
     # Keep track of key statistics
     logging.info('Processing Instances ...')
-    span_count = 0   # Obsolete
+    span_count = 0   # Number of predictions
     gold_span_count = 0  # Number of gold spans
     in_top_n_count = 0  # Number of instances where MedLinker correctly put the gold entity in the top n predictions
     skip_count = 0   # Obsolete
@@ -106,8 +105,9 @@ if __name__ == '__main__':
 
             pred_reranked_entities = []
 
-            # Iterate through the top 4 predictions
+            # Iterate through all spans again to make final prediction
             for i in range(len(sent_preds['spans'])):
+                # Construct mention tokens for the current span
                 embedding_tokens = []
                 embedding_tokens.extend(gold_sent['tokens'][:sent_preds['spans'][i]['start']])
                 embedding_tokens.append('[M_s]')
@@ -116,25 +116,18 @@ if __name__ == '__main__':
                 embedding_tokens.extend(gold_sent['tokens'][sent_preds['spans'][i]['end']:])
                 embedding_tokens.append('[SEP]')
 
-                # gold_entity_cui = gold_sent['spans'][i]['cui'].lstrip('UMLS:')
-                # gold_entity_kb = umls_kb.get_entity_by_cui(gold_sent['spans'][i]['cui'].lstrip('UMLS:'))
-                # gold_entity_name = gold_entity_kb['Name'] if gold_entity_kb else ' '.join(gold_sent['tokens'][sent_preds['spans'][i]['start']:sent_preds['spans'][i]['end']])
-                # if gold_entity_kb and gold_entity_kb['DEF']:
-                #     gold_entity_def = gold_entity_kb['DEF'][0]
-                # else:
-                #     gold_entity_def = gold_entity_name
-                #     skip_count += 1
-                #     x_encoder_skipped_count += 1
-                #
                 span_count += 1
-                # x_encoder_example_count += 1
                 max_score = 0.0
                 max_entity = None
+
+                # Iterate through the top 4 predictions of the current span.
                 for j in range(min(4, len(sent_preds['spans'][i]['cui']))):
+
+                    # Retrieve name and definition (if available) of the predicted entity from UMLS database
                     pred_entity_kb = umls_kb.get_entity_by_cui(sent_preds['spans'][i]['cui'][j][0])
                     pred_entity_name = pred_entity_kb['Name'] if pred_entity_kb else ''
 
-                    # x_encoder_example_count += 1
+                    # Construct entity tokens as specified in the thesis
                     pred_entity_name_tokens = [t.text.lower() for t in sci_nlp(pred_entity_name)]
                     pred_entity_tokens = []
                     if pred_entity_kb and pred_entity_kb['DEF']:
@@ -144,32 +137,30 @@ if __name__ == '__main__':
                     else:
                         x_encoder_skipped_count += 1
                         pred_entity_tokens = pred_entity_name_tokens + ['[ENT]'] + pred_entity_name_tokens
-                    # print(pred_entity_tokens)
-                    # print("This is counterexample embeddings")
-                    # print(embedding_tokens + pred_entity_tokens)
+
+                    # Construct combined mention-entity tokens to be passed into the cross-encoder as specified in the
+                    # thesis. And encode it.
                     toy_vec = toks2vecs((embedding_tokens + pred_entity_tokens)[:128])
-                    # print(toy_vec[:10])
                     toy_vec = torch.from_numpy(toy_vec).float().unsqueeze(0)
                     toy_vec = toy_vec.to(device)
+
+                    # Score the mention-entity pair with the MLP of the re-ranker.
                     pred = model(toy_vec)
                     score = torch.sigmoid(pred).item()
-                    # print(score)
+                    # Keep track of the top-scoring entity
                     if score > max_score:
                         max_score = score
                         max_entity = sent_preds['spans'][i]['cui'][j][0]
-                # print(max_score)
-
-
-
-
 
                 pred_entities = [entry[0] for entry in sent_preds['spans'][i]['cui']]
                 gold_entity = gold_sent['spans'][i]['cui'].lstrip('UMLS:')
-                # print(gold_entity)
-                # print(max_entity)
                 pred_reranked_entities.append(max_entity)
+
+                # Check if the top-scoring entity by the re-ranker is the correct entity.
                 if gold_entity == max_entity:
                     correct_count += 1
+
+                # Check if the correct entity exists in the top 4 predictions.
                 if gold_entity in pred_entities:
                     in_top_n_count += 1
 
@@ -179,9 +170,9 @@ if __name__ == '__main__':
 
             gold_span_count += len(gold_spans)
 
-            # print(gold_sent['spans'][:2])
-            # print(sent_preds['spans'][:2])
             assert len(pred_reranked_entities) == len(sent_preds['spans'])
+
+            # Add gold labels and their corresponding prediction to gold_labels and pred_labels for record.
             for gold_span in gold_sent['spans']:
                 gold_span_start = gold_span['start']
                 gold_span_end = gold_span['end']
@@ -199,13 +190,7 @@ if __name__ == '__main__':
                 if not found_pred:
                     pred_labels.append(None)
 
-
-        perf_cui['tp'] += len(gold_ents.intersection(pred_ents))
-        perf_cui['fp'] += len([pred_ent for pred_ent in pred_ents if pred_ent not in gold_ents])
-        perf_cui['fn'] += len([gold_ent for gold_ent in gold_ents if gold_ent not in pred_ents])
-
-
-        # Span-level metrics
+        # Calculate span-level metrics
         precision = correct_count / span_count * 100
         recall = correct_count / (correct_count + gold_span_count - span_count) * 100
         f1 = 2 * ((precision * recall) / (precision + recall))
@@ -213,9 +198,11 @@ if __name__ == '__main__':
         fp = span_count - correct_count
         fn = gold_span_count - span_count
 
+        # Print metrics readings.
         print(f"[CUI]\tP:{precision:.2f}\tR:{recall:.2f}\tF1:{f1:.2f}\tTP:{tp}\tFP:{fp}\tFN:{fn}")
         print(f"Span-level top k recall: {in_top_n_count}/{gold_span_count} ({in_top_n_count / gold_span_count * 100:.2f}%)")
 
+    # Save gold labels and their corresponding predictions
     print("Saving results...")
     if gold_labels and pred_labels:
         # Convert the list to a JSON string
