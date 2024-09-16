@@ -126,7 +126,7 @@ if __name__ == '__main__':
                 #     skip_count += 1
                 #     x_encoder_skipped_count += 1
                 #
-                # span_count += 1
+                span_count += 1
                 # x_encoder_example_count += 1
                 max_score = 0.0
                 max_entity = None
@@ -134,7 +134,7 @@ if __name__ == '__main__':
                     pred_entity_kb = umls_kb.get_entity_by_cui(sent_preds['spans'][i]['cui'][j][0])
                     pred_entity_name = pred_entity_kb['Name'] if pred_entity_kb else ''
 
-                    x_encoder_example_count += 1
+                    # x_encoder_example_count += 1
                     pred_entity_name_tokens = [t.text.lower() for t in sci_nlp(pred_entity_name)]
                     pred_entity_tokens = []
                     if pred_entity_kb and pred_entity_kb['DEF']:
