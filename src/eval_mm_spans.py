@@ -16,12 +16,18 @@ pred_labels = []
 
 
 def read_mm_converted(mm_set_path):
+    """
+    Read the MedMentions dataset from a json file.
+    :param mm_set_path: filepath to the MedMentions dataset
+    :return: Content of the MedMentions dataset.
+    """
     with open(mm_set_path, 'r') as json_f:
         mm_set = json.load(json_f)
 
     return list(mm_set['docs'])
 
 
+# Helper functions to compute performance metrics.
 def calc_metrics(obs):
     #
     def calc_p(obs):
@@ -58,13 +64,14 @@ def calc_metrics(obs):
     return p, r, f1, acc
 
 
+# Helper function to print performance metrics.
 def stringify_obs(obs):
-    #
     obs_counts = {k: len(m) for k, m in obs.items()}
     obs_counts['n'] = sum(obs_counts.values())
     return ' '.join(['%s:%d' % (l.upper(), c) for l, c in obs_counts.items()])
 
 
+# Helper function to update performance metrics.
 def update_obs(doc_idx, sent_idx, gold_spans, pred_spans, perf_ner, perf_st, perf_cui):
     # 1st pass - register pred matched and unmatched (TP & FP)
     for pred_span in pred_spans:
@@ -139,23 +146,22 @@ def update_obs(doc_idx, sent_idx, gold_spans, pred_spans, perf_ner, perf_st, per
     # print(len(gold_labels), len(pred_labels))
 
 
-
 if __name__ == '__main__':
 
     use_gold_spans = True
-    # mm_ann = 'sty'
     mm_ann = 'cui'
-    # mm_ann = ''
 
-    # st21pv
+    # File paths related to the predictors and meta learner of MedLinker.
     ngram_db_path = 'data/processed/umls.2017AA.active.st21pv.aliases.3gram.5toks.db'
     ngram_map_path = 'data/processed/umls.2017AA.active.st21pv.aliases.5toks.map'
     cui_vsm_path = 'data/processed/mm_st21pv.cuis.scibert_scivocab_uncased.vecs'
     cui_val_path = 'models/Validators/mm_st21pv.lr_clf_cui.final.joblib'
 
+    # Mention detection component.
     print('Loading MedNER ...')
     medner = NERComponent()
 
+    # Load MedLinker and configure it according to need, i.e. load the necessary predictors.
     print('Loading MedLinker ...')
     medlinker = MedLinker(medner, umls_kb)
     # medlinker.load_string_matcher(ngram_db_path, ngram_map_path)
@@ -170,6 +176,7 @@ if __name__ == '__main__':
 
         predict_cui, require_cui = True, True
 
+    # Obsolete
     elif mm_ann == 'sty':
         # medlinker.load_st_VSM(st_vsm_path)
         # medlinker.load_sty_clf(sty_clf_path)
@@ -183,18 +190,23 @@ if __name__ == '__main__':
     perf_cui = {'tp': set(), 'fp': set(), 'fn': set()}
     perf_st = {'tp': set(), 'fp': set(), 'fn': set()}
 
+    # Load MedMentions test split.
     logging.info('Loading MedMentions ...')
     mm_docs = read_mm_converted('data/processed/mm_converted.test.json')
 
+    # Iterate through MedMentions test set.
     logging.info('Processing Instances ...')
     for doc_idx, doc in enumerate(mm_docs):
         perf_stats['n_docs'] += 1
 
         logging.info('At doc #%d' % doc_idx)
 
+        # Iterate through all sentences of the document.
         for sent_idx, gold_sent in enumerate(doc['sentences']):
             perf_stats['n_sents'] += 1
 
+            # Use gold spans or detect spans using the mention detector component.
+            # Then, predict for the spans using MedLinker.
             if use_gold_spans:
                 gold_spans = [(s['start'], s['end']) for s in gold_sent['spans']]
                 gold_tokens = gold_sent['tokens']
@@ -210,6 +222,7 @@ if __name__ == '__main__':
                                           predict_cui=predict_cui, predict_sty=predict_sty,
                                           require_cui=require_cui, require_sty=require_sty)
 
+            # Update performance metrics based on predictions.
             pred_spans = preds['spans']
             gold_spans = gold_sent['spans']
             # assert preds['tokens'] == gold_sent['tokens']  # hence, equal boundaries == equal text
@@ -219,7 +232,7 @@ if __name__ == '__main__':
 
             update_obs(doc_idx, sent_idx, gold_spans, pred_spans, perf_ner, perf_st, perf_cui)
 
-        # in-progress performance metrics
+        # Display performance metrics.
         for pred_type, type_obs in [('NER', perf_ner), ('STY', perf_st), ('CUI', perf_cui)]:
             p, r, f1, acc = calc_metrics(type_obs)
             obs_str = stringify_obs(type_obs)
@@ -227,6 +240,7 @@ if __name__ == '__main__':
         print(perf_stats)
         print()
 
+    # Double-check performance metrics by calculating them from the stored results.
     print("Analysing from stored results...")
     tp = 0
     fp = 0
@@ -247,6 +261,7 @@ if __name__ == '__main__':
     print("R:", r)
     print("F1:", f1)
 
+    # Save results if evaluation is conducted using gold spans.
     if gold_labels and pred_labels:
         # Convert the list to a JSON string
         results = {"gold_labels": gold_labels, "pred_labels": pred_labels}

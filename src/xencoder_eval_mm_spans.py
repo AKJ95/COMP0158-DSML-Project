@@ -1,3 +1,4 @@
+# Code from [1] is consulted and adopted.
 import json
 import logging
 
