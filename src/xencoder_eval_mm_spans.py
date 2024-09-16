@@ -25,9 +25,13 @@ ngram_map_path = 'data/processed/umls.2017AA.active.st21pv.aliases.5toks.map'
 cui_vsm_path = 'data/processed/mm_st21pv.cuis.scibert_scivocab_uncased.vecs'
 
 
+# Record gold labels and their corresponding predictions.
 gold_labels = []
 pred_labels = []
 
+# Load MedLinker and set up its configuration.
+# This pipeline is strictly used to evaluate MedLinker with the cross-encoder re-ranker.
+# As such, all three constituent predictors should be loaded to replicated the result in the thesis.
 print('Loading MedNER ...')
 medner = NERComponent()
 
@@ -37,6 +41,7 @@ medlinker.load_string_matcher(ngram_db_path, ngram_map_path)
 medlinker.load_cui_softmax_pt()
 medlinker.load_cui_VSM(cui_vsm_path)
 
+# Load the trained cross-encoder re-ranker.
 model = MLP()
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model = model.to(device)
@@ -44,89 +49,64 @@ model.load_state_dict(torch.load('models/xencoder/x_encoder_model_ens.pt'))
 model.eval()
 
 
+
 def read_mm_converted(mm_set_path):
+    """
+    Read the MedMentions dataset from a json file.
+    :param mm_set_path: filepath to the MedMentions dataset
+    :return: Content of the MedMentions dataset.
+    """
     with open(mm_set_path, 'r') as json_f:
         mm_set = json.load(json_f)
 
     return list(mm_set['docs'])
 
 
-def calc_p(metrics):
-    try:
-        return metrics['tp'] / (metrics['tp'] + metrics['fp'])
-    except ZeroDivisionError:
-        return 0
-
-
-def calc_r(metrics):
-    try:
-        return metrics['tp'] / (metrics['tp'] + metrics['fn'])
-    except ZeroDivisionError:
-        return 0
-
-
-def calc_f1(metrics):
-    try:
-        p = calc_p(metrics)
-        r = calc_r(metrics)
-        return 2 * ((p * r) / (p + r))
-    except ZeroDivisionError:
-        return 0
-
-
-def calc_acc(metrics):
-    try:
-        # return metrics['tp'] / sum(metrics.values())
-        return metrics['tp'] / (metrics['tp'] + metrics['fp'] + metrics['fn'])
-    except ZeroDivisionError:
-        return 0
-
-
-def calc_counts(metrics):
-    metrics['n'] = sum(metrics.values())
-    return metrics
-
-
-def stringify_metrics(metrics):
-    metrics_counts = calc_counts(metrics)
-    return ' '.join(['%s:%d' % (l.upper(), c) for l, c in metrics_counts.items()])
-
-
 if __name__ == '__main__':
-    perf_stats = {'n_gold_spans': 0, 'n_pred_spans': 0, 'n_sents': 0, 'n_docs': 0}
+    perf_stats = {'n_gold_spans': 0, 'n_pred_spans': 0, 'n_sents': 0, 'n_docs': 0}   # Obsolete
     perf_cui = {'tp': 0, 'fp': 0, 'fn': 0}
 
+    # Load MedMentions test split.
     logging.info('Loading MedMentions ...')
     mm_docs = read_mm_converted('data/processed/mm_converted.test.json')
 
+    # Keep track of key statistics
     logging.info('Processing Instances ...')
-    span_count = 0
-    gold_span_count = 0
-    in_top_n_count = 0
-    skip_count = 0
-    x_encoder_example_count = 0
-    x_encoder_skipped_count = 0
-    vectors = []
-    labels = []
-    correct_count = 0
+    span_count = 0   # Obsolete
+    gold_span_count = 0  # Number of gold spans
+    in_top_n_count = 0  # Number of instances where MedLinker correctly put the gold entity in the top n predictions
+    skip_count = 0   # Obsolete
+    x_encoder_example_count = 0  # Obsolete
+    x_encoder_skipped_count = 0  # Obsolete
+    vectors = []    # Obsolete
+    labels = []     # Obsolete
+    correct_count = 0   # True positive count
+
+    # Iterate through all documents in MedMentions test split.
     for doc_idx, doc in enumerate(mm_docs):
-        perf_stats['n_docs'] += 1
+        perf_stats['n_docs'] += 1    # Obsolete
 
         logging.info('At doc #%d' % doc_idx)
 
+        # Record gold entities in all sentences of the document.
         gold_ents = set()
         for gold_sent in doc['sentences']:
             for gold_span in gold_sent['spans']:
                 gold_ents.add(gold_span['cui'].lstrip('UMLS:'))
 
         pred_ents = set()
+        # Iterate through all sentences in the document.
         for gold_sent in doc['sentences']:
+            # Predict for all gold spans by retrieving the top 4 predictions made by the ensemble.
             gold_spans = [(span['start'], span['end']) for span in gold_sent['spans']]
             sent_preds = medlinker.predict(' '.join(gold_sent['tokens']),
                                            gold_tokens=gold_sent['tokens'],
                                            gold_spans=gold_spans,
                                            top_n=4)
+
             pred_reranked_entities = []
+
+            # Iterate through the top 4 predictions
             for i in range(len(sent_preds['spans'])):
                 embedding_tokens = []
                 embedding_tokens.extend(gold_sent['tokens'][:sent_preds['spans'][i]['start']])
@@ -136,18 +116,18 @@ if __name__ == '__main__':
                 embedding_tokens.extend(gold_sent['tokens'][sent_preds['spans'][i]['end']:])
                 embedding_tokens.append('[SEP]')
 
-                gold_entity_cui = gold_sent['spans'][i]['cui'].lstrip('UMLS:')
-                gold_entity_kb = umls_kb.get_entity_by_cui(gold_sent['spans'][i]['cui'].lstrip('UMLS:'))
-                gold_entity_name = gold_entity_kb['Name'] if gold_entity_kb else ' '.join(gold_sent['tokens'][sent_preds['spans'][i]['start']:sent_preds['spans'][i]['end']])
-                if gold_entity_kb and gold_entity_kb['DEF']:
-                    gold_entity_def = gold_entity_kb['DEF'][0]
-                else:
-                    gold_entity_def = gold_entity_name
-                    skip_count += 1
-                    x_encoder_skipped_count += 1
-
-                span_count += 1
-                x_encoder_example_count += 1
+                # gold_entity_cui = gold_sent['spans'][i]['cui'].lstrip('UMLS:')
+                # gold_entity_kb = umls_kb.get_entity_by_cui(gold_sent['spans'][i]['cui'].lstrip('UMLS:'))
+                # gold_entity_name = gold_entity_kb['Name'] if gold_entity_kb else ' '.join(gold_sent['tokens'][sent_preds['spans'][i]['start']:sent_preds['spans'][i]['end']])
+                # if gold_entity_kb and gold_entity_kb['DEF']:
+                #     gold_entity_def = gold_entity_kb['DEF'][0]
+                # else:
+                #     gold_entity_def = gold_entity_name
+                #     skip_count += 1
+                #     x_encoder_skipped_count += 1
+                #
+                # span_count += 1
+                # x_encoder_example_count += 1
                 max_score = 0.0
                 max_entity = None
                 for j in range(min(4, len(sent_preds['spans'][i]['cui']))):
@@ -224,11 +204,6 @@ if __name__ == '__main__':
         perf_cui['fp'] += len([pred_ent for pred_ent in pred_ents if pred_ent not in gold_ents])
         perf_cui['fn'] += len([gold_ent for gold_ent in gold_ents if gold_ent not in pred_ents])
 
-        # in-progress performance metrics
-        p = calc_p(perf_cui) * 100
-        r = calc_r(perf_cui) * 100
-        f = calc_f1(perf_cui) * 100
-        a = calc_acc(perf_cui) * 100
 
         # Span-level metrics
         precision = correct_count / span_count * 100
@@ -238,16 +213,8 @@ if __name__ == '__main__':
         fp = span_count - correct_count
         fn = gold_span_count - span_count
 
-        # counts = calc_counts(perf_cui)
-        # counts_str = '\t'.join(['%s:%d' % (l.upper(), c) for l, c in counts.items()])
-        # print(f"Percentage of correct: {correct_count}/{span_count} ({correct_count / span_count * 100:.2f}%)")
-        # print(f"Recall span-level: {correct_count}/{correct_count + gold_span_count - span_count} ({correct_count / (correct_count + gold_span_count - span_count) * 100:.2f}%)")
-        # print('[CUI]\tP:%.2f\tR:%.2f\tF1:%.2f\tACC:%.2f - %s' % (p, r, f, a, counts_str))
         print(f"[CUI]\tP:{precision:.2f}\tR:{recall:.2f}\tF1:{f1:.2f}\tTP:{tp}\tFP:{fp}\tFN:{fn}")
         print(f"Span-level top k recall: {in_top_n_count}/{gold_span_count} ({in_top_n_count / gold_span_count * 100:.2f}%)")
-        # print(f"Recall per span: {in_top_n_count}/{span_count} ({in_top_n_count / span_count * 100:.2f}%)")
-        # print(len(gold_labels))
-        # print(len(pred_labels))
 
     print("Saving results...")
     if gold_labels and pred_labels:
