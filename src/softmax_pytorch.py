@@ -5,6 +5,9 @@ import torch.nn as nn
 
 
 class SoftmaxClassifier(nn.Module):
+    """
+    MLP classifier implemented with PyTorch for MedLinker
+    """
 
     def __init__(self, n_classes: int, label_mapping_path: str, checkpoint_path=None):
         super(SoftmaxClassifier, self).__init__()
@@ -17,11 +20,22 @@ class SoftmaxClassifier(nn.Module):
         self.eval()
 
     def forward(self, x):
+        """
+        Forward pass
+        :param x: inputs (contextual embeddings of mentions)
+        :return: output logits
+        """
         x = self.fc(x)
         x = self.softmax(x)
         return x
 
     def predict(self, x, threshold=0.5):
+        """
+        Predicts the CUI for a mention.
+        :param x: inputs (contextual embeddings of mentions)
+        :param threshold: If the softmax score is below this threshold, the CUI is not considered.
+        :return: List of CUI predictions with their corresponding softmax scores.
+        """
         x = self.forward(x).detach().cpu().numpy()[0]
         score_dict = {}
         for i in range(len(x)):
