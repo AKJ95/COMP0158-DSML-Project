@@ -4,6 +4,9 @@ import numpy as np
 
 
 class VSM(object):
+    """
+    Vector space model representing the 1-NN classifier.
+    """
 
     def __init__(self, vecs_path, dtype='float32', delimiter=' ', normalize=True):
         self.vecs_path = vecs_path
@@ -20,12 +23,18 @@ class VSM(object):
         self.indices = {}
         self.ndims = 0
 
+        # Loads pre-computed entity embeddings.
         self.load_txt(vecs_path, delimiter)
 
         if normalize:
             self.normalize()
 
     def load_txt(self, vecs_path, delimiter):
+        """
+        Loads pre-computed entity embeddings from the designated file.
+        :param vecs_path: Filepath to the pre-computed entity embeddings.
+        :param delimiter: Delimiter separating contents in a line.
+        """
         self.vectors = []
         with open(vecs_path, encoding='utf-8') as vecs_f:
             for line_idx, line in enumerate(vecs_f):
@@ -47,14 +56,28 @@ class VSM(object):
         self.vectors = (self.vectors.T / np.linalg.norm(self.vectors, axis=1)).T
 
     def get_vec(self, label):
+        """
+        Get entity embedding via label, aka CUI.
+        :param label: CUI in this case.
+        :return: Pre-computed entity embedding corresponding to the given CUI.
+        """
         return self.vectors[self.indices[label]]
 
     def similarity(self, label1, label2):
+        """
+        Consine similarity between the entity embeddings of the two given CUIs.
+        :param label1: CUI 1
+        :param label2: CUI 2
+        :return: Cosine similarity between the two entity embeddings.
+        """
         v1 = self.get_vec(label1)
         v2 = self.get_vec(label2)
         return np.dot(v1, v2).tolist()
 
     def most_similar(self, vec, threshold=0.5, topn=10):
+        """
+        Finds the top-n most similar entities to the given mention embedding above the given threshold.
+        """
         sims = np.dot(self.vectors, vec).astype(self.dtype)
         sims_list = sims.tolist()
         r = []
@@ -63,14 +86,5 @@ class VSM(object):
                 r.append((self.labels[top_i], sims_list[top_i]))
         return r
 
-    def sims(self, vec):
-        return np.dot(self.vectors, np.array(vec)).tolist()
-
-
-if __name__ == '__main__':
-    p = 'data/processed/mm_st21pv.cuis.scibert_scivocab_uncased.vecs'
-    vsm = VSM(p)
-    print(f"VSM embedding stats: {vsm.vectors.shape}")
-    print(f"VSM embedding example: {vsm.vectors[0][:5]}")
-    print(f"VSM labels length: {len(vsm.labels)}")
-    print(f"VSM label example: {vsm.labels[0]}")
+    # def sims(self, vec):
+    #     return np.dot(self.vectors, np.array(vec)).tolist()
