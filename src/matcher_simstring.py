@@ -21,6 +21,10 @@ logging.basicConfig(level=logging.DEBUG,
 
 
 class SimString_UMLS(object):
+    """
+    Class of the string matcher classifier of MedLinker.
+    Implemented with the help of the simstring library.
+    """
 
     def __init__(self, umls_db, db_path, cui_mapping_path, alpha=0.5):
         self.db = None

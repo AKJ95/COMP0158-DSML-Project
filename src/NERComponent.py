@@ -7,6 +7,9 @@ from configs.load_configs import *
 
 
 class Span:
+    """
+    Data object class containing information of a particular mention span.
+    """
     def __init__(self, start: int, end: int, text: str):
         self.start = start
         self.end = end
@@ -14,6 +17,9 @@ class Span:
 
 
 def bio_tags_to_spans(tokens: list[str], bio_tags: list[str]) -> list[Span]:
+    """
+    Given a list of tokens and their corresponding BIO annotations, return all mentions.
+    """
     spans = []
     start_idx = None
     current_entity = None
@@ -46,6 +52,9 @@ def bio_tags_to_spans(tokens: list[str], bio_tags: list[str]) -> list[Span]:
 
 
 class NERResult:
+    """
+    Data object class holding information of a sequence of text and its detected mentions.
+    """
     def __init__(self, text: str,  tokens: list[str], spans: list[Span]):
         self.text = text
         self.tokens = tokens
@@ -53,6 +62,9 @@ class NERResult:
 
 
 class NERComponent:
+    """
+    Re-implemented mention detector of MedLinker.
+    """
     def __init__(self):
         ner_configs = get_ner_training_config()
         self.tokenizer_root = ner_configs.tokenizer_path
@@ -72,12 +84,11 @@ class NERComponent:
         self.model.eval()
 
     def predict(self, texts: str) -> NERResult:
-        # Tokenize and make predictions.
-        # inputs = self.tokenizer(texts, padding=True, truncation=True, max_length=128, return_tensors="pt")
-        # ids = inputs["input_ids"].to(self.device)
-        # mask = inputs["attention_mask"].to(self.device)
-
-        # new code
+        """
+        Detect mentions given a piece of text.
+        :param texts: Input piece of text.
+        :return: A data object containing the original text and the detected mentions.
+        """
         tokenized_sentence = []
         for word in texts.split():
             tokenized_word = self.tokenizer.tokenize(word)
@@ -93,24 +104,14 @@ class NERComponent:
         ids = self.tokenizer.convert_tokens_to_ids(tokenized_sentence)
         ids = torch.tensor(ids, dtype=torch.long).unsqueeze(0).to(self.device)
         mask = torch.tensor(attn_mask, dtype=torch.long).unsqueeze(0).to(self.device)
-        # print(ids)
-        # end of new code
 
+        # Pass processed data through model.
         with torch.no_grad():
             outputs = self.model(ids, mask)
         logits = outputs.logits
 
+        # Retrieve raw outputs from the model, interpret it and contruct the mention predictions.
         probabilities = torch.softmax(logits, dim=2).cpu()
-
-        # Manually adjusting the probabilities
-        # for i in range(probabilities.shape[0]):
-        #     for j in range(probabilities.shape[1]):
-        #         if probabilities[i, j, 0] > 0.90:
-        #             probabilities[i, j, 0] = float('inf')
-        #         elif probabilities[i, j, 2] > 0.90:
-        #             probabilities[i, j, 2] = float('inf')
-        #         else:
-        #             probabilities[i, j, 1] = float('inf')
 
         predictions = torch.argmax(probabilities, dim=2).cpu().numpy()
         texts_tokenized = [self.tokenizer.convert_ids_to_tokens(input_ids) for input_ids in ids]

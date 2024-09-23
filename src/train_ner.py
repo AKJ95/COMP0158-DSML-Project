@@ -98,6 +98,7 @@ if __name__ == "__main__":
     dev_set = MedMentionsDataset(dev_dataset, tokenizer, config.max_length, label2id)
     test_set = MedMentionsDataset(test_dataset, tokenizer, config.max_length, label2id)
 
+    # Sets configurations and hyperparameters
     train_params = {'batch_size': config.batch_size,
                     'shuffle': config.train_shuffle,
                     'num_workers': config.num_workers
@@ -119,6 +120,7 @@ if __name__ == "__main__":
 
     optimizer = torch.optim.Adam(params=model.parameters(), lr=config.learning_rate)
 
+    # Trains the mention detector.
     print("Training starts...")
     start = time.time()
     best_exact_f1 = 0
@@ -129,7 +131,7 @@ if __name__ == "__main__":
         model, optimizer = train(model, training_loader, optimizer, device, config.max_grad_norm, id2label)
         labels, predictions, ner_labels, ner_preds, entity_level_performance, valid_loss = valid(model, dev_loader, device, id2label)
         if valid_loss < best_loss:
-            # torch.save(model.state_dict(), config.model_path)
+            torch.save(model.state_dict(), config.model_path)
             best_loss = valid_loss
             best_epoch = epoch + 1
     print("-" * 100)
@@ -142,7 +144,7 @@ if __name__ == "__main__":
     _ = valid(model, test_loader, device, id2label)
     end = time.time()
     print(f"Training took {(end - start) / 60:.1f} minutes.")
-    # print("Saving model and tokenizer...")
-    # torch.save(model.state_dict(), config.model_path)
-    # tokenizer.save_pretrained(config.tokenizer_path)
-    # print("Model saved.")
+    print("Saving model and tokenizer...")
+    torch.save(model.state_dict(), config.model_path)
+    tokenizer.save_pretrained(config.tokenizer_path)
+    print("Model saved.")

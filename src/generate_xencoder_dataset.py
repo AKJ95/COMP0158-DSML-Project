@@ -34,57 +34,61 @@ medlinker.load_cui_VSM(cui_vsm_path)
 
 
 def read_mm_converted(mm_set_path):
+    """
+    Read in MedMentions dataset.
+    """
     with open(mm_set_path, 'r') as json_f:
         mm_set = json.load(json_f)
 
     return list(mm_set['docs'])
 
 
-def calc_p(metrics):
-    try:
-        return metrics['tp'] / (metrics['tp'] + metrics['fp'])
-    except ZeroDivisionError:
-        return 0
-
-
-def calc_r(metrics):
-    try:
-        return metrics['tp'] / (metrics['tp'] + metrics['fn'])
-    except ZeroDivisionError:
-        return 0
-
-
-def calc_f1(metrics):
-    try:
-        p = calc_p(metrics)
-        r = calc_r(metrics)
-        return 2 * ((p * r) / (p + r))
-    except ZeroDivisionError:
-        return 0
-
-
-def calc_acc(metrics):
-    try:
-        # return metrics['tp'] / sum(metrics.values())
-        return metrics['tp'] / (metrics['tp'] + metrics['fp'] + metrics['fn'])
-    except ZeroDivisionError:
-        return 0
-
-
-def calc_counts(metrics):
-    metrics['n'] = sum(metrics.values())
-    return metrics
-
-
-def stringify_metrics(metrics):
-    metrics_counts = calc_counts(metrics)
-    return ' '.join(['%s:%d' % (l.upper(), c) for l, c in metrics_counts.items()])
+# def calc_p(metrics):
+#     try:
+#         return metrics['tp'] / (metrics['tp'] + metrics['fp'])
+#     except ZeroDivisionError:
+#         return 0
+#
+#
+# def calc_r(metrics):
+#     try:
+#         return metrics['tp'] / (metrics['tp'] + metrics['fn'])
+#     except ZeroDivisionError:
+#         return 0
+#
+#
+# def calc_f1(metrics):
+#     try:
+#         p = calc_p(metrics)
+#         r = calc_r(metrics)
+#         return 2 * ((p * r) / (p + r))
+#     except ZeroDivisionError:
+#         return 0
+#
+#
+# def calc_acc(metrics):
+#     try:
+#         # return metrics['tp'] / sum(metrics.values())
+#         return metrics['tp'] / (metrics['tp'] + metrics['fp'] + metrics['fn'])
+#     except ZeroDivisionError:
+#         return 0
+#
+#
+# def calc_counts(metrics):
+#     metrics['n'] = sum(metrics.values())
+#     return metrics
+#
+#
+# def stringify_metrics(metrics):
+#     metrics_counts = calc_counts(metrics)
+#     return ' '.join(['%s:%d' % (l.upper(), c) for l, c in metrics_counts.items()])
 
 
 if __name__ == '__main__':
     perf_stats = {'n_gold_spans': 0, 'n_pred_spans': 0, 'n_sents': 0, 'n_docs': 0}
     perf_cui = {'tp': 0, 'fp': 0, 'fn': 0}
 
+    # Load in MedMentions training set
     logging.info('Loading MedMentions ...')
     mm_docs = read_mm_converted('data/processed/mm_converted.dev.json')
 
@@ -97,6 +101,8 @@ if __name__ == '__main__':
     vectors = []
     labels = []
     correct_count = 0
+
+    # Iterate through MedMentions training set
     for doc_idx, doc in enumerate(mm_docs):
         perf_stats['n_docs'] += 1
 
@@ -108,13 +114,21 @@ if __name__ == '__main__':
                 gold_ents.add(gold_span['cui'].lstrip('UMLS:'))
 
         pred_ents = set()
+
+        # Iterate through each sentence
         for gold_sent in doc['sentences']:
+
+            # Get MedLinker's top 4 entity predictions for each gold span.
             gold_spans = [(span['start'], span['end']) for span in gold_sent['spans']]
             sent_preds = medlinker.predict(' '.join(gold_sent['tokens']),
                                            gold_tokens=gold_sent['tokens'],
                                            gold_spans=gold_spans,
                                            top_n=4)
+
+            # Iterate through each gold span now:
             for i in range(len(sent_preds['spans'])):
+                # Collect the tokens that form the sentence containing the mention, and convert it into the format
+                # described in the thesis before being passed into the cross-encoder.
                 embedding_tokens = []
                 embedding_tokens.extend(gold_sent['tokens'][:sent_preds['spans'][i]['start']])
                 embedding_tokens.append('[M_s]')
@@ -123,6 +137,8 @@ if __name__ == '__main__':
                 embedding_tokens.extend(gold_sent['tokens'][sent_preds['spans'][i]['end']:])
                 embedding_tokens.append('[SEP]')
 
+                # Retrieve the name and the definition of the gold entity and organise the tokens that form them into
+                # the format as described in the paper before being passed into the cross-encoder.
                 gold_entity_cui = gold_sent['spans'][i]['cui'].lstrip('UMLS:')
                 gold_entity_kb = umls_kb.get_entity_by_cui(gold_sent['spans'][i]['cui'].lstrip('UMLS:'))
                 gold_entity_name = gold_entity_kb['Name'] if gold_entity_kb else ' '.join(gold_sent['tokens'][sent_preds['spans'][i]['start']:sent_preds['spans'][i]['end']])
@@ -133,6 +149,8 @@ if __name__ == '__main__':
                     skip_count += 1
                     x_encoder_skipped_count += 1
 
+                # Concatenate the mention tokens and the gold entity definition tokens and pass it through the
+                # the cross-encoder. This forms a positive mention-entity pair. A label of 1 is duly assigned to it.
                 gold_entity_tokens = [t.text.lower() for t in sci_nlp(gold_entity_name)] + ['[ENT]'] + [t.text.lower()
                                                                                                         for t in
                                                                                                         sci_nlp(
@@ -151,11 +169,16 @@ if __name__ == '__main__':
                 span_count += 1
                 x_encoder_example_count += 1
 
+                # Iterate through the top 4 predictions made by MedLinker for each span.
                 for j in range(min(4, len(sent_preds['spans'][i]['cui']))):
                     pred_entity_kb = umls_kb.get_entity_by_cui(sent_preds['spans'][i]['cui'][j][0])
                     pred_entity_name = pred_entity_kb['Name'] if pred_entity_kb else ''
+                    # If the predicted entity is the gold entity, skip this example.
                     if j == 0 and pred_entity_name == gold_entity_name:
                         correct_count += 1
+                    # If the predicted entity is different to the gold entity, then it forms a negative mention-entity
+                    # pair. Create the negative training example in the same way as above, by forming the mention
+                    # and entity definition tokens and pass them through the cross-encoder.
                     if pred_entity_name != gold_entity_name:
                         x_encoder_example_count += 1
                         pred_entity_name_tokens = [t.text.lower() for t in sci_nlp(pred_entity_name)]
@@ -183,18 +206,19 @@ if __name__ == '__main__':
                 for pred_cui in pred_span['cui']:
                     pred_ents.add(pred_cui[0])
 
+        # Print some in-time statistics showing the progress of encoding the examples.
         perf_cui['tp'] += len(gold_ents.intersection(pred_ents))
         perf_cui['fp'] += len([pred_ent for pred_ent in pred_ents if pred_ent not in gold_ents])
         perf_cui['fn'] += len([gold_ent for gold_ent in gold_ents if gold_ent not in pred_ents])
 
         # in-progress performance metrics
-        p = calc_p(perf_cui) * 100
-        r = calc_r(perf_cui) * 100
-        f = calc_f1(perf_cui) * 100
-        a = calc_acc(perf_cui) * 100
+        # p = calc_p(perf_cui) * 100
+        # r = calc_r(perf_cui) * 100
+        # f = calc_f1(perf_cui) * 100
+        # a = calc_acc(perf_cui) * 100
 
-        counts = calc_counts(perf_cui)
-        counts_str = '\t'.join(['%s:%d' % (l.upper(), c) for l, c in counts.items()])
+        # counts = calc_counts(perf_cui)
+        # counts_str = '\t'.join(['%s:%d' % (l.upper(), c) for l, c in counts.items()])
         print(f"Percentage of correct: {correct_count}/{span_count} ({correct_count / span_count * 100:.2f}%)")
         print(f"Top k Recall per span: {in_top_n_count}/{span_count} ({in_top_n_count / span_count * 100:.2f}%)")
         print(f"Examples without official definitions: {x_encoder_skipped_count}/{x_encoder_example_count} ({x_encoder_skipped_count / x_encoder_example_count * 100:.2f}%)")

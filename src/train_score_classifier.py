@@ -40,6 +40,11 @@ medlinker.load_cui_softmax_pt()
 
 
 def read_mm_converted(mm_set_path):
+    """
+    Read the MedMentions dataset from a json file.
+    :param mm_set_path: Filepath to the MedMentions dataset json file.
+    :return: Return the contents of the MedMentions dataset in a list.
+    """
     with open(mm_set_path, 'r') as json_f:
         mm_set = json.load(json_f)
 
@@ -48,6 +53,7 @@ def read_mm_converted(mm_set_path):
 
 if __name__ == '__main__':
 
+    # Load MedMentions training set
     logging.info('Loading MedMentions ...')
     mm_docs = read_mm_converted('data/processed/mm_converted.train.json')
     # mm_docs = read_mm_converted('data/MedMentions/st21pv/custom/mm_converted.dev.json')
@@ -55,6 +61,7 @@ if __name__ == '__main__':
     X_sty, X_cui, y_sty, y_cui = [], [], [], []
     n_skipped = 0
 
+    # Iterate through the training set and create training instances
     logging.info('Processing Instances ...')
     for doc_idx, doc in enumerate(mm_docs):
 
@@ -124,6 +131,7 @@ if __name__ == '__main__':
 
                 y_cui.append(int(cui_pred_correct))
 
+    # Train and save the logistical regression meta learner.
     logging.info('Training CUI Logistic Regression ...')
     cui_lr_clf = LogisticRegression(random_state=42, verbose=True)
     cui_lr_clf.fit(X_cui, y_cui)

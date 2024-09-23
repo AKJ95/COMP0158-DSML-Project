@@ -5,6 +5,7 @@ import logging
 import torch as th
 from pytorch_transformers import BertModel, BertTokenizer
 
+# Loads the SciBert model and tokenizer.
 # logging.basicConfig(level=logging.DEBUG,
 #                     format='%(asctime)s - %(levelname)s - %(message)s',
 #                     datefmt='%d-%b-%y %H:%M:%S')
@@ -37,6 +38,10 @@ def get_num_features(tokens):
 
 
 def toks2vecs(tokens, layers=None, subword_op='avg', layer_op='sum', return_tokens=True):
+    """
+    Returns the contextual embeddings of the input sentence represented by tokens by taking the output of the final
+    hidden layer of the beginning [CLS] token.
+    """
     if layers is None:
         layers = [-1]
     encoding_map = [pytt_tokenizer.encode(t) for t in tokens]

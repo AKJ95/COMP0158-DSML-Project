@@ -9,6 +9,9 @@ from torcheval.metrics import BinaryAccuracy, BinaryPrecision, BinaryRecall
 
 
 class EncoderDataset(Dataset):
+    """
+    Dataset class containing the training set of mention-entity pair encodings used to train the cross-encoder re-ranker.
+    """
     def __init__(self, vectors, labels):
         self.vectors = vectors
         self.labels = labels
@@ -21,6 +24,9 @@ class EncoderDataset(Dataset):
 
 
 class MLP(nn.Module):
+    """
+    The MLP model of the re-ranker.
+    """
     def __init__(self):
         super(MLP, self).__init__()
         self.layers = nn.Sequential(
@@ -35,14 +41,16 @@ class MLP(nn.Module):
 
 
 if __name__ == '__main__':
+    """
+    Load the training and validation sets of the mention-entity pair encodings.
+    """
     x_encoder_vectors = np.load('data/processed/x_encoder_vectors_ens_train.npy')
     x_encoder_labels = np.load('data/processed/x_encoder_labels_ens_train.npy')
     x_encoder_vectors_dev = np.load('data/processed/x_encoder_vectors_ens_dev.npy')
     x_encoder_labels_dev = np.load('data/processed/x_encoder_labels_ens_dev.npy')
 
 
-
-    # Convert numpy arrays to PyTorch tensors
+    # Convert NumPy arrays to PyTorch tensors.
     x_encoder_vectors = torch.from_numpy(x_encoder_vectors).float()
     x_encoder_labels = torch.from_numpy(x_encoder_labels).float()
     x_encoder_labels = torch.unsqueeze(x_encoder_labels, 1)
@@ -50,9 +58,9 @@ if __name__ == '__main__':
     x_encoder_labels_dev = torch.from_numpy(x_encoder_labels_dev).float()
     x_encoder_labels_dev = torch.unsqueeze(x_encoder_labels_dev, 1)
 
+    # Load data into the dataset objects.
     dataset = EncoderDataset(x_encoder_vectors, x_encoder_labels)
     dataset_dev = EncoderDataset(x_encoder_vectors_dev, x_encoder_labels_dev)
-
 
     # Create DataLoader for the dataset
     data_loader = DataLoader(dataset, batch_size=64, shuffle=True)
@@ -94,15 +102,6 @@ if __name__ == '__main__':
             # Forward pass
             outputs = model(vectors)
             loss = criterion(outputs, labels)
-
-            # Print model outputs for the first 5 instances
-            # if instance_counter < 10:
-            #     for j in range(vectors.size(0)):
-            #         if instance_counter < 10:
-            #             print(f'Model outputs for instance {instance_counter + 1}: {torch.sigmoid(outputs[j]).item()}; Actual label: {labels[j].item()}')
-            #             instance_counter += 1
-            #         else:
-            #             break
 
             # Backward pass and optimization
             optimizer.zero_grad()
@@ -169,9 +168,11 @@ if __name__ == '__main__':
                     if correct_flag:
                         correct_count += 1
 
+        # Display performance metrics on validation set.
+        # Save the model if the validation loss of the current epoch is the best so far.
 
         # print(f'Correct count: {correct_count}/{mention_count} = {correct_count/mention_count*100}%')
-        print(f"Realistic Top N count: {correct_count}/{top_n_count} = {correct_count/top_n_count*100}%")
+        # print(f"Realistic Top N count: {correct_count}/{top_n_count} = {correct_count/top_n_count*100}%")
         dev_loss = dev_loss / len(dev_loader.dataset)
         dev_preds = torch.from_numpy(dev_preds)
         dev_labels = torch.from_numpy(dev_labels).int()
@@ -190,10 +191,3 @@ if __name__ == '__main__':
         if dev_loss < best_dev_loss:
             best_dev_loss = dev_loss
             # torch.save(model.state_dict(), 'models/xencoder/x_encoder_model_ens.pt')
-
-    # plt.figure()
-    # plt.plot(range(n_epochs), train_losses)
-    # plt.xlabel('Epoch')
-    # plt.ylabel('Training Loss')
-    # plt.title('Training Loss over Time')
-    # plt.savefig('data/processed/x_encoder_training_loss.png')

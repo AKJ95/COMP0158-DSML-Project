@@ -6,6 +6,9 @@ from collections import Counter
 
 
 class UMLS_KB(object):
+    """
+    Object representing the UMLS knowledge base.
+    """
 
     def __init__(self, umls_version):
         self.umls_data = None
@@ -14,6 +17,10 @@ class UMLS_KB(object):
         self.load(umls_version)
 
     def load(self, umls_version):
+        """
+        Load the UMLS knowledge base from a json file.
+        :param umls_version: Filepath to the UMLS knowledge base.
+        """
         json_path = 'data/processed/%s.json' % umls_version
         with open(json_path, 'r') as json_f:
             self.umls_data = json.load(json_f)
@@ -22,6 +29,12 @@ class UMLS_KB(object):
         return self.umls_data[cui]['STY']
 
     def get_aliases(self, cui, include_name=True):
+        """
+        Get all aliases/synonyms of a given CUI.
+        :param cui: CUI.
+        :param include_name: If the preferred name of the concept should be included in the results.
+        :return: All aliases/synonyms of the CUI.
+        """
         aliases = self.umls_data[cui]['STR']
         if include_name:
             aliases.append(self.umls_data[cui]['Name'])
@@ -29,11 +42,13 @@ class UMLS_KB(object):
         return aliases
 
     def get_all_cuis(self):
-        #
+        """
+        :return: A list of all CUIs in the UMLS knowledge base.
+        """
         return list(self.umls_data.keys())
 
     def get_all_stys(self):
-        #
+
         all_stys = set()
         for cui in self.get_all_cuis():
             for sty in self.get_sts(cui):

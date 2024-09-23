@@ -1,4 +1,7 @@
+# Code from [1] is consulted and adopted.
 """
+Helper methods that reads the MedMentions dataset.
+
 utils for reading MedMentions original format
 adapted from scispacy: https://github.com/allenai/scispacy
 """

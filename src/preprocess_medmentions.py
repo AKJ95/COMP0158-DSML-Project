@@ -12,6 +12,8 @@ from tqdm import tqdm
 # Import project code
 from configs.load_configs import *
 
+# This script pre-processes the MedMentions data so it is in a format that can be used to train the mention detector.
+
 
 # Enum to keep track of the status of the current line being read
 class LineStatus(Enum):
