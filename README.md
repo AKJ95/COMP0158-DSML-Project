@@ -43,6 +43,9 @@ performance of the performance of the configurations overall and on infrequent e
 Due to the license of UMLS (that it cannot be redistributed by me), and the large sizes of the generated dataset and models used, it is not possible
 to share them in this repository. However, the logic of the code should be clear from the source code.
 
+The source code is designed to be run directly from the root folder. I.e., to run code in the src directory from the terminal, change the current directory
+to the root directory of this project, and run `python3 src/code_you_want_to_run.py`.
+
 ### Installing Libraries
 In order to run all aspects of the code, please ensure all libraires specified in `requirements.txt` are installed by
 running `pip install -r requirements.txt`. In addition, please also install https://github.com/chb/py-umls, which is
